@@ -84,13 +84,13 @@ class UnknownParameterException extends Lang.Exception
 {
     private var _parameter as PinionParameterType;
 
-    function initialize(parameter as PinionParameterType)
+    public function initialize(parameter as PinionParameterType)
     {
         Lang.Exception.initialize();
         _parameter = parameter;
     }
 
-    function getErrorMessage() as Lang.String?
+    public function getErrorMessage() as Lang.String?
     {
         return "Unknown Pinion Parameter " + _parameter;
     }

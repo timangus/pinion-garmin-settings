@@ -16,7 +16,7 @@ class Bluetooth extends Ble.BleDelegate
     private var _requestQueue as RequestQueue = new RequestQueue();
     private var _currentRequest as Request?;
 
-    function initialize()
+    public function initialize()
     {
         try
         {
@@ -30,7 +30,7 @@ class Bluetooth extends Ble.BleDelegate
         }
     }
 
-    function disconnect() as Void
+    public function disconnect() as Void
     {
         if(_connectedDevice != null)
         {
@@ -40,7 +40,7 @@ class Bluetooth extends Ble.BleDelegate
         }
     }
 
-    function onConnectedStateChanged(device as Ble.Device, state as Ble.ConnectionState)
+    public function onConnectedStateChanged(device as Ble.Device, state as Ble.ConnectionState) as Void
     {
         var connected = false;
 
@@ -91,13 +91,13 @@ class Bluetooth extends Ble.BleDelegate
         }
     }
 
-    function scan() as Void
+    public function scan() as Void
     {
         disconnect();
         Ble.setScanState(Ble.SCAN_STATE_SCANNING);
     }
 
-    function scanResultIsPinion(scanResult as Ble.ScanResult) as Lang.Boolean
+    private function scanResultIsPinion(scanResult as Ble.ScanResult) as Lang.Boolean
     {
         var uuids = scanResult.getServiceUuids();
         for(var uuid = uuids.next(); uuid != null; uuid = uuids.next())
@@ -111,7 +111,7 @@ class Bluetooth extends Ble.BleDelegate
         return false;
     }
 
-    function onScanResults(scanResults as Ble.Iterator)
+    public function onScanResults(scanResults as Ble.Iterator) as Void
     {
         System.println("Scanning");
         for(var result = scanResults.next() as Ble.ScanResult; result != null; result = scanResults.next())
@@ -125,7 +125,7 @@ class Bluetooth extends Ble.BleDelegate
         }
     }
 
-    function registerProfiles() as Void
+    private function registerProfiles() as Void
     {
         var pinionProfile =
         {
@@ -141,13 +141,13 @@ class Bluetooth extends Ble.BleDelegate
         Ble.registerProfile(pinionProfile);
     }
 
-    function read(parameter as PinionParameterType) as Void
+    public function read(parameter as PinionParameterType) as Void
     {
         _requestQueue.push(new ReadRequest(parameter, _requestCharacteristic as Ble.Characteristic));
         processQueue();
     }
 
-    function write(parameter as PinionParameterType, value as Lang.Number) as Void
+    public function write(parameter as PinionParameterType, value as Lang.Number) as Void
     {
         var hiddenSetting = PINION_PARAMETERS.hasKey(parameter) && (PINION_PARAMETERS[parameter] as Lang.Dictionary).hasKey(:hidden);
 
@@ -158,7 +158,7 @@ class Bluetooth extends Ble.BleDelegate
         processQueue();
     }
 
-    function onCharacteristicWrite(characteristic as Ble.Characteristic, status as Ble.Status)
+    public function onCharacteristicWrite(characteristic as Ble.Characteristic, status as Ble.Status) as Void
     {
         if(status != Ble.STATUS_SUCCESS)
         {
@@ -177,7 +177,7 @@ class Bluetooth extends Ble.BleDelegate
         processQueue();
     }
 
-    function onDescriptorWrite(descriptor as Ble.Descriptor, status as Ble.Status)
+    public function onDescriptorWrite(descriptor as Ble.Descriptor, status as Ble.Status) as Void
     {
         if(status != Ble.STATUS_SUCCESS)
         {
@@ -206,7 +206,7 @@ class Bluetooth extends Ble.BleDelegate
         processQueue();
     }
 
-    function onCharacteristicChanged(characteristic as Ble.Characteristic, value as Lang.ByteArray)
+    public function onCharacteristicChanged(characteristic as Ble.Characteristic, value as Lang.ByteArray) as Void
     {
         switch(characteristic.getUuid())
         {
@@ -242,7 +242,7 @@ class Bluetooth extends Ble.BleDelegate
         }
     }
 
-    function busy() as Lang.Boolean
+    private function busy() as Lang.Boolean
     {
         return _currentRequest != null;
     }

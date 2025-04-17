@@ -8,7 +8,7 @@ class WriteRequest extends Request
     private var _parameterData as Lang.Dictionary = new Lang.Dictionary();
     private var _characteristic as Ble.Characteristic?;
 
-    function initialize(parameter as PinionParameterType, value as Lang.Number, characteristic as Ble.Characteristic)
+    public function initialize(parameter as PinionParameterType, value as Lang.Number, characteristic as Ble.Characteristic)
     {
         Request.initialize();
 
@@ -22,7 +22,7 @@ class WriteRequest extends Request
         _characteristic = characteristic;
     }
 
-    function execute()
+    public function execute()
     {
         var length = _parameterData[:length] as Lang.Number;
         var payload = new [0]b;
@@ -51,7 +51,7 @@ class WriteRequest extends Request
         return true;
     }
 
-    function decodeResponse(bytes as Lang.ByteArray) as Lang.Boolean
+    public function decodeResponse(bytes as Lang.ByteArray) as Lang.Boolean
     {
         if(bytes[0] != PINION_ACK)
         {

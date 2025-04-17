@@ -6,7 +6,7 @@ class ReadRequest extends Request
     private var _parameterData as Lang.Dictionary = new Lang.Dictionary();
     private var _characteristic as Ble.Characteristic?;
 
-    function initialize(parameter as PinionParameterType, characteristic as Ble.Characteristic)
+    public function initialize(parameter as PinionParameterType, characteristic as Ble.Characteristic)
     {
         Request.initialize();
 
@@ -19,7 +19,7 @@ class ReadRequest extends Request
         _characteristic = characteristic;
     }
 
-    function execute()
+    public function execute()
     {
         var payload = new [0]b;
         payload.add(PINION_READ);
@@ -31,7 +31,7 @@ class ReadRequest extends Request
         return true;
     }
 
-    function decodeResponse(bytes as Lang.ByteArray) as Lang.Boolean
+    public function decodeResponse(bytes as Lang.ByteArray) as Lang.Boolean
     {
         if(bytes[0] != PINION_REPLY)
         {

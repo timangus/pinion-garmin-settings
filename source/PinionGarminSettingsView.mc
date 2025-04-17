@@ -3,7 +3,7 @@ import Toybox.WatchUi;
 
 class PinionGarminSettingsView extends WatchUi.View
 {
-    function initialize()
+    public function initialize()
     {
         View.initialize();
     }

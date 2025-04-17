@@ -6,7 +6,7 @@ class PinionGarminSettingsApp extends Application.AppBase
 {
     private var _bluetooth as Bluetooth;
 
-    function initialize()
+    public function initialize()
     {
         AppBase.initialize();
 

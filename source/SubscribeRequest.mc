@@ -13,7 +13,7 @@ class SubscribeRequest extends Request
     private var _cccd as Ble.Descriptor?;
     private var _type as BluetoothSubscribeType;
 
-    function initialize(characteristic as Ble.Characteristic, type as BluetoothSubscribeType)
+    public function initialize(characteristic as Ble.Characteristic, type as BluetoothSubscribeType)
     {
         Request.initialize();
 
@@ -21,13 +21,13 @@ class SubscribeRequest extends Request
         _type = type;
     }
 
-    function execute()
+    public function execute()
     {
         (_cccd as Ble.Descriptor).requestWrite([_type as Lang.Number, 0x00]b);
         return true;
     }
 
-    function onDescriptorWrite(descriptor as Ble.Descriptor, status as Ble.Status) as Lang.Boolean
+    public function onDescriptorWrite(descriptor as Ble.Descriptor, status as Ble.Status) as Lang.Boolean
     {
         return descriptor.getUuid().equals((_cccd as Ble.Descriptor).getUuid());
     }
