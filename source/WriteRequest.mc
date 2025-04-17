@@ -1,11 +1,11 @@
-import Toybox.Lang;
+using Toybox.Lang;
 using Toybox.BluetoothLowEnergy as Ble;
 
 class WriteRequest extends Request
 {
     private var _value as Lang.Number = 0;
 
-    private var _parameterData as Dictionary?;
+    private var _parameterData as Lang.Dictionary = new Lang.Dictionary();
     private var _characteristic as Ble.Characteristic?;
 
     function initialize(parameter as PinionParameterType, value as Lang.Number, characteristic as Ble.Characteristic)
@@ -17,35 +17,36 @@ class WriteRequest extends Request
             throw new UnknownParameterException(parameter);
         }
 
-        _parameterData = PINION_PARAMETERS[parameter];
+        _parameterData = PINION_PARAMETERS[parameter] as Lang.Dictionary;
         _value = value;
         _characteristic = characteristic;
     }
 
     function execute()
     {
+        var length = _parameterData[:length] as Lang.Number;
         var payload = new [0]b;
         payload.add(PINION_WRITE);
-        payload.add(_parameterData[:length]);
-        payload.addAll(_parameterData[:address]);
+        payload.add(length);
+        payload.addAll(_parameterData[:address] as Lang.ByteArray);
 
         var numberFormat = -1;
-        switch(_parameterData[:length])
+        switch(length)
         {
         case 1: numberFormat = Lang.NUMBER_FORMAT_UINT8;  break;
         case 2: numberFormat = Lang.NUMBER_FORMAT_UINT16; break;
         case 4: numberFormat = Lang.NUMBER_FORMAT_UINT32; break;
 
         default:
-            System.println("Unexpected parameter length " + _parameterData[:length]);
+            System.println("Unexpected parameter length " + length);
             return false;
         }
 
-        var valueArray = new [_parameterData[:length]]b;
+        var valueArray = new [length]b;
         valueArray.encodeNumber(_value, numberFormat, {:endianness => Lang.ENDIAN_LITTLE});
         payload.addAll(valueArray);
 
-        _characteristic.requestWrite(payload, {:writeType => Ble.WRITE_TYPE_DEFAULT});
+        (_characteristic as Ble.Characteristic).requestWrite(payload, {:writeType => Ble.WRITE_TYPE_DEFAULT});
 
         return true;
     }
@@ -66,7 +67,7 @@ class WriteRequest extends Request
 
         var address = bytes.slice(2, 5);
 
-        if(!address.equals(_parameterData[:address]))
+        if(!address.equals(_parameterData[:address] as Lang.ByteArray))
         {
             System.println("WriteRequest response is for the wrong address");
             return false;

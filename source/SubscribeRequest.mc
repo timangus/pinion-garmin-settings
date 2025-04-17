@@ -1,4 +1,4 @@
-import Toybox.Lang;
+using Toybox.Lang;
 using Toybox.BluetoothLowEnergy as Ble;
 
 enum BluetoothSubscribeType
@@ -23,12 +23,12 @@ class SubscribeRequest extends Request
 
     function execute()
     {
-        _cccd.requestWrite([_type as Lang.Number, 0x00]b);
+        (_cccd as Ble.Descriptor).requestWrite([_type as Lang.Number, 0x00]b);
         return true;
     }
 
     function onDescriptorWrite(descriptor as Ble.Descriptor, status as Ble.Status) as Lang.Boolean
     {
-        return descriptor.getUuid().equals(_cccd.getUuid());
+        return descriptor.getUuid().equals((_cccd as Ble.Descriptor).getUuid());
     }
 }

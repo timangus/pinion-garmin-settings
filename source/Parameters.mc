@@ -78,7 +78,7 @@ const PINION_PARAMETERS =
         :address => [0x00, 0x30, 0x04]b,
         :length => 4
     },
-};
+} as Lang.Dictionary<PinionParameterType, Lang.Dictionary>;
 
 class UnknownParameterException extends Lang.Exception
 {

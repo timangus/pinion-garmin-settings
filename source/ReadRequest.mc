@@ -1,9 +1,9 @@
-import Toybox.Lang;
+using Toybox.Lang;
 using Toybox.BluetoothLowEnergy as Ble;
 
 class ReadRequest extends Request
 {
-    private var _parameterData as Dictionary?;
+    private var _parameterData as Lang.Dictionary = new Lang.Dictionary();
     private var _characteristic as Ble.Characteristic?;
 
     function initialize(parameter as PinionParameterType, characteristic as Ble.Characteristic)
@@ -15,7 +15,7 @@ class ReadRequest extends Request
             throw new UnknownParameterException(parameter);
         }
 
-        _parameterData = PINION_PARAMETERS[parameter];
+        _parameterData = PINION_PARAMETERS[parameter] as Lang.Dictionary;
         _characteristic = characteristic;
     }
 
@@ -23,10 +23,10 @@ class ReadRequest extends Request
     {
         var payload = new [0]b;
         payload.add(PINION_READ);
-        payload.add(_parameterData[:length]);
-        payload.addAll(_parameterData[:address]);
+        payload.add(_parameterData[:length] as Lang.Number);
+        payload.addAll(_parameterData[:address] as Lang.ByteArray);
 
-        _characteristic.requestWrite(payload, {:writeType => Ble.WRITE_TYPE_DEFAULT});
+        (_characteristic as Ble.Characteristic).requestWrite(payload, {:writeType => Ble.WRITE_TYPE_DEFAULT});
 
         return true;
     }
@@ -42,7 +42,7 @@ class ReadRequest extends Request
         var length = bytes[1];
         var address = bytes.slice(2, 5);
 
-        if(!address.equals(_parameterData[:address]))
+        if(!address.equals(_parameterData[:address] as Lang.ByteArray))
         {
             System.println("ReadRequest response is for the wrong address");
             return false;
@@ -51,14 +51,14 @@ class ReadRequest extends Request
         var reply = bytes.slice(5, 5 + length);
 
         var numberFormat = -1;
-        switch(_parameterData[:length])
+        switch(length)
         {
         case 1: numberFormat = Lang.NUMBER_FORMAT_UINT8;  break;
         case 2: numberFormat = Lang.NUMBER_FORMAT_UINT16; break;
         case 4: numberFormat = Lang.NUMBER_FORMAT_UINT32; break;
 
         default:
-            System.println("Unexpected parameter length " + _parameterData[:length]);
+            System.println("Unexpected parameter length " + length);
             return false;
         }
 

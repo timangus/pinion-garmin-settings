@@ -6,7 +6,7 @@ class Queue
 
     function initialize() {}
 
-    function push(item)
+    function push(item as Lang.Object) as Void
     {
         array.add(item);
     }
@@ -15,7 +15,7 @@ class Queue
     {
         if(!empty())
         {
-            var item = array[0];
+            var item = array[0] as Lang.Object;
             array = array.slice(1, null);
             return item;
         }
@@ -33,7 +33,7 @@ class Queue
         return size() == 0;
     }
 
-    function clear()
+    function clear() as Void
     {
         array = [];
     }

@@ -1,4 +1,4 @@
-import Toybox.Lang;
+using Toybox.Lang;
 using Toybox.BluetoothLowEnergy as Ble;
 
 class Request

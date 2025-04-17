@@ -13,7 +13,7 @@ class Bluetooth extends Ble.BleDelegate
     private var requestCharacteristic as Ble.Characteristic?;
     private var responseCharacteristic as Ble.Characteristic?;
 
-    private var requestQueue as Queue?;
+    private var requestQueue as Queue = new Queue();
     private var currentRequest as Request?;
 
     function initialize()
@@ -23,8 +23,6 @@ class Bluetooth extends Ble.BleDelegate
             BleDelegate.initialize();
             Ble.setDelegate(self);
             registerProfiles();
-
-            requestQueue = new Queue();
         }
         catch(e)
         {
@@ -32,12 +30,12 @@ class Bluetooth extends Ble.BleDelegate
         }
     }
 
-    function disconnect()
+    function disconnect() as Void
     {
         if(connectedDevice != null)
         {
             System.println("Disconnecting");
-            Ble.unpairDevice(connectedDevice);
+            Ble.unpairDevice(connectedDevice as Ble.Device);
             connectedDevice = null;
         }
     }
@@ -62,8 +60,8 @@ class Bluetooth extends Ble.BleDelegate
                     connectedDevice = device;
                     connected = true;
 
-                    requestQueue.push(new SubscribeRequest(currentGearCharacteristic, NOTIFY));
-                    requestQueue.push(new SubscribeRequest(responseCharacteristic, INDICATE));
+                    requestQueue.push(new SubscribeRequest(currentGearCharacteristic as Ble.Characteristic, NOTIFY));
+                    requestQueue.push(new SubscribeRequest(responseCharacteristic as Ble.Characteristic, INDICATE));
                     processQueue();
 
                     read(HARDWARE_VERSION);
@@ -93,13 +91,13 @@ class Bluetooth extends Ble.BleDelegate
         }
     }
 
-    function scan()
+    function scan() as Void
     {
         disconnect();
         Ble.setScanState(Ble.SCAN_STATE_SCANNING);
     }
 
-    function scanResultIsPinion(scanResult as Ble.ScanResult)
+    function scanResultIsPinion(scanResult as Ble.ScanResult) as Lang.Boolean
     {
         var uuids = scanResult.getServiceUuids();
         for(var uuid = uuids.next(); uuid != null; uuid = uuids.next())
@@ -127,7 +125,7 @@ class Bluetooth extends Ble.BleDelegate
         }
     }
 
-    function registerProfiles()
+    function registerProfiles() as Void
     {
         var pinionProfile =
         {
@@ -143,19 +141,19 @@ class Bluetooth extends Ble.BleDelegate
         Ble.registerProfile(pinionProfile);
     }
 
-    function read(parameter as PinionParameterType)
+    function read(parameter as PinionParameterType) as Void
     {
-        requestQueue.push(new ReadRequest(parameter, requestCharacteristic));
+        requestQueue.push(new ReadRequest(parameter, requestCharacteristic as Ble.Characteristic));
         processQueue();
     }
 
-    function write(parameter as PinionParameterType, value as Lang.Number)
+    function write(parameter as PinionParameterType, value as Lang.Number) as Void
     {
-        var hiddenSetting = PINION_PARAMETERS.hasKey(parameter) && PINION_PARAMETERS[parameter].hasKey(:hidden);
+        var hiddenSetting = PINION_PARAMETERS.hasKey(parameter) && (PINION_PARAMETERS[parameter] as Lang.Dictionary).hasKey(:hidden);
 
-        if(hiddenSetting) { requestQueue.push(new WriteRequest(HIDDEN_SETTINGS_ENABLE, 0x56a93c03, requestCharacteristic)); }
-        requestQueue.push(new WriteRequest(parameter, value, requestCharacteristic));
-        if(hiddenSetting) { requestQueue.push(new WriteRequest(HIDDEN_SETTINGS_ENABLE, 0x0, requestCharacteristic)); }
+        if(hiddenSetting) { requestQueue.push(new WriteRequest(HIDDEN_SETTINGS_ENABLE, 0x56a93c03, requestCharacteristic as Ble.Characteristic)); }
+        requestQueue.push(new WriteRequest(parameter, value, requestCharacteristic as Ble.Characteristic));
+        if(hiddenSetting) { requestQueue.push(new WriteRequest(HIDDEN_SETTINGS_ENABLE, 0x0, requestCharacteristic as Ble.Characteristic)); }
 
         processQueue();
     }
@@ -195,7 +193,7 @@ class Bluetooth extends Ble.BleDelegate
             return;
         }
 
-        var success = currentRequest.onDescriptorWrite(descriptor, status);
+        var success = (currentRequest as Request).onDescriptorWrite(descriptor, status);
         currentRequest = null;
 
         if(!success)
@@ -221,7 +219,7 @@ class Bluetooth extends Ble.BleDelegate
                 return;
             }
 
-            var success = currentRequest.decodeResponse(value);
+            var success = (currentRequest as Request).decodeResponse(value);
             currentRequest = null;
 
             if(!success)
@@ -249,7 +247,7 @@ class Bluetooth extends Ble.BleDelegate
         return currentRequest != null;
     }
 
-    private function processQueue()
+    private function processQueue() as Void
     {
         if(connectedDevice == null)
         {

@@ -4,7 +4,7 @@ import Toybox.WatchUi;
 
 class PinionGarminSettingsApp extends Application.AppBase
 {
-    var bluetooth as Bluetooth? = null;
+    private var bluetooth as Bluetooth;
 
     function initialize()
     {
