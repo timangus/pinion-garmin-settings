@@ -90,6 +90,7 @@ class Bluetooth extends Ble.BleDelegate
             _requestCharacteristic = null;
             _responseCharacteristic = null;
 
+            System.println("Restarting scanning");
             scan();
         }
     }
