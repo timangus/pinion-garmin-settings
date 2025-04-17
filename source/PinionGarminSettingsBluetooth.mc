@@ -48,7 +48,6 @@ class Bluetooth extends Ble.BleDelegate
 
         if(state == Ble.CONNECTION_STATE_CONNECTED)
         {
-            System.println("Connected");
             var service = device.getService(PINION_SERVICE);
 
             if(service != null)
@@ -61,6 +60,7 @@ class Bluetooth extends Ble.BleDelegate
                 {
                     _connectedDevice = device;
                     connected = true;
+                    System.println("Connected");
 
                     _requestQueue.push(new SubscribeRequest(_currentGearCharacteristic as Ble.Characteristic, NOTIFY, self));
                     _requestQueue.push(new SubscribeRequest(_responseCharacteristic as Ble.Characteristic, INDICATE, self));
