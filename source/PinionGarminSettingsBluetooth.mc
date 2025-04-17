@@ -56,7 +56,7 @@ class Bluetooth extends Ble.BleDelegate
                 _requestCharacteristic = service.getCharacteristic(PINION_CHAR_REQUEST);
                 _responseCharacteristic = service.getCharacteristic(PINION_CHAR_RESPONSE);
 
-                if(_requestCharacteristic != null && _responseCharacteristic != null)
+                if(_currentGearCharacteristic != null && _requestCharacteristic != null && _responseCharacteristic != null)
                 {
                     _connectedDevice = device;
                     connected = true;
@@ -86,6 +86,7 @@ class Bluetooth extends Ble.BleDelegate
 
         if(!connected)
         {
+            _currentGearCharacteristic = null;
             _requestCharacteristic = null;
             _responseCharacteristic = null;
 
