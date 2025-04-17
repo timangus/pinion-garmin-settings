@@ -58,6 +58,10 @@ class Bluetooth extends Ble.BleDelegate
 
                 if(_currentGearCharacteristic != null && _requestCharacteristic != null && _responseCharacteristic != null)
                 {
+                    // The scan state should already be off at this point, but I've witnessed a dropped connection spontaneously
+                    // reconnect after the device wakes up; in this case scanning may have already restarted so we need to turn it off again
+                    Ble.setScanState(Ble.SCAN_STATE_OFF);
+
                     _connectedDevice = device;
                     connected = true;
                     System.println("Connected");
