@@ -8,13 +8,13 @@ class Bluetooth extends Ble.BleDelegate
     const PINION_CHAR_REQUEST           = Ble.longToUuid(0x0000000d33d24f94L, 0x9ee49312b3660005L);
     const PINION_CHAR_RESPONSE          = Ble.longToUuid(0x0000000e33d24f94L, 0x9ee49312b3660005L);
 
-    private var connectedDevice as Ble.Device?;
-    private var currentGearCharacteristic as Ble.Characteristic?;
-    private var requestCharacteristic as Ble.Characteristic?;
-    private var responseCharacteristic as Ble.Characteristic?;
+    private var _connectedDevice as Ble.Device?;
+    private var _currentGearCharacteristic as Ble.Characteristic?;
+    private var _requestCharacteristic as Ble.Characteristic?;
+    private var _responseCharacteristic as Ble.Characteristic?;
 
-    private var requestQueue as RequestQueue = new RequestQueue();
-    private var currentRequest as Request?;
+    private var _requestQueue as RequestQueue = new RequestQueue();
+    private var _currentRequest as Request?;
 
     function initialize()
     {
@@ -32,11 +32,11 @@ class Bluetooth extends Ble.BleDelegate
 
     function disconnect() as Void
     {
-        if(connectedDevice != null)
+        if(_connectedDevice != null)
         {
             System.println("Disconnecting");
-            Ble.unpairDevice(connectedDevice as Ble.Device);
-            connectedDevice = null;
+            Ble.unpairDevice(_connectedDevice as Ble.Device);
+            _connectedDevice = null;
         }
     }
 
@@ -51,17 +51,17 @@ class Bluetooth extends Ble.BleDelegate
 
             if(service != null)
             {
-                currentGearCharacteristic = service.getCharacteristic(PINION_CURRENT_GEAR);
-                requestCharacteristic = service.getCharacteristic(PINION_CHAR_REQUEST);
-                responseCharacteristic = service.getCharacteristic(PINION_CHAR_RESPONSE);
+                _currentGearCharacteristic = service.getCharacteristic(PINION_CURRENT_GEAR);
+                _requestCharacteristic = service.getCharacteristic(PINION_CHAR_REQUEST);
+                _responseCharacteristic = service.getCharacteristic(PINION_CHAR_RESPONSE);
 
-                if(requestCharacteristic != null && responseCharacteristic != null)
+                if(_requestCharacteristic != null && _responseCharacteristic != null)
                 {
-                    connectedDevice = device;
+                    _connectedDevice = device;
                     connected = true;
 
-                    requestQueue.push(new SubscribeRequest(currentGearCharacteristic as Ble.Characteristic, NOTIFY));
-                    requestQueue.push(new SubscribeRequest(responseCharacteristic as Ble.Characteristic, INDICATE));
+                    _requestQueue.push(new SubscribeRequest(_currentGearCharacteristic as Ble.Characteristic, NOTIFY));
+                    _requestQueue.push(new SubscribeRequest(_responseCharacteristic as Ble.Characteristic, INDICATE));
                     processQueue();
 
                     read(HARDWARE_VERSION);
@@ -79,13 +79,13 @@ class Bluetooth extends Ble.BleDelegate
         else
         {
             System.println("Disconnected");
-            connectedDevice = null;
+            _connectedDevice = null;
         }
 
         if(!connected)
         {
-            requestCharacteristic = null;
-            responseCharacteristic = null;
+            _requestCharacteristic = null;
+            _responseCharacteristic = null;
 
             scan();
         }
@@ -143,7 +143,7 @@ class Bluetooth extends Ble.BleDelegate
 
     function read(parameter as PinionParameterType) as Void
     {
-        requestQueue.push(new ReadRequest(parameter, requestCharacteristic as Ble.Characteristic));
+        _requestQueue.push(new ReadRequest(parameter, _requestCharacteristic as Ble.Characteristic));
         processQueue();
     }
 
@@ -151,9 +151,9 @@ class Bluetooth extends Ble.BleDelegate
     {
         var hiddenSetting = PINION_PARAMETERS.hasKey(parameter) && (PINION_PARAMETERS[parameter] as Lang.Dictionary).hasKey(:hidden);
 
-        if(hiddenSetting) { requestQueue.push(new WriteRequest(HIDDEN_SETTINGS_ENABLE, 0x56a93c03, requestCharacteristic as Ble.Characteristic)); }
-        requestQueue.push(new WriteRequest(parameter, value, requestCharacteristic as Ble.Characteristic));
-        if(hiddenSetting) { requestQueue.push(new WriteRequest(HIDDEN_SETTINGS_ENABLE, 0x0, requestCharacteristic as Ble.Characteristic)); }
+        if(hiddenSetting) { _requestQueue.push(new WriteRequest(HIDDEN_SETTINGS_ENABLE, 0x56a93c03, _requestCharacteristic as Ble.Characteristic)); }
+        _requestQueue.push(new WriteRequest(parameter, value, _requestCharacteristic as Ble.Characteristic));
+        if(hiddenSetting) { _requestQueue.push(new WriteRequest(HIDDEN_SETTINGS_ENABLE, 0x0, _requestCharacteristic as Ble.Characteristic)); }
 
         processQueue();
     }
@@ -167,7 +167,7 @@ class Bluetooth extends Ble.BleDelegate
             return;
         }
 
-        if(currentRequest == null)
+        if(_currentRequest == null)
         {
             System.println("onCharacteristicWrite with no active request");
             disconnect();
@@ -186,15 +186,15 @@ class Bluetooth extends Ble.BleDelegate
             return;
         }
 
-        if(currentRequest == null)
+        if(_currentRequest == null)
         {
             System.println("onDescriptorWrite with no active request");
             disconnect();
             return;
         }
 
-        var success = (currentRequest as Request).onDescriptorWrite(descriptor, status);
-        currentRequest = null;
+        var success = (_currentRequest as Request).onDescriptorWrite(descriptor, status);
+        _currentRequest = null;
 
         if(!success)
         {
@@ -212,15 +212,15 @@ class Bluetooth extends Ble.BleDelegate
         {
         case PINION_CHAR_RESPONSE:
         {
-            if(currentRequest == null)
+            if(_currentRequest == null)
             {
                 System.println("Response characteristic changed with no active request");
                 disconnect();
                 return;
             }
 
-            var success = (currentRequest as Request).decodeResponse(value);
-            currentRequest = null;
+            var success = (_currentRequest as Request).decodeResponse(value);
+            _currentRequest = null;
 
             if(!success)
             {
@@ -244,18 +244,18 @@ class Bluetooth extends Ble.BleDelegate
 
     function busy() as Lang.Boolean
     {
-        return currentRequest != null;
+        return _currentRequest != null;
     }
 
     private function processQueue() as Void
     {
-        if(connectedDevice == null)
+        if(_connectedDevice == null)
         {
-            requestQueue.clear();
+            _requestQueue.clear();
             return;
         }
 
-        if(requestQueue.empty())
+        if(_requestQueue.empty())
         {
             return;
         }
@@ -265,9 +265,9 @@ class Bluetooth extends Ble.BleDelegate
             return;
         }
 
-        currentRequest = requestQueue.pop() as Request;
+        _currentRequest = _requestQueue.pop() as Request;
 
-        var success = currentRequest.execute();
+        var success = _currentRequest.execute();
         if(!success)
         {
             System.println("Request execution failed");

@@ -2,21 +2,21 @@ import Toybox.Lang;
 
 class RequestQueue
 {
-    private var array as Lang.Array<Request> = [];
+    private var _array as Lang.Array<Request> = [];
 
     function initialize() {}
 
     function push(item as Request) as Void
     {
-        array.add(item);
+        _array.add(item);
     }
 
     function pop() as Request?
     {
         if(!empty())
         {
-            var item = array[0];
-            array = array.slice(1, null);
+            var item = _array[0];
+            _array = _array.slice(1, null);
             return item;
         }
 
@@ -25,7 +25,7 @@ class RequestQueue
 
     function size() as Lang.Number
     {
-        return array.size();
+        return _array.size();
     }
 
     function empty() as Lang.Boolean
@@ -35,11 +35,11 @@ class RequestQueue
 
     function clear() as Void
     {
-        array = [];
+        _array = [];
     }
 
     function toString() as Lang.String
     {
-        return array.toString();
+        return _array.toString();
     }
 }

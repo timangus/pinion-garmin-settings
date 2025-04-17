@@ -4,14 +4,14 @@ import Toybox.WatchUi;
 
 class PinionGarminSettingsApp extends Application.AppBase
 {
-    private var bluetooth as Bluetooth;
+    private var _bluetooth as Bluetooth;
 
     function initialize()
     {
         AppBase.initialize();
 
-        bluetooth = new Bluetooth();
-        bluetooth.scan();
+        _bluetooth = new Bluetooth();
+        _bluetooth.scan();
     }
 
     // onStart() is called on application start up
@@ -22,7 +22,7 @@ class PinionGarminSettingsApp extends Application.AppBase
     // onStop() is called when your application is exiting
     function onStop(state as Dictionary?) as Void
     {
-        bluetooth.disconnect();
+        _bluetooth.disconnect();
     }
 
     // Return the initial view of your application here
