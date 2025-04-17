@@ -69,6 +69,11 @@ const PINION_PARAMETERS =
         :address => [0x64, 0x61, 0x01]b,
         :length => 2
     },
+    AUTO_START_GEAR =>
+    {
+        :address => [0x12, 0x25, 0x02]b,
+        :length => 1
+    },
     PRE_SELECT =>
     {
         :address => [0x13, 0x25, 0x00]b,
