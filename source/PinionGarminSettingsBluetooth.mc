@@ -287,6 +287,12 @@ class Bluetooth extends Ble.BleDelegate
 
     public function onParameterWrite(parameter as PinionParameterType) as Void
     {
+        if(parameter == HIDDEN_SETTINGS_ENABLE)
+        {
+            // No point in notifying this
+            return;
+        }
+
         System.println("onParameterWrite(" + parameter + ")");
     }
 }
