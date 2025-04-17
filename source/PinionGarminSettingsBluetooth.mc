@@ -16,6 +16,8 @@ class Bluetooth extends Ble.BleDelegate
     private var _requestQueue as RequestQueue = new RequestQueue();
     private var _currentRequest as Request?;
 
+    private var _pinionDelegate as PinionDelegate = new PinionDelegate();
+
     public function initialize()
     {
         try
@@ -275,14 +277,19 @@ class Bluetooth extends Ble.BleDelegate
         }
     }
 
+    public function setPinionDelegate(pinionDelegate as PinionDelegate) as Void
+    {
+        _pinionDelegate = pinionDelegate;
+    }
+
     public function onCurrentGearChanged(currentGear as Lang.Number) as Void
     {
-        System.println("onCurrentGearChanged(" + currentGear + ")");
+        _pinionDelegate.onCurrentGearChanged(currentGear);
     }
 
     public function onParameterRead(parameter as PinionParameterType, value as Lang.Number) as Void
     {
-        System.println("onParameterRead(" + parameter + ", " + value + ")");
+        _pinionDelegate.onParameterRead(parameter, value);
     }
 
     public function onParameterWrite(parameter as PinionParameterType) as Void
@@ -293,6 +300,6 @@ class Bluetooth extends Ble.BleDelegate
             return;
         }
 
-        System.println("onParameterWrite(" + parameter + ")");
+        _pinionDelegate.onParameterWrite(parameter);
     }
 }

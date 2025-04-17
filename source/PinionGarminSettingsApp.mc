@@ -2,15 +2,37 @@ import Toybox.Application;
 import Toybox.Lang;
 import Toybox.WatchUi;
 
+class PinionGarminDelegate extends PinionDelegate
+{
+    public function initialize() { PinionDelegate.initialize(); }
+
+    public function onCurrentGearChanged(currentGear as Lang.Number) as Void
+    {
+        System.println("onCurrentGearChanged(" + currentGear + ")");
+    }
+
+    public function onParameterRead(parameter as PinionParameterType, value as Lang.Number) as Void
+    {
+        System.println("onParameterRead(" + parameter + ", " + value + ")");
+    }
+
+    public function onParameterWrite(parameter as PinionParameterType) as Void
+    {
+        System.println("onParameterWrite(" + parameter + ")");
+    }
+}
+
 class PinionGarminSettingsApp extends Application.AppBase
 {
     private var _bluetooth as Bluetooth;
+    private var _delegate as PinionGarminDelegate = new PinionGarminDelegate();
 
     public function initialize()
     {
         AppBase.initialize();
 
         _bluetooth = new Bluetooth();
+        _bluetooth.setPinionDelegate(_delegate);
         _bluetooth.scan();
     }
 
