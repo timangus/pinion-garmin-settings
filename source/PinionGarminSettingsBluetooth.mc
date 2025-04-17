@@ -60,8 +60,8 @@ class Bluetooth extends Ble.BleDelegate
                     _connectedDevice = device;
                     connected = true;
 
-                    _requestQueue.push(new SubscribeRequest(_currentGearCharacteristic as Ble.Characteristic, NOTIFY));
-                    _requestQueue.push(new SubscribeRequest(_responseCharacteristic as Ble.Characteristic, INDICATE));
+                    _requestQueue.push(new SubscribeRequest(_currentGearCharacteristic as Ble.Characteristic, NOTIFY, self));
+                    _requestQueue.push(new SubscribeRequest(_responseCharacteristic as Ble.Characteristic, INDICATE, self));
                     processQueue();
 
                     read(HARDWARE_VERSION);
@@ -143,7 +143,7 @@ class Bluetooth extends Ble.BleDelegate
 
     public function read(parameter as PinionParameterType) as Void
     {
-        _requestQueue.push(new ReadRequest(parameter, _requestCharacteristic as Ble.Characteristic));
+        _requestQueue.push(new ReadRequest(parameter, _requestCharacteristic as Ble.Characteristic, self));
         processQueue();
     }
 
@@ -151,9 +151,9 @@ class Bluetooth extends Ble.BleDelegate
     {
         var hiddenSetting = PINION_PARAMETERS.hasKey(parameter) && (PINION_PARAMETERS[parameter] as Lang.Dictionary).hasKey(:hidden);
 
-        if(hiddenSetting) { _requestQueue.push(new WriteRequest(HIDDEN_SETTINGS_ENABLE, 0x56a93c03, _requestCharacteristic as Ble.Characteristic)); }
-        _requestQueue.push(new WriteRequest(parameter, value, _requestCharacteristic as Ble.Characteristic));
-        if(hiddenSetting) { _requestQueue.push(new WriteRequest(HIDDEN_SETTINGS_ENABLE, 0x0, _requestCharacteristic as Ble.Characteristic)); }
+        if(hiddenSetting) { _requestQueue.push(new WriteRequest(HIDDEN_SETTINGS_ENABLE, 0x56a93c03, _requestCharacteristic as Ble.Characteristic, self)); }
+        _requestQueue.push(new WriteRequest(parameter, value, _requestCharacteristic as Ble.Characteristic, self));
+        if(hiddenSetting) { _requestQueue.push(new WriteRequest(HIDDEN_SETTINGS_ENABLE, 0x0, _requestCharacteristic as Ble.Characteristic, self)); }
 
         processQueue();
     }
@@ -236,7 +236,7 @@ class Bluetooth extends Ble.BleDelegate
         case PINION_CURRENT_GEAR:
         {
             var currentGear = value[0];
-            System.println("Current gear changed: " + currentGear);
+            onCurrentGearChanged(currentGear);
             break;
         }
         }
@@ -273,5 +273,20 @@ class Bluetooth extends Ble.BleDelegate
             System.println("Request execution failed");
             disconnect();
         }
+    }
+
+    public function onCurrentGearChanged(currentGear as Lang.Number) as Void
+    {
+        System.println("onCurrentGearChanged(" + currentGear + ")");
+    }
+
+    public function onParameterRead(parameter as PinionParameterType, value as Lang.Number) as Void
+    {
+        System.println("onParameterRead(" + parameter + ", " + value + ")");
+    }
+
+    public function onParameterWrite(parameter as PinionParameterType) as Void
+    {
+        System.println("onParameterWrite(" + parameter + ")");
     }
 }

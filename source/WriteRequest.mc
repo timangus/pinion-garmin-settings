@@ -5,18 +5,20 @@ class WriteRequest extends Request
 {
     private var _value as Lang.Number = 0;
 
+    private var _parameter as PinionParameterType;
     private var _parameterData as Lang.Dictionary = new Lang.Dictionary();
     private var _characteristic as Ble.Characteristic?;
 
-    public function initialize(parameter as PinionParameterType, value as Lang.Number, characteristic as Ble.Characteristic)
+    public function initialize(parameter as PinionParameterType, value as Lang.Number, characteristic as Ble.Characteristic, delegate as Bluetooth)
     {
-        Request.initialize();
+        Request.initialize(delegate);
 
         if(!PINION_PARAMETERS.hasKey(parameter))
         {
             throw new UnknownParameterException(parameter);
         }
 
+        _parameter = parameter;
         _parameterData = PINION_PARAMETERS[parameter] as Lang.Dictionary;
         _value = value;
         _characteristic = characteristic;
@@ -73,7 +75,8 @@ class WriteRequest extends Request
             return false;
         }
 
-        System.println("WriteRequest succeeded");
+        (_delegate as Bluetooth).onParameterWrite(_parameter);
+
         return true;
     }
 }

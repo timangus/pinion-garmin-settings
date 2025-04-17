@@ -13,9 +13,9 @@ class SubscribeRequest extends Request
     private var _cccd as Ble.Descriptor?;
     private var _type as BluetoothSubscribeType;
 
-    public function initialize(characteristic as Ble.Characteristic, type as BluetoothSubscribeType)
+    public function initialize(characteristic as Ble.Characteristic, type as BluetoothSubscribeType, delegate as Bluetooth)
     {
-        Request.initialize();
+        Request.initialize(delegate);
 
         _cccd = characteristic.getDescriptor(Ble.cccdUuid());
         _type = type;

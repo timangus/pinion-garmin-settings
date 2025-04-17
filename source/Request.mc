@@ -3,6 +3,13 @@ using Toybox.BluetoothLowEnergy as Ble;
 
 class Request
 {
+    protected var _delegate as Bluetooth?;
+
+    public function initialize(delegate as Bluetooth)
+    {
+        _delegate = delegate;
+    }
+
     public function execute() as Lang.Boolean
     {
         System.println("Request::execute not implemented");
