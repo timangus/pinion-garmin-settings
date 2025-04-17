@@ -1,21 +1,21 @@
 import Toybox.Lang;
 
-class Queue
+class RequestQueue
 {
-    private var array as Lang.Array = [];
+    private var array as Lang.Array<Request> = [];
 
     function initialize() {}
 
-    function push(item as Lang.Object) as Void
+    function push(item as Request) as Void
     {
         array.add(item);
     }
 
-    function pop() as Lang.Object?
+    function pop() as Request?
     {
         if(!empty())
         {
-            var item = array[0] as Lang.Object;
+            var item = array[0];
             array = array.slice(1, null);
             return item;
         }

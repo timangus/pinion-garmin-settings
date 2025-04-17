@@ -13,7 +13,7 @@ class Bluetooth extends Ble.BleDelegate
     private var requestCharacteristic as Ble.Characteristic?;
     private var responseCharacteristic as Ble.Characteristic?;
 
-    private var requestQueue as Queue = new Queue();
+    private var requestQueue as RequestQueue = new RequestQueue();
     private var currentRequest as Request?;
 
     function initialize()
