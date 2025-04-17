@@ -81,6 +81,7 @@ class Bluetooth extends Ble.BleDelegate
         else
         {
             System.println("Disconnected");
+            connectedDevice = null;
         }
 
         if(!connected)
