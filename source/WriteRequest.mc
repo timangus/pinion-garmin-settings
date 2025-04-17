@@ -55,6 +55,12 @@ class WriteRequest extends Request
 
     public function decodeResponse(bytes as Lang.ByteArray) as Lang.Boolean
     {
+        if(bytes[0] == PINION_ERR)
+        {
+            System.println("WriteRequest response error " + bytes);
+            return false;
+        }
+
         if(bytes[0] != PINION_ACK)
         {
             System.println("WriteRequest response is not a acknowledgement");

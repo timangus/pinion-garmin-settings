@@ -2,6 +2,7 @@ using Toybox.Lang;
 
 enum PinionRequestType
 {
+    PINION_ERR      = 0x00,
     PINION_READ     = 0x01,
     PINION_REPLY    = 0x02,
     PINION_WRITE    = 0x03,

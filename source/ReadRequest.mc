@@ -35,6 +35,12 @@ class ReadRequest extends Request
 
     public function decodeResponse(bytes as Lang.ByteArray) as Lang.Boolean
     {
+        if(bytes[0] == PINION_ERR)
+        {
+            System.println("ReadRequest response error " + bytes);
+            return false;
+        }
+
         if(bytes[0] != PINION_REPLY)
         {
             System.println("ReadRequest response is not a reply");
