@@ -49,7 +49,22 @@ class ReadRequest extends Request
         }
 
         var reply = bytes.slice(5, 5 + length);
-        System.println("ReadRequest reply " + reply);
+
+        var numberFormat = -1;
+        switch(_parameterData[:length])
+        {
+        case 1: numberFormat = Lang.NUMBER_FORMAT_UINT8;  break;
+        case 2: numberFormat = Lang.NUMBER_FORMAT_UINT16; break;
+        case 4: numberFormat = Lang.NUMBER_FORMAT_UINT32; break;
+
+        default:
+            System.println("Unexpected parameter length " + _parameterData[:length]);
+            return false;
+        }
+
+        var value = reply.decodeNumber(numberFormat, {:endianness => Lang.ENDIAN_LITTLE});
+
+        System.println("ReadRequest reply " + reply + " " + value);
 
         return true;
     }
