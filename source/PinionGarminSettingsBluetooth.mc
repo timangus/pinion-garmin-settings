@@ -48,7 +48,7 @@ class Bluetooth extends Ble.BleDelegate
     private var _requestQueue as RequestQueue = new RequestQueue();
     private var _currentRequest as Request?;
 
-    private var _pinionDelegate as PinionDelegate = new PinionDelegate();
+    private var _pinionDelegate as Pinion.Delegate = new PinionDelegate();
 
     public function initialize()
     {
@@ -418,7 +418,7 @@ class Bluetooth extends Ble.BleDelegate
         }
     }
 
-    public function setPinionDelegate(pinionDelegate as PinionDelegate) as Void
+    public function setPinionDelegate(pinionDelegate as Pinion.Delegate) as Void
     {
         _pinionDelegate = pinionDelegate;
     }

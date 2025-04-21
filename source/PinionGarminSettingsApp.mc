@@ -3,13 +3,13 @@ import Toybox.Lang;
 import Toybox.WatchUi;
 using Toybox.BluetoothLowEnergy as Ble;
 
-class PinionGarminDelegate extends PinionDelegate
+class PinionGarminDelegate extends Pinion.Delegate
 {
     private var _pinionGarminSettingsApp as PinionGarminSettingsApp?;
 
     public function initialize(pinionGarminSettingsApp as PinionGarminSettingsApp)
     {
-        PinionDelegate.initialize();
+        Pinion.Delegate.initialize();
         _pinionGarminSettingsApp = pinionGarminSettingsApp;
     }
 
