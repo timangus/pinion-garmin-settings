@@ -25,12 +25,15 @@ class Bluetooth extends Ble.BleDelegate
         SCANNING
     }
 
+    const CONNECTION_TIMEOUT = 5000;
+
     const PINION_SERVICE                = Ble.longToUuid(0x0000000033d24f94L, 0x9ee49312b3660005L);
     const PINION_CURRENT_GEAR           = Ble.longToUuid(0x0000000133d24f94L, 0x9ee49312b3660005L);
     const PINION_CHAR_REQUEST           = Ble.longToUuid(0x0000000d33d24f94L, 0x9ee49312b3660005L);
     const PINION_CHAR_RESPONSE          = Ble.longToUuid(0x0000000e33d24f94L, 0x9ee49312b3660005L);
 
     private var _scanState as ScanState = Bluetooth.NOT_SCANNING;
+    private var _connectionTimeoutTimer as Timer.Timer = new Timer.Timer();
     private var _disconnectionTimer as Timer.Timer = new Timer.Timer();
     private var _disconnectWhenIdle as Lang.Boolean = false;
 
@@ -59,6 +62,35 @@ class Bluetooth extends Ble.BleDelegate
         {
             System.println("Bluetooth::initialize failed " + e);
         }
+    }
+
+    public function onConnectionTimeout() as Void
+    {
+        if(_scanState == Bluetooth.SCANNING)
+        {
+            System.println("Timed out connecting, restarting scanning");
+            Ble.setScanState(Ble.SCAN_STATE_SCANNING);
+        }
+    }
+
+    public function connect(pinionDeviceHandle as PinionDeviceHandle) as Lang.Boolean
+    {
+        stopScan();
+
+        if(_connectedDevice != null)
+        {
+            System.println("Already connected to a device");
+            return false;
+        }
+
+        var pairResult = Ble.pairDevice(pinionDeviceHandle.scanResult());
+        if(pairResult == null)
+        {
+            return false;
+        }
+
+        _connectionTimeoutTimer.start(method(:onConnectionTimeout), CONNECTION_TIMEOUT, false);
+        return true;
     }
 
     public function testForDisconnection() as Void
@@ -99,6 +131,7 @@ class Bluetooth extends Ble.BleDelegate
     public function onConnectedStateChanged(device as Ble.Device, state as Ble.ConnectionState) as Void
     {
         var connected = false;
+        _connectionTimeoutTimer.stop();
 
         // The scan state should already be off at this point, but I've witnessed a dropped connection spontaneously
         // reconnect after the device wakes up; in this case scanning may have been restarted so make sure it's off
@@ -135,6 +168,8 @@ class Bluetooth extends Ble.BleDelegate
                             _requestQueue.push(new SubscribeRequest(_currentGearCharacteristic as Ble.Characteristic, NOTIFY, self));
                             processQueue();
                         }
+
+                        onConnected(device);
                     }
                 }
             }
@@ -211,6 +246,7 @@ class Bluetooth extends Ble.BleDelegate
                 if(pairResult != null)
                 {
                     Ble.setScanState(Ble.SCAN_STATE_OFF);
+                    _connectionTimeoutTimer.start(method(:onConnectionTimeout), CONNECTION_TIMEOUT, false);
                     break;
                 }
             }
@@ -388,6 +424,10 @@ class Bluetooth extends Ble.BleDelegate
     }
 
     public function onFoundDevicesChanged() as Void
+    {
+    }
+
+    public function onConnected(device as Ble.Device) as Void
     {
     }
 
