@@ -1,5 +1,6 @@
 using Toybox.BluetoothLowEnergy as Ble;
 using Toybox.Lang;
+using Toybox.Timer;
 
 class Bluetooth extends Ble.BleDelegate
 {
@@ -8,6 +9,7 @@ class Bluetooth extends Ble.BleDelegate
     const PINION_CHAR_REQUEST           = Ble.longToUuid(0x0000000d33d24f94L, 0x9ee49312b3660005L);
     const PINION_CHAR_RESPONSE          = Ble.longToUuid(0x0000000e33d24f94L, 0x9ee49312b3660005L);
 
+    private var _disconnectionTimer as Timer.Timer = new Timer.Timer();
     private var _disconnectWhenIdle as Lang.Boolean = false;
 
     private var _connectedDevice as Ble.Device?;
@@ -34,6 +36,22 @@ class Bluetooth extends Ble.BleDelegate
         }
     }
 
+    public function testForDisconnection() as Void
+    {
+        if(_connectedDevice == null)
+        {
+            // Already disconnected
+            _disconnectionTimer.stop();
+        }
+        else if(!(_connectedDevice as Ble.Device).isConnected())
+        {
+            _disconnectionTimer.stop();
+            onDisconnected();
+        }
+
+        // Still connected -- we'll keep polling
+    }
+
     public function disconnect() as Void
     {
         if(workPending())
@@ -44,9 +62,12 @@ class Bluetooth extends Ble.BleDelegate
 
         if(_connectedDevice != null)
         {
-            System.println("Disconnecting");
             Ble.unpairDevice(_connectedDevice as Ble.Device);
-            _connectedDevice = null;
+
+            // For some reason, presumably a bug, onConnectedStateChanged is not called when you deliberately
+            // unpair a device, meaning there is no way of reacting to a disconnect, so instead we resort to
+            // polling the connection state until it drops. Ugh.
+            _disconnectionTimer.start(method(:testForDisconnection), 50, true);
         }
     }
 
