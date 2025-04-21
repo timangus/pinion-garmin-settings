@@ -8,6 +8,8 @@ class Bluetooth extends Ble.BleDelegate
     const PINION_CHAR_REQUEST           = Ble.longToUuid(0x0000000d33d24f94L, 0x9ee49312b3660005L);
     const PINION_CHAR_RESPONSE          = Ble.longToUuid(0x0000000e33d24f94L, 0x9ee49312b3660005L);
 
+    private var _disconnectWhenIdle as Lang.Boolean = false;
+
     private var _connectedDevice as Ble.Device?;
     private var _currentGearCharacteristic as Ble.Characteristic?;
     private var _requestCharacteristic as Ble.Characteristic?;
@@ -34,6 +36,12 @@ class Bluetooth extends Ble.BleDelegate
 
     public function disconnect() as Void
     {
+        if(workPending())
+        {
+            _disconnectWhenIdle = true;
+            return;
+        }
+
         if(_connectedDevice != null)
         {
             System.println("Disconnecting");
@@ -255,6 +263,11 @@ class Bluetooth extends Ble.BleDelegate
         return _currentRequest != null;
     }
 
+    private function workPending() as Lang.Boolean
+    {
+        return busy() || !_requestQueue.empty();
+    }
+
     private function processQueue() as Void
     {
         if(_connectedDevice == null)
@@ -265,6 +278,12 @@ class Bluetooth extends Ble.BleDelegate
 
         if(_requestQueue.empty())
         {
+            if(_disconnectWhenIdle)
+            {
+                _disconnectWhenIdle = false;
+                disconnect();
+            }
+
             return;
         }
 
