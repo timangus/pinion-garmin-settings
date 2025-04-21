@@ -27,10 +27,10 @@ class Bluetooth extends Ble.BleDelegate
 
     const CONNECTION_TIMEOUT = 5000;
 
-    const PINION_SERVICE                = Ble.longToUuid(0x0000000033d24f94L, 0x9ee49312b3660005L);
-    const PINION_CURRENT_GEAR           = Ble.longToUuid(0x0000000133d24f94L, 0x9ee49312b3660005L);
-    const PINION_CHAR_REQUEST           = Ble.longToUuid(0x0000000d33d24f94L, 0x9ee49312b3660005L);
-    const PINION_CHAR_RESPONSE          = Ble.longToUuid(0x0000000e33d24f94L, 0x9ee49312b3660005L);
+    const PINION_SERVICE_UUID       = Ble.longToUuid(0x0000000033d24f94L, 0x9ee49312b3660005L);
+    const PINION_CURRENT_GEAR_UUID  = Ble.longToUuid(0x0000000133d24f94L, 0x9ee49312b3660005L);
+    const PINION_CHAR_REQUEST_UUID  = Ble.longToUuid(0x0000000d33d24f94L, 0x9ee49312b3660005L);
+    const PINION_CHAR_RESPONSE_UUID = Ble.longToUuid(0x0000000e33d24f94L, 0x9ee49312b3660005L);
 
     private var _scanState as ScanState = Bluetooth.NOT_SCANNING;
     private var _connectionTimeoutTimer as Timer.Timer = new Timer.Timer();
@@ -143,12 +143,12 @@ class Bluetooth extends Ble.BleDelegate
 
         if(state == Ble.CONNECTION_STATE_CONNECTED)
         {
-            var service = device.getService(PINION_SERVICE);
+            var service = device.getService(PINION_SERVICE_UUID);
 
             if(service != null)
             {
-                _requestCharacteristic = service.getCharacteristic(PINION_CHAR_REQUEST);
-                _responseCharacteristic = service.getCharacteristic(PINION_CHAR_RESPONSE);
+                _requestCharacteristic = service.getCharacteristic(PINION_CHAR_REQUEST_UUID);
+                _responseCharacteristic = service.getCharacteristic(PINION_CHAR_RESPONSE_UUID);
 
                 if(_requestCharacteristic != null && _responseCharacteristic != null)
                 {
@@ -166,7 +166,7 @@ class Bluetooth extends Ble.BleDelegate
                     else
                     {
                         // For a long lived connection, subscribe to the current gear characteristic too
-                        _currentGearCharacteristic = service.getCharacteristic(PINION_CURRENT_GEAR);
+                        _currentGearCharacteristic = service.getCharacteristic(PINION_CURRENT_GEAR_UUID);
                         if(_currentGearCharacteristic != null)
                         {
                             _requestQueue.push(new SubscribeRequest(_currentGearCharacteristic as Ble.Characteristic, NOTIFY, self));
@@ -216,7 +216,7 @@ class Bluetooth extends Ble.BleDelegate
         var uuids = scanResult.getServiceUuids();
         for(var uuid = uuids.next(); uuid != null; uuid = uuids.next())
         {
-            if(uuid.equals(PINION_SERVICE))
+            if(uuid.equals(PINION_SERVICE_UUID))
             {
                 return true;
             }
@@ -261,12 +261,12 @@ class Bluetooth extends Ble.BleDelegate
     {
         var pinionProfile =
         {
-            :uuid => PINION_SERVICE,
+            :uuid => PINION_SERVICE_UUID,
             :characteristics =>
             [
-                {:uuid => PINION_CURRENT_GEAR,      :descriptors => [Ble.cccdUuid()]},
-                {:uuid => PINION_CHAR_REQUEST,      :descriptors => [Ble.cccdUuid()]},
-                {:uuid => PINION_CHAR_RESPONSE,     :descriptors => [Ble.cccdUuid()]}
+                {:uuid => PINION_CURRENT_GEAR_UUID,     :descriptors => [Ble.cccdUuid()]},
+                {:uuid => PINION_CHAR_REQUEST_UUID,     :descriptors => [Ble.cccdUuid()]},
+                {:uuid => PINION_CHAR_RESPONSE_UUID,    :descriptors => [Ble.cccdUuid()]}
             ]
         };
 
@@ -342,7 +342,7 @@ class Bluetooth extends Ble.BleDelegate
     {
         switch(characteristic.getUuid())
         {
-        case PINION_CHAR_RESPONSE:
+        case PINION_CHAR_RESPONSE_UUID:
         {
             if(_currentRequest == null)
             {
@@ -365,7 +365,7 @@ class Bluetooth extends Ble.BleDelegate
             break;
         }
 
-        case PINION_CURRENT_GEAR:
+        case PINION_CURRENT_GEAR_UUID:
         {
             var currentGear = value[0];
             onCurrentGearChanged(currentGear);
