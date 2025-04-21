@@ -71,6 +71,10 @@ class Bluetooth extends Ble.BleDelegate
             System.println("Timed out connecting, restarting scanning");
             Ble.setScanState(Ble.SCAN_STATE_SCANNING);
         }
+        else
+        {
+            _pinionDelegate.onConnectionTimeout();
+        }
     }
 
     public function connect(pinionDeviceHandle as PinionDeviceHandle) as Lang.Boolean
@@ -421,14 +425,17 @@ class Bluetooth extends Ble.BleDelegate
 
     public function onScanStateChanged() as Void
     {
+        _pinionDelegate.onScanStateChanged(_scanState);
     }
 
     public function onFoundDevicesChanged() as Void
     {
+        _pinionDelegate.onFoundDevicesChanged(_foundDevices);
     }
 
     public function onConnected(device as Ble.Device) as Void
     {
+        _pinionDelegate.onConnected(device);
     }
 
     public function onDisconnected() as Void
@@ -444,6 +451,10 @@ class Bluetooth extends Ble.BleDelegate
             // gearbox serial number to add to the found devices array. Now that the
             // disconnection is complete we must notify about the new device.
             onFoundDevicesChanged();
+        }
+        else
+        {
+            _pinionDelegate.onDisconnected();
         }
     }
 
