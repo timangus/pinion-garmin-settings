@@ -90,17 +90,10 @@ class Bluetooth extends Ble.BleDelegate
                 }
             }
         }
-        else
-        {
-            System.println("Disconnected");
-            _connectedDevice = null;
-        }
 
         if(!connected)
         {
-            _currentGearCharacteristic = null;
-            _requestCharacteristic = null;
-            _responseCharacteristic = null;
+            onDisconnected();
 
             System.println("Restarting scanning");
             scan();
@@ -305,6 +298,14 @@ class Bluetooth extends Ble.BleDelegate
     public function setPinionDelegate(pinionDelegate as PinionDelegate) as Void
     {
         _pinionDelegate = pinionDelegate;
+    }
+
+    public function onDisconnected() as Void
+    {
+        _currentGearCharacteristic = null;
+        _requestCharacteristic = null;
+        _responseCharacteristic = null;
+        _connectedDevice = null;
     }
 
     public function onCurrentGearChanged(currentGear as Lang.Number) as Void
