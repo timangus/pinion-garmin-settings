@@ -69,7 +69,7 @@ class PinionGarminSettingsApp extends Application.AppBase
         AppBase.initialize();
 
         _pinionInterface = new Pinion.Interface();
-        _pinionInterface.setPinionDelegate(_delegate);
+        _pinionInterface.setDelegate(_delegate);
         _pinionInterface.startScan();
     }
 

@@ -420,7 +420,7 @@ module Pinion
             }
         }
 
-        public function setPinionDelegate(pinionDelegate as Pinion.Delegate) as Void
+        public function setDelegate(pinionDelegate as Pinion.Delegate) as Void
         {
             _pinionDelegate = pinionDelegate;
         }
