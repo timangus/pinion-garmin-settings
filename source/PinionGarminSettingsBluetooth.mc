@@ -19,13 +19,23 @@ class PinionDeviceHandle
 
 class Bluetooth extends Ble.BleDelegate
 {
+    enum ScanState
+    {
+        NOT_SCANNING,
+        SCANNING
+    }
+
     const PINION_SERVICE                = Ble.longToUuid(0x0000000033d24f94L, 0x9ee49312b3660005L);
     const PINION_CURRENT_GEAR           = Ble.longToUuid(0x0000000133d24f94L, 0x9ee49312b3660005L);
     const PINION_CHAR_REQUEST           = Ble.longToUuid(0x0000000d33d24f94L, 0x9ee49312b3660005L);
     const PINION_CHAR_RESPONSE          = Ble.longToUuid(0x0000000e33d24f94L, 0x9ee49312b3660005L);
 
+    private var _scanState as ScanState = Bluetooth.NOT_SCANNING;
     private var _disconnectionTimer as Timer.Timer = new Timer.Timer();
     private var _disconnectWhenIdle as Lang.Boolean = false;
+
+    private var _lastScanResult as Ble.ScanResult?;
+    private var _foundDevices as Lang.Array<PinionDeviceHandle> = new Lang.Array<PinionDeviceHandle>[0];
 
     private var _connectedDevice as Ble.Device?;
     private var _currentGearCharacteristic as Ble.Characteristic?;
@@ -100,29 +110,32 @@ class Bluetooth extends Ble.BleDelegate
 
             if(service != null)
             {
-                _currentGearCharacteristic = service.getCharacteristic(PINION_CURRENT_GEAR);
                 _requestCharacteristic = service.getCharacteristic(PINION_CHAR_REQUEST);
                 _responseCharacteristic = service.getCharacteristic(PINION_CHAR_RESPONSE);
 
-                if(_currentGearCharacteristic != null && _requestCharacteristic != null && _responseCharacteristic != null)
+                if(_requestCharacteristic != null && _responseCharacteristic != null)
                 {
                     _connectedDevice = device;
                     connected = true;
-                    System.println("Connected");
 
-                    _requestQueue.push(new SubscribeRequest(_currentGearCharacteristic as Ble.Characteristic, NOTIFY, self));
                     _requestQueue.push(new SubscribeRequest(_responseCharacteristic as Ble.Characteristic, INDICATE, self));
                     processQueue();
 
-                    read(HARDWARE_VERSION);
-                    read(SERIAL_NUMBER);
-                    read(BATTERY_LEVEL);
-                    read(CURRENT_GEAR);
-                    read(WHEEL_CIRCUMFERENCE);
-                    write(WHEEL_CIRCUMFERENCE, 2232);
-                    read(WHEEL_CIRCUMFERENCE);
-                    write(WHEEL_CIRCUMFERENCE, 2231);
-                    read(WHEEL_CIRCUMFERENCE);
+                    if(_scanState == Bluetooth.SCANNING)
+                    {
+                        // If we're in the scan state, the connection is only being made to retrieve the serial number of a gearbox
+                        read(SERIAL_NUMBER);
+                    }
+                    else
+                    {
+                        // For a long lived connection, subscribe to the current gear characteristic too
+                        _currentGearCharacteristic = service.getCharacteristic(PINION_CURRENT_GEAR);
+                        if(_currentGearCharacteristic != null)
+                        {
+                            _requestQueue.push(new SubscribeRequest(_currentGearCharacteristic as Ble.Characteristic, NOTIFY, self));
+                            processQueue();
+                        }
+                    }
                 }
             }
         }
@@ -130,16 +143,33 @@ class Bluetooth extends Ble.BleDelegate
         if(!connected)
         {
             onDisconnected();
-
-            System.println("Restarting scanning");
-            scan();
         }
     }
 
-    public function scan() as Void
+    public function startScan() as Void
     {
+        if(_scanState == Bluetooth.SCANNING)
+        {
+            return;
+        }
+
         disconnect();
+        _scanState = Bluetooth.SCANNING;
         Ble.setScanState(Ble.SCAN_STATE_SCANNING);
+        onScanStateChanged();
+    }
+
+    public function stopScan() as Void
+    {
+        if(_scanState == Bluetooth.NOT_SCANNING)
+        {
+            return;
+        }
+
+        disconnect();
+        _scanState = Bluetooth.NOT_SCANNING;
+        Ble.setScanState(Ble.SCAN_STATE_OFF);
+        onScanStateChanged();
     }
 
     private function scanResultIsPinion(scanResult as Ble.ScanResult) as Lang.Boolean
@@ -156,16 +186,33 @@ class Bluetooth extends Ble.BleDelegate
         return false;
     }
 
+    private function scanResultIsAlreadyKnown(scanResult as Ble.ScanResult) as Lang.Boolean
+    {
+        for(var i = 0; i < _foundDevices.size(); i++)
+        {
+            if(scanResult.isSameDevice(_foundDevices[i].scanResult()))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function onScanResults(scanResults as Ble.Iterator) as Void
     {
-        System.println("Scanning");
+        _lastScanResult = null;
         for(var result = scanResults.next() as Ble.ScanResult; result != null; result = scanResults.next())
         {
-            if(scanResultIsPinion(result))
+            if(!scanResultIsAlreadyKnown(result) && scanResultIsPinion(result))
             {
-                System.println("Found");
-                Ble.setScanState(Ble.SCAN_STATE_OFF);
-                Ble.pairDevice(result);
+                _lastScanResult = result;
+                var pairResult = Ble.pairDevice(result);
+                if(pairResult != null)
+                {
+                    Ble.setScanState(Ble.SCAN_STATE_OFF);
+                    break;
+                }
             }
         }
     }
@@ -336,12 +383,28 @@ class Bluetooth extends Ble.BleDelegate
         _pinionDelegate = pinionDelegate;
     }
 
+    public function onScanStateChanged() as Void
+    {
+    }
+
+    public function onFoundDevicesChanged() as Void
+    {
+    }
+
     public function onDisconnected() as Void
     {
         _currentGearCharacteristic = null;
         _requestCharacteristic = null;
         _responseCharacteristic = null;
         _connectedDevice = null;
+
+        if(_scanState == Bluetooth.SCANNING)
+        {
+            // If we've disconnected while scanning it's because we were retrieving a
+            // gearbox serial number to add to the found devices array. Now that the
+            // disconnection is complete we must notify about the new device.
+            onFoundDevicesChanged();
+        }
     }
 
     public function onCurrentGearChanged(currentGear as Lang.Number) as Void
@@ -351,6 +414,32 @@ class Bluetooth extends Ble.BleDelegate
 
     public function onParameterRead(parameter as PinionParameterType, value as Lang.Number) as Void
     {
+        if(_scanState == Bluetooth.SCANNING)
+        {
+            if(parameter != SERIAL_NUMBER)
+            {
+                System.println("Parameter returned while scanning is not SERIAL_NUMBER: " + parameter);
+                disconnect();
+                return;
+            }
+
+            if(_lastScanResult == null)
+            {
+                System.println("Last scan result is null");
+                disconnect();
+                return;
+            }
+
+            _foundDevices.add(new PinionDeviceHandle(value, _lastScanResult as Ble.ScanResult));
+            _lastScanResult = null;
+
+            // Resume scanning
+            disconnect();
+            Ble.setScanState(Ble.SCAN_STATE_SCANNING);
+
+            return;
+        }
+
         _pinionDelegate.onParameterRead(parameter, value);
     }
 

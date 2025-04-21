@@ -33,7 +33,7 @@ class PinionGarminSettingsApp extends Application.AppBase
 
         _bluetooth = new Bluetooth();
         _bluetooth.setPinionDelegate(_delegate);
-        _bluetooth.scan();
+        _bluetooth.startScan();
     }
 
     // onStart() is called on application start up
