@@ -8,27 +8,30 @@ enum BluetoothSubscribeType
     INDICATE    = 0x02
 }
 
-class SubscribeRequest extends Request
+module Pinion
 {
-    private var _cccd as Ble.Descriptor?;
-    private var _type as BluetoothSubscribeType;
-
-    public function initialize(characteristic as Ble.Characteristic, type as BluetoothSubscribeType, delegate as Bluetooth)
+    class SubscribeRequest extends Request
     {
-        Request.initialize(delegate);
+        private var _cccd as Ble.Descriptor?;
+        private var _type as BluetoothSubscribeType;
 
-        _cccd = characteristic.getDescriptor(Ble.cccdUuid());
-        _type = type;
-    }
+        public function initialize(characteristic as Ble.Characteristic, type as BluetoothSubscribeType, delegate as Bluetooth)
+        {
+            Request.initialize(delegate);
 
-    public function execute()
-    {
-        (_cccd as Ble.Descriptor).requestWrite([_type as Lang.Number, 0x00]b);
-        return true;
-    }
+            _cccd = characteristic.getDescriptor(Ble.cccdUuid());
+            _type = type;
+        }
 
-    public function onDescriptorWrite(descriptor as Ble.Descriptor, status as Ble.Status) as Lang.Boolean
-    {
-        return descriptor.getUuid().equals((_cccd as Ble.Descriptor).getUuid());
+        public function execute()
+        {
+            (_cccd as Ble.Descriptor).requestWrite([_type as Lang.Number, 0x00]b);
+            return true;
+        }
+
+        public function onDescriptorWrite(descriptor as Ble.Descriptor, status as Ble.Status) as Lang.Boolean
+        {
+            return descriptor.getUuid().equals((_cccd as Ble.Descriptor).getUuid());
+        }
     }
 }

@@ -1,45 +1,48 @@
 import Toybox.Lang;
 
-class RequestQueue
+module Pinion
 {
-    private var _array as Lang.Array<Request> = [];
-
-    public function initialize() {}
-
-    public function push(item as Request) as Void
+    class RequestQueue
     {
-        _array.add(item);
-    }
+        private var _array as Lang.Array<Request> = [];
 
-    public function pop() as Request?
-    {
-        if(!empty())
+        public function initialize() {}
+
+        public function push(item as Request) as Void
         {
-            var item = _array[0];
-            _array = _array.slice(1, null);
-            return item;
+            _array.add(item);
         }
 
-        return null;
-    }
+        public function pop() as Request?
+        {
+            if(!empty())
+            {
+                var item = _array[0];
+                _array = _array.slice(1, null);
+                return item;
+            }
 
-    public function size() as Lang.Number
-    {
-        return _array.size();
-    }
+            return null;
+        }
 
-    public function empty() as Lang.Boolean
-    {
-        return size() == 0;
-    }
+        public function size() as Lang.Number
+        {
+            return _array.size();
+        }
 
-    public function clear() as Void
-    {
-        _array = [];
-    }
+        public function empty() as Lang.Boolean
+        {
+            return size() == 0;
+        }
 
-    public function toString() as Lang.String
-    {
-        return _array.toString();
+        public function clear() as Void
+        {
+            _array = [];
+        }
+
+        public function toString() as Lang.String
+        {
+            return _array.toString();
+        }
     }
 }

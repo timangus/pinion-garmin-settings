@@ -45,10 +45,10 @@ class Bluetooth extends Ble.BleDelegate
     private var _requestCharacteristic as Ble.Characteristic?;
     private var _responseCharacteristic as Ble.Characteristic?;
 
-    private var _requestQueue as RequestQueue = new RequestQueue();
-    private var _currentRequest as Request?;
+    private var _requestQueue as Pinion.RequestQueue = new Pinion.RequestQueue();
+    private var _currentRequest as Pinion.Request?;
 
-    private var _pinionDelegate as Pinion.Delegate = new PinionDelegate();
+    private var _pinionDelegate as Pinion.Delegate = new Pinion.Delegate();
 
     public function initialize()
     {
@@ -155,7 +155,7 @@ class Bluetooth extends Ble.BleDelegate
                     _connectedDevice = device;
                     connected = true;
 
-                    _requestQueue.push(new SubscribeRequest(_responseCharacteristic as Ble.Characteristic, INDICATE, self));
+                    _requestQueue.push(new Pinion.SubscribeRequest(_responseCharacteristic as Ble.Characteristic, INDICATE, self));
                     processQueue();
 
                     if(_scanState == Bluetooth.SCANNING)
@@ -169,7 +169,7 @@ class Bluetooth extends Ble.BleDelegate
                         _currentGearCharacteristic = service.getCharacteristic(PINION_CURRENT_GEAR_UUID);
                         if(_currentGearCharacteristic != null)
                         {
-                            _requestQueue.push(new SubscribeRequest(_currentGearCharacteristic as Ble.Characteristic, NOTIFY, self));
+                            _requestQueue.push(new Pinion.SubscribeRequest(_currentGearCharacteristic as Ble.Characteristic, NOTIFY, self));
                             processQueue();
                         }
 
@@ -275,7 +275,7 @@ class Bluetooth extends Ble.BleDelegate
 
     public function read(parameter as PinionParameterType) as Void
     {
-        _requestQueue.push(new ReadRequest(parameter, _requestCharacteristic as Ble.Characteristic, self));
+        _requestQueue.push(new Pinion.ReadRequest(parameter, _requestCharacteristic as Ble.Characteristic, self));
         processQueue();
     }
 
@@ -283,9 +283,9 @@ class Bluetooth extends Ble.BleDelegate
     {
         var hiddenSetting = PINION_PARAMETERS.hasKey(parameter) && (PINION_PARAMETERS[parameter] as Lang.Dictionary).hasKey(:hidden);
 
-        if(hiddenSetting) { _requestQueue.push(new WriteRequest(HIDDEN_SETTINGS_ENABLE, 0x56a93c03, _requestCharacteristic as Ble.Characteristic, self)); }
-        _requestQueue.push(new WriteRequest(parameter, value, _requestCharacteristic as Ble.Characteristic, self));
-        if(hiddenSetting) { _requestQueue.push(new WriteRequest(HIDDEN_SETTINGS_ENABLE, 0x0, _requestCharacteristic as Ble.Characteristic, self)); }
+        if(hiddenSetting) { _requestQueue.push(new Pinion.WriteRequest(HIDDEN_SETTINGS_ENABLE, 0x56a93c03, _requestCharacteristic as Ble.Characteristic, self)); }
+        _requestQueue.push(new Pinion.WriteRequest(parameter, value, _requestCharacteristic as Ble.Characteristic, self));
+        if(hiddenSetting) { _requestQueue.push(new Pinion.WriteRequest(HIDDEN_SETTINGS_ENABLE, 0x0, _requestCharacteristic as Ble.Characteristic, self)); }
 
         processQueue();
     }
@@ -325,7 +325,7 @@ class Bluetooth extends Ble.BleDelegate
             return;
         }
 
-        var success = (_currentRequest as Request).onDescriptorWrite(descriptor, status);
+        var success = (_currentRequest as Pinion.Request).onDescriptorWrite(descriptor, status);
         _currentRequest = null;
 
         if(!success)
@@ -351,7 +351,7 @@ class Bluetooth extends Ble.BleDelegate
                 return;
             }
 
-            var success = (_currentRequest as Request).decodeResponse(value);
+            var success = (_currentRequest as Pinion.Request).decodeResponse(value);
             _currentRequest = null;
 
             if(!success)
@@ -408,7 +408,7 @@ class Bluetooth extends Ble.BleDelegate
             return;
         }
 
-        _currentRequest = _requestQueue.pop() as Request;
+        _currentRequest = _requestQueue.pop() as Pinion.Request;
 
         var success = _currentRequest.execute();
         if(!success)
