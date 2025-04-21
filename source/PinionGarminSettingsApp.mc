@@ -13,7 +13,7 @@ class PinionGarminDelegate extends Pinion.Delegate
         _pinionGarminSettingsApp = pinionGarminSettingsApp;
     }
 
-    public function onScanStateChanged(scanState as Bluetooth.ScanState) as Void
+    public function onScanStateChanged(scanState as Pinion.ScanState) as Void
     {
         System.println("onScanStateChanged(" + scanState + ")");
     }
@@ -34,7 +34,7 @@ class PinionGarminDelegate extends Pinion.Delegate
         System.println("PinionDelegate.onConnectionTimeout");
     }
 
-    public function onFoundDevicesChanged(foundDevices as Lang.Array<PinionDeviceHandle>) as Void
+    public function onFoundDevicesChanged(foundDevices as Lang.Array<Pinion.DeviceHandle>) as Void
     {
         for(var i = 0; i < foundDevices.size(); i++)
         {
@@ -61,21 +61,21 @@ class PinionGarminDelegate extends Pinion.Delegate
 
 class PinionGarminSettingsApp extends Application.AppBase
 {
-    private var _bluetooth as Bluetooth;
+    private var _bluetooth as Pinion.Bluetooth;
     private var _delegate as PinionGarminDelegate = new PinionGarminDelegate(self);
 
     public function initialize()
     {
         AppBase.initialize();
 
-        _bluetooth = new Bluetooth();
+        _bluetooth = new Pinion.Bluetooth();
         _bluetooth.setPinionDelegate(_delegate);
         _bluetooth.startScan();
     }
 
-    function connect(pinionDeviceHandle as PinionDeviceHandle) as Void
+    function connect(deviceHandle as Pinion.DeviceHandle) as Void
     {
-        _bluetooth.connect(pinionDeviceHandle);
+        _bluetooth.connect(deviceHandle);
     }
 
     function doStuff() as Void
