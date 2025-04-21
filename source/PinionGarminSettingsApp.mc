@@ -48,12 +48,12 @@ class PinionGarminDelegate extends Pinion.Delegate
         System.println("onCurrentGearChanged(" + currentGear + ")");
     }
 
-    public function onParameterRead(parameter as PinionParameterType, value as Lang.Number) as Void
+    public function onParameterRead(parameter as Pinion.ParameterType, value as Lang.Number) as Void
     {
         System.println("onParameterRead(" + parameter + ", " + value + ")");
     }
 
-    public function onParameterWrite(parameter as PinionParameterType) as Void
+    public function onParameterWrite(parameter as Pinion.ParameterType) as Void
     {
         System.println("onParameterWrite(" + parameter + ")");
     }
@@ -80,13 +80,13 @@ class PinionGarminSettingsApp extends Application.AppBase
 
     function doStuff() as Void
     {
-        _bluetooth.read(SERIAL_NUMBER);
-        _bluetooth.read(HARDWARE_VERSION);
-        _bluetooth.read(CURRENT_GEAR);
-        _bluetooth.read(BATTERY_LEVEL);
-        _bluetooth.read(AUTO_START_GEAR);
-        _bluetooth.read(PRE_SELECT);
-        _bluetooth.read(WHEEL_CIRCUMFERENCE);
+        _bluetooth.read(Pinion.SERIAL_NUMBER);
+        _bluetooth.read(Pinion.HARDWARE_VERSION);
+        _bluetooth.read(Pinion.CURRENT_GEAR);
+        _bluetooth.read(Pinion.BATTERY_LEVEL);
+        _bluetooth.read(Pinion.AUTO_START_GEAR);
+        _bluetooth.read(Pinion.PRE_SELECT);
+        _bluetooth.read(Pinion.WHEEL_CIRCUMFERENCE);
         _bluetooth.disconnect();
     }
 

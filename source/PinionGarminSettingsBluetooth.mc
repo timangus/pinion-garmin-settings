@@ -161,7 +161,7 @@ class Bluetooth extends Ble.BleDelegate
                     if(_scanState == Bluetooth.SCANNING)
                     {
                         // If we're in the scan state, the connection is only being made to retrieve the serial number of a gearbox
-                        read(SERIAL_NUMBER);
+                        read(Pinion.SERIAL_NUMBER);
                     }
                     else
                     {
@@ -273,19 +273,19 @@ class Bluetooth extends Ble.BleDelegate
         Ble.registerProfile(pinionProfile);
     }
 
-    public function read(parameter as PinionParameterType) as Void
+    public function read(parameter as Pinion.ParameterType) as Void
     {
         _requestQueue.push(new Pinion.ReadRequest(parameter, _requestCharacteristic as Ble.Characteristic, self));
         processQueue();
     }
 
-    public function write(parameter as PinionParameterType, value as Lang.Number) as Void
+    public function write(parameter as Pinion.ParameterType, value as Lang.Number) as Void
     {
-        var hiddenSetting = PINION_PARAMETERS.hasKey(parameter) && (PINION_PARAMETERS[parameter] as Lang.Dictionary).hasKey(:hidden);
+        var hiddenSetting = Pinion.PARAMETERS.hasKey(parameter) && (Pinion.PARAMETERS[parameter] as Lang.Dictionary).hasKey(:hidden);
 
-        if(hiddenSetting) { _requestQueue.push(new Pinion.WriteRequest(HIDDEN_SETTINGS_ENABLE, 0x56a93c03, _requestCharacteristic as Ble.Characteristic, self)); }
+        if(hiddenSetting) { _requestQueue.push(new Pinion.WriteRequest(Pinion.HIDDEN_SETTINGS_ENABLE, 0x56a93c03, _requestCharacteristic as Ble.Characteristic, self)); }
         _requestQueue.push(new Pinion.WriteRequest(parameter, value, _requestCharacteristic as Ble.Characteristic, self));
-        if(hiddenSetting) { _requestQueue.push(new Pinion.WriteRequest(HIDDEN_SETTINGS_ENABLE, 0x0, _requestCharacteristic as Ble.Characteristic, self)); }
+        if(hiddenSetting) { _requestQueue.push(new Pinion.WriteRequest(Pinion.HIDDEN_SETTINGS_ENABLE, 0x0, _requestCharacteristic as Ble.Characteristic, self)); }
 
         processQueue();
     }
@@ -463,11 +463,11 @@ class Bluetooth extends Ble.BleDelegate
         _pinionDelegate.onCurrentGearChanged(currentGear);
     }
 
-    public function onParameterRead(parameter as PinionParameterType, value as Lang.Number) as Void
+    public function onParameterRead(parameter as Pinion.ParameterType, value as Lang.Number) as Void
     {
         if(_scanState == Bluetooth.SCANNING)
         {
-            if(parameter != SERIAL_NUMBER)
+            if(parameter != Pinion.SERIAL_NUMBER)
             {
                 System.println("Parameter returned while scanning is not SERIAL_NUMBER: " + parameter);
                 disconnect();
@@ -494,9 +494,9 @@ class Bluetooth extends Ble.BleDelegate
         _pinionDelegate.onParameterRead(parameter, value);
     }
 
-    public function onParameterWrite(parameter as PinionParameterType) as Void
+    public function onParameterWrite(parameter as Pinion.ParameterType) as Void
     {
-        if(parameter == HIDDEN_SETTINGS_ENABLE)
+        if(parameter == Pinion.HIDDEN_SETTINGS_ENABLE)
         {
             // No point in notifying this
             return;

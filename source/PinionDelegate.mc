@@ -11,7 +11,7 @@ module Pinion
         public function onConnectionTimeout() as Void {}
         public function onFoundDevicesChanged(foundDevices as Lang.Array<PinionDeviceHandle>) as Void {}
         public function onCurrentGearChanged(currentGear as Lang.Number) as Void {}
-        public function onParameterRead(parameter as PinionParameterType, value as Lang.Number) as Void {}
-        public function onParameterWrite(parameter as PinionParameterType) as Void {}
+        public function onParameterRead(parameter as Pinion.ParameterType, value as Lang.Number) as Void {}
+        public function onParameterWrite(parameter as Pinion.ParameterType) as Void {}
     }
 }
