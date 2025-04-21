@@ -1,14 +1,5 @@
 using Toybox.Lang;
 
-enum PinionRequestType
-{
-    PINION_ERR      = 0x00,
-    PINION_READ     = 0x01,
-    PINION_REPLY    = 0x02,
-    PINION_WRITE    = 0x03,
-    PINION_ACK      = 0x04
-}
-
 enum PinionParameterType
 {
     HARDWARE_VERSION,

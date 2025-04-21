@@ -5,6 +5,12 @@ module Pinion
 {
     class Request
     {
+        const PINION_ERR    = 0x00;
+        const PINION_READ   = 0x01;
+        const PINION_REPLY  = 0x02;
+        const PINION_WRITE  = 0x03;
+        const PINION_ACK    = 0x04;
+
         protected var _delegate as Bluetooth?;
 
         public function initialize(delegate as Bluetooth)
