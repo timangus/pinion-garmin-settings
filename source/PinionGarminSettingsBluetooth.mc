@@ -25,7 +25,7 @@ module Pinion
         SCANNING
     }
 
-    class Bluetooth extends Ble.BleDelegate
+    class Interface extends Ble.BleDelegate
     {
         const CONNECTION_TIMEOUT = 5000;
 
@@ -34,7 +34,7 @@ module Pinion
         const PINION_CHAR_REQUEST_UUID  = Ble.longToUuid(0x0000000d33d24f94L, 0x9ee49312b3660005L);
         const PINION_CHAR_RESPONSE_UUID = Ble.longToUuid(0x0000000e33d24f94L, 0x9ee49312b3660005L);
 
-        private var _scanState as ScanState = Bluetooth.NOT_SCANNING;
+        private var _scanState as ScanState = Interface.NOT_SCANNING;
         private var _connectionTimeoutTimer as Timer.Timer = new Timer.Timer();
         private var _disconnectionTimer as Timer.Timer = new Timer.Timer();
         private var _disconnectWhenIdle as Lang.Boolean = false;
@@ -62,13 +62,13 @@ module Pinion
             }
             catch(e)
             {
-                System.println("Bluetooth::initialize failed " + e);
+                System.println("Interface::initialize failed " + e);
             }
         }
 
         public function onConnectionTimeout() as Void
         {
-            if(_scanState == Bluetooth.SCANNING)
+            if(_scanState == Interface.SCANNING)
             {
                 System.println("Timed out connecting, restarting scanning");
                 Ble.setScanState(Ble.SCAN_STATE_SCANNING);
@@ -160,7 +160,7 @@ module Pinion
                         _requestQueue.push(new Pinion.SubscribeRequest(_responseCharacteristic as Ble.Characteristic, INDICATE, self));
                         processQueue();
 
-                        if(_scanState == Bluetooth.SCANNING)
+                        if(_scanState == Interface.SCANNING)
                         {
                             // If we're in the scan state, the connection is only being made to retrieve the serial number of a gearbox
                             read(Pinion.SERIAL_NUMBER);
@@ -189,26 +189,26 @@ module Pinion
 
         public function startScan() as Void
         {
-            if(_scanState == Bluetooth.SCANNING)
+            if(_scanState == Interface.SCANNING)
             {
                 return;
             }
 
             disconnect();
-            _scanState = Bluetooth.SCANNING;
+            _scanState = Interface.SCANNING;
             Ble.setScanState(Ble.SCAN_STATE_SCANNING);
             onScanStateChanged();
         }
 
         public function stopScan() as Void
         {
-            if(_scanState == Bluetooth.NOT_SCANNING)
+            if(_scanState == Interface.NOT_SCANNING)
             {
                 return;
             }
 
             disconnect();
-            _scanState = Bluetooth.NOT_SCANNING;
+            _scanState = Interface.NOT_SCANNING;
             Ble.setScanState(Ble.SCAN_STATE_OFF);
             onScanStateChanged();
         }
@@ -447,7 +447,7 @@ module Pinion
             _responseCharacteristic = null;
             _connectedDevice = null;
 
-            if(_scanState == Bluetooth.SCANNING)
+            if(_scanState == Interface.SCANNING)
             {
                 // If we've disconnected while scanning it's because we were retrieving a
                 // gearbox serial number to add to the found devices array. Now that the
@@ -467,7 +467,7 @@ module Pinion
 
         public function onParameterRead(parameter as Pinion.ParameterType, value as Lang.Number) as Void
         {
-            if(_scanState == Bluetooth.SCANNING)
+            if(_scanState == Interface.SCANNING)
             {
                 if(parameter != Pinion.SERIAL_NUMBER)
                 {

@@ -9,7 +9,7 @@ module Pinion
         private var _parameterData as Lang.Dictionary = new Lang.Dictionary();
         private var _characteristic as Ble.Characteristic?;
 
-        public function initialize(parameter as Pinion.ParameterType, characteristic as Ble.Characteristic, delegate as Bluetooth)
+        public function initialize(parameter as Pinion.ParameterType, characteristic as Ble.Characteristic, delegate as Interface)
         {
             Request.initialize(delegate);
 
@@ -73,7 +73,7 @@ module Pinion
             }
 
             var value = reply.decodeNumber(numberFormat, {:endianness => Lang.ENDIAN_LITTLE}) as Lang.Number;
-            (_delegate as Bluetooth).onParameterRead(_parameter, value);
+            (_delegate as Interface).onParameterRead(_parameter, value);
 
             return true;
         }

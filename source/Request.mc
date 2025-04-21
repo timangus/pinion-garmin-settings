@@ -11,9 +11,9 @@ module Pinion
         const PINION_WRITE  = 0x03;
         const PINION_ACK    = 0x04;
 
-        protected var _delegate as Bluetooth?;
+        protected var _delegate as Interface?;
 
-        public function initialize(delegate as Bluetooth)
+        public function initialize(delegate as Interface)
         {
             _delegate = delegate;
         }

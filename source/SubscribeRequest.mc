@@ -15,7 +15,7 @@ module Pinion
         private var _cccd as Ble.Descriptor?;
         private var _type as BluetoothSubscribeType;
 
-        public function initialize(characteristic as Ble.Characteristic, type as BluetoothSubscribeType, delegate as Bluetooth)
+        public function initialize(characteristic as Ble.Characteristic, type as BluetoothSubscribeType, delegate as Interface)
         {
             Request.initialize(delegate);
 

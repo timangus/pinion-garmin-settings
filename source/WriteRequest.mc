@@ -11,7 +11,7 @@ module Pinion
         private var _parameterData as Lang.Dictionary = new Lang.Dictionary();
         private var _characteristic as Ble.Characteristic?;
 
-        public function initialize(parameter as Pinion.ParameterType, value as Lang.Number, characteristic as Ble.Characteristic, delegate as Bluetooth)
+        public function initialize(parameter as Pinion.ParameterType, value as Lang.Number, characteristic as Ble.Characteristic, delegate as Interface)
         {
             Request.initialize(delegate);
 
@@ -83,7 +83,7 @@ module Pinion
                 return false;
             }
 
-            (_delegate as Bluetooth).onParameterWrite(_parameter);
+            (_delegate as Interface).onParameterWrite(_parameter);
 
             return true;
         }

@@ -61,33 +61,33 @@ class PinionGarminDelegate extends Pinion.Delegate
 
 class PinionGarminSettingsApp extends Application.AppBase
 {
-    private var _bluetooth as Pinion.Bluetooth;
+    private var _pinionInterface as Pinion.Interface;
     private var _delegate as PinionGarminDelegate = new PinionGarminDelegate(self);
 
     public function initialize()
     {
         AppBase.initialize();
 
-        _bluetooth = new Pinion.Bluetooth();
-        _bluetooth.setPinionDelegate(_delegate);
-        _bluetooth.startScan();
+        _pinionInterface = new Pinion.Interface();
+        _pinionInterface.setPinionDelegate(_delegate);
+        _pinionInterface.startScan();
     }
 
     function connect(deviceHandle as Pinion.DeviceHandle) as Void
     {
-        _bluetooth.connect(deviceHandle);
+        _pinionInterface.connect(deviceHandle);
     }
 
     function doStuff() as Void
     {
-        _bluetooth.read(Pinion.SERIAL_NUMBER);
-        _bluetooth.read(Pinion.HARDWARE_VERSION);
-        _bluetooth.read(Pinion.CURRENT_GEAR);
-        _bluetooth.read(Pinion.BATTERY_LEVEL);
-        _bluetooth.read(Pinion.AUTO_START_GEAR);
-        _bluetooth.read(Pinion.PRE_SELECT);
-        _bluetooth.read(Pinion.WHEEL_CIRCUMFERENCE);
-        _bluetooth.disconnect();
+        _pinionInterface.read(Pinion.SERIAL_NUMBER);
+        _pinionInterface.read(Pinion.HARDWARE_VERSION);
+        _pinionInterface.read(Pinion.CURRENT_GEAR);
+        _pinionInterface.read(Pinion.BATTERY_LEVEL);
+        _pinionInterface.read(Pinion.AUTO_START_GEAR);
+        _pinionInterface.read(Pinion.PRE_SELECT);
+        _pinionInterface.read(Pinion.WHEEL_CIRCUMFERENCE);
+        _pinionInterface.disconnect();
     }
 
     // onStart() is called on application start up
@@ -98,7 +98,7 @@ class PinionGarminSettingsApp extends Application.AppBase
     // onStop() is called when your application is exiting
     function onStop(state as Dictionary?) as Void
     {
-        _bluetooth.disconnect();
+        _pinionInterface.disconnect();
     }
 
     // Return the initial view of your application here
