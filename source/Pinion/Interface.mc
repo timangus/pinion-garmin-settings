@@ -68,6 +68,8 @@ module Pinion
 
         public function onConnectionTimeout() as Void
         {
+            Ble.unpairDevice(_connectedDevice as Ble.Device);
+
             if(_scanState == Interface.SCANNING)
             {
                 System.println("Timed out connecting, restarting scanning");
@@ -89,8 +91,8 @@ module Pinion
                 return false;
             }
 
-            var pairResult = Ble.pairDevice(deviceHandle.scanResult());
-            if(pairResult == null)
+            _connectedDevice = Ble.pairDevice(deviceHandle.scanResult());
+            if(_connectedDevice == null)
             {
                 return false;
             }
@@ -154,6 +156,7 @@ module Pinion
 
                     if(_requestCharacteristic != null && _responseCharacteristic != null)
                     {
+                        // This will usually already have been set by the Ble.pairDevice call
                         _connectedDevice = device;
                         connected = true;
 
@@ -248,8 +251,8 @@ module Pinion
                 if(!scanResultIsAlreadyKnown(result) && scanResultIsPinion(result))
                 {
                     _lastScanResult = result;
-                    var pairResult = Ble.pairDevice(result);
-                    if(pairResult != null)
+                    _connectedDevice = Ble.pairDevice(result);
+                    if(_connectedDevice != null)
                     {
                         Ble.setScanState(Ble.SCAN_STATE_OFF);
                         _connectionTimeoutTimer.start(method(:onConnectionTimeout), CONNECTION_TIMEOUT, false);
@@ -446,6 +449,7 @@ module Pinion
             _requestCharacteristic = null;
             _responseCharacteristic = null;
             _connectedDevice = null;
+            _lastScanResult = null;
 
             if(_scanState == Interface.SCANNING)
             {
