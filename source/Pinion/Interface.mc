@@ -426,6 +426,7 @@ module Pinion
         public function setDelegate(pinionDelegate as Pinion.Delegate) as Void
         {
             _pinionDelegate = pinionDelegate;
+            _pinionDelegate.setPinionInterface(self);
         }
 
         public function onScanStateChanged() as Void

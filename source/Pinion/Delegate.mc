@@ -5,6 +5,14 @@ module Pinion
 {
     class Delegate
     {
+        private var _pinionInterface as Interface?;
+
+        public function pinionInterface() as Interface { return _pinionInterface as Interface; }
+        public function setPinionInterface(pinionInterface as Interface) as Void
+        {
+            _pinionInterface = pinionInterface;
+        }
+
         public function onScanStateChanged(scanState as Pinion.ScanState) as Void {}
         public function onConnected(device as Ble.Device) as Void {}
         public function onDisconnected() as Void {}
