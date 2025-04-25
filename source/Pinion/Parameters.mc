@@ -82,4 +82,20 @@ module Pinion
             return "Unknown Pinion Parameter " + _parameter;
         }
     }
+
+    class ParameterNotWritableException extends Lang.Exception
+    {
+        private var _parameter as ParameterType;
+
+        public function initialize(parameter as ParameterType)
+        {
+            Lang.Exception.initialize();
+            _parameter = parameter;
+        }
+
+        public function getErrorMessage() as Lang.String?
+        {
+            return "Pinion Parameter " + _parameter + " is not writable";
+        }
+    }
 }
