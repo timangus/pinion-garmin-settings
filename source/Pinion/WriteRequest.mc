@@ -22,6 +22,50 @@ module Pinion
 
             _parameter = parameter;
             _parameterData = Pinion.PARAMETERS[parameter] as Lang.Dictionary;
+
+            if(!_parameterData.hasKey(:minmax) && !_parameterData.hasKey(:values))
+            {
+                throw new ParameterNotWritableException(parameter);
+            }
+
+            if(_parameterData.hasKey(:values))
+            {
+                var values = _parameterData[:values] as Lang.Array;
+                var found = false;
+
+                for(var i = 0; i < values.size(); i++)
+                {
+                    if(values[i] == value)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if(!found)
+                {
+                    System.println("WriteRequest created with invalid value " + value + ", replaced with " + values[0] as Lang.Number);
+                    value = values[0] as Lang.Number;
+                }
+            }
+            else if(_parameterData.hasKey(:minmax))
+            {
+                var minmax = _parameterData[:minmax] as Lang.Array;
+                var min = minmax[0] as Lang.Number;
+                var max = minmax[1] as Lang.Number;
+
+                if(value < min)
+                {
+                    System.println("WriteRequest value " + value + " clamped to minimum " + min);
+                    value = min;
+                }
+                else if(value > max)
+                {
+                    System.println("WriteRequest value " + value + " clamped to maximum " + max);
+                    value = max;
+                }
+            }
+
             _value = value;
             _characteristic = characteristic;
         }

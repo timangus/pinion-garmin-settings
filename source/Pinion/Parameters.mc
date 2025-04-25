@@ -42,29 +42,29 @@ module Pinion
         BOOTLOADER_VERSION =>       { :address => [0x56, 0x1f, 0x02]b,  :length => 4 },
         SERIAL_NUMBER =>            { :address => [0x18, 0x10, 0x04]b,  :length => 4 },
 
-        MOUNTING_ANGLE =>           { :address => [0x25, 0x25, 0x00]b,  :length => 2,   :hidden => true },
-        REAR_TEETH =>               { :address => [0x02, 0x34, 0x02]b,  :length => 1,   :hidden => true },
-        FRONT_TEETH =>              { :address => [0x02, 0x34, 0x03]b,  :length => 1,   :hidden => true },
-        WHEEL_CIRCUMFERENCE =>      { :address => [0x02, 0x34, 0x01]b,  :length => 2,   :hidden => true },
-        POWER_SUPPLY =>             { :address => [0x00, 0x34, 0x02]b,  :length => 1,   :hidden => true },
-        CAN_BUS =>                  { :address => [0x00, 0x34, 0x05]b,  :length => 1,   :hidden => true },
-        DISPLAY =>                  { :address => [0x00, 0x34, 0x04]b,  :length => 1,   :hidden => true },
-        SPEED_SENSOR_TYPE =>        { :address => [0x00, 0x34, 0x01]b,  :length => 1,   :hidden => true },
-        NUMBER_OF_MAGNETS =>        { :address => [0x00, 0x30, 0x01]b,  :length => 2,   :hidden => true },
+        MOUNTING_ANGLE =>           { :address => [0x25, 0x25, 0x00]b,  :length => 2,   :minmax => [0, 359],        :hidden => true },
+        REAR_TEETH =>               { :address => [0x02, 0x34, 0x02]b,  :length => 1,   :minmax => [15, 60],        :hidden => true },
+        FRONT_TEETH =>              { :address => [0x02, 0x34, 0x03]b,  :length => 1,   :minmax => [15, 60],        :hidden => true },
+        WHEEL_CIRCUMFERENCE =>      { :address => [0x02, 0x34, 0x01]b,  :length => 2,   :minmax => [1000, 3000],    :hidden => true },
+        POWER_SUPPLY =>             { :address => [0x00, 0x34, 0x02]b,  :length => 1,   :values => [1, 3, 4],       :hidden => true },
+        CAN_BUS =>                  { :address => [0x00, 0x34, 0x05]b,  :length => 1,   :values => [0, 1],          :hidden => true },
+        DISPLAY =>                  { :address => [0x00, 0x34, 0x04]b,  :length => 1,   :values => [0, 1],          :hidden => true },
+        SPEED_SENSOR_TYPE =>        { :address => [0x00, 0x34, 0x01]b,  :length => 1,   :values => [0, 1, 3],       :hidden => true },
+        NUMBER_OF_MAGNETS =>        { :address => [0x00, 0x30, 0x01]b,  :length => 2,   :minmax => [1, 8],          :hidden => true },
 
-        REVERSE_TRIGGER_MAPPING =>  { :address => [0x50, 0x25, 0x00]b,  :length => 1 },
+        REVERSE_TRIGGER_MAPPING =>  { :address => [0x50, 0x25, 0x00]b,  :length => 1,   :values => [1, 0] },
 
         CURRENT_GEAR =>             { :address => [0x01, 0x61, 0x02]b,  :length => 1 },
         BATTERY_LEVEL =>            { :address => [0x64, 0x61, 0x01]b,  :length => 2 },
 
-        AUTO_START_GEAR =>          { :address => [0x12, 0x25, 0x02]b,  :length => 1 },
-        PRE_SELECT_CADENCE =>       { :address => [0x11, 0x25, 0x00]b,  :length => 1 },
-        START_SELECT =>             { :address => [0x12, 0x25, 0x01]b,  :length => 1 },
-        PRE_SELECT =>               { :address => [0x13, 0x25, 0x00]b,  :length => 1 },
+        AUTO_START_GEAR =>          { :address => [0x12, 0x25, 0x02]b,  :length => 1,   :minmax => [1, 12] },
+        PRE_SELECT_CADENCE =>       { :address => [0x11, 0x25, 0x00]b,  :length => 1,   :minmax => [40, 100] },
+        START_SELECT =>             { :address => [0x12, 0x25, 0x01]b,  :length => 1,   :values => [0, 1] },
+        PRE_SELECT =>               { :address => [0x13, 0x25, 0x00]b,  :length => 1,   :values => [0, 1] },
 
         NUMBER_OF_GEARS =>          { :address => [0x00, 0x25, 0x00]b,  :length => 1 },
 
-        HIDDEN_SETTINGS_ENABLE =>   { :address => [0x00, 0x30, 0x04]b,  :length => 4 },
+        HIDDEN_SETTINGS_ENABLE =>   { :address => [0x00, 0x30, 0x04]b,  :length => 4,   :values => [0, 0x56a93c03] },
     } as Lang.Dictionary<ParameterType, Lang.Dictionary>;
 
     class UnknownParameterException extends Lang.Exception
