@@ -3,14 +3,11 @@ import Toybox.Lang;
 import Toybox.WatchUi;
 using Toybox.BluetoothLowEnergy as Ble;
 
-class PinionGarminDelegate extends Pinion.Delegate
+class PinionGarminTestDelegate extends Pinion.Delegate
 {
-    private var _pinionGarminSettingsApp as PinionGarminSettingsApp?;
-
-    public function initialize(pinionGarminSettingsApp as PinionGarminSettingsApp)
+    public function initialize()
     {
-        Pinion.Delegate.initialize();
-        _pinionGarminSettingsApp = pinionGarminSettingsApp;
+        Delegate.initialize();
     }
 
     public function onScanStateChanged(scanState as Pinion.ScanState) as Void
@@ -21,7 +18,14 @@ class PinionGarminDelegate extends Pinion.Delegate
     public function onConnected(device as Ble.Device) as Void
     {
         System.println("PinionDelegate.onConnected");
-        (_pinionGarminSettingsApp as PinionGarminSettingsApp).doStuff();
+        pinionInterface().read(Pinion.SERIAL_NUMBER);
+        pinionInterface().read(Pinion.HARDWARE_VERSION);
+        pinionInterface().read(Pinion.CURRENT_GEAR);
+        pinionInterface().read(Pinion.BATTERY_LEVEL);
+        pinionInterface().read(Pinion.AUTO_START_GEAR);
+        pinionInterface().read(Pinion.PRE_SELECT);
+        pinionInterface().read(Pinion.WHEEL_CIRCUMFERENCE);
+        pinionInterface().disconnect();
     }
 
     public function onDisconnected() as Void
@@ -40,7 +44,8 @@ class PinionGarminDelegate extends Pinion.Delegate
         {
             System.println("onFoundDevicesChanged(" + i + ": " + foundDevices[i].serialNumber() + ")");
         }
-        (_pinionGarminSettingsApp as PinionGarminSettingsApp).connect(foundDevices[0]);
+
+        pinionInterface().connect(foundDevices[0]);
     }
 
     public function onCurrentGearChanged(currentGear as Lang.Number) as Void
@@ -62,7 +67,7 @@ class PinionGarminDelegate extends Pinion.Delegate
 class PinionGarminSettingsApp extends Application.AppBase
 {
     private var _pinionInterface as Pinion.Interface;
-    private var _delegate as PinionGarminDelegate = new PinionGarminDelegate(self);
+    private var _delegate as PinionGarminTestDelegate = new PinionGarminTestDelegate();
 
     public function initialize()
     {
@@ -71,23 +76,6 @@ class PinionGarminSettingsApp extends Application.AppBase
         _pinionInterface = new Pinion.Interface();
         _pinionInterface.setDelegate(_delegate);
         _pinionInterface.startScan();
-    }
-
-    function connect(deviceHandle as Pinion.DeviceHandle) as Void
-    {
-        _pinionInterface.connect(deviceHandle);
-    }
-
-    function doStuff() as Void
-    {
-        _pinionInterface.read(Pinion.SERIAL_NUMBER);
-        _pinionInterface.read(Pinion.HARDWARE_VERSION);
-        _pinionInterface.read(Pinion.CURRENT_GEAR);
-        _pinionInterface.read(Pinion.BATTERY_LEVEL);
-        _pinionInterface.read(Pinion.AUTO_START_GEAR);
-        _pinionInterface.read(Pinion.PRE_SELECT);
-        _pinionInterface.read(Pinion.WHEEL_CIRCUMFERENCE);
-        _pinionInterface.disconnect();
     }
 
     // onStart() is called on application start up
