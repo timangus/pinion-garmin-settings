@@ -4,35 +4,35 @@ module Pinion
 {
     enum ParameterType
     {
-        HARDWARE_VERSION,
-        FIRMWARE_VERSION,
-        BOOTLOADER_VERSION,
-        SERIAL_NUMBER,
+        HARDWARE_VERSION        = "HARDWARE_VERSION",
+        FIRMWARE_VERSION        = "FIRMWARE_VERSION",
+        BOOTLOADER_VERSION      = "BOOTLOADER_VERSION",
+        SERIAL_NUMBER           = "SERIAL_NUMBER",
 
-        MOUNTING_ANGLE,
-        REAR_TEETH,
-        FRONT_TEETH,
-        WHEEL_CIRCUMFERENCE,
-        POWER_SUPPLY,
-        CAN_BUS,
-        DISPLAY,
-        SPEED_SENSOR_TYPE,
-        NUMBER_OF_MAGNETS,
+        MOUNTING_ANGLE          = "MOUNTING_ANGLE",
+        REAR_TEETH              = "REAR_TEETH",
+        FRONT_TEETH             = "FRONT_TEETH",
+        WHEEL_CIRCUMFERENCE     = "WHEEL_CIRCUMFERENCE",
+        POWER_SUPPLY            = "POWER_SUPPLY",
+        CAN_BUS                 = "CAN_BUS",
+        DISPLAY                 = "DISPLAY",
+        SPEED_SENSOR_TYPE       = "SPEED_SENSOR_TYPE",
+        NUMBER_OF_MAGNETS       = "NUMBER_OF_MAGNETS",
 
-        REVERSE_TRIGGER_MAPPING,
+        REVERSE_TRIGGER_MAPPING = "REVERSE_TRIGGER_MAPPING",
 
-        CURRENT_GEAR,
-        BATTERY_LEVEL,
+        CURRENT_GEAR            = "CURRENT_GEAR",
+        BATTERY_LEVEL           = "BATTERY_LEVEL",
 
-        AUTO_START_GEAR,
-        PRE_SELECT_CADENCE,
-        START_SELECT,
-        PRE_SELECT,
+        AUTO_START_GEAR         = "AUTO_START_GEAR",
+        PRE_SELECT_CADENCE      = "PRE_SELECT_CADENCE",
+        START_SELECT            = "START_SELECT",
+        PRE_SELECT              = "PRE_SELECT",
 
-        NUMBER_OF_GEARS,
+        NUMBER_OF_GEARS         = "NUMBER_OF_GEARS",
 
         // Don't set this manually, it's done automatically
-        HIDDEN_SETTINGS_ENABLE,
+        HIDDEN_SETTINGS_ENABLE  = "HIDDEN_SETTINGS_ENABLE",
     }
 
     const PARAMETERS =

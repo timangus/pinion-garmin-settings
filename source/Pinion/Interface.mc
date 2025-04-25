@@ -474,7 +474,7 @@ module Pinion
         {
             if(_scanState == Interface.SCANNING)
             {
-                if(parameter != Pinion.SERIAL_NUMBER)
+                if(!parameter.equals(Pinion.SERIAL_NUMBER))
                 {
                     System.println("Parameter returned while scanning is not SERIAL_NUMBER: " + parameter);
                     disconnect();
@@ -503,7 +503,7 @@ module Pinion
 
         public function onParameterWrite(parameter as Pinion.ParameterType) as Void
         {
-            if(parameter == Pinion.HIDDEN_SETTINGS_ENABLE)
+            if(parameter.equals(Pinion.HIDDEN_SETTINGS_ENABLE))
             {
                 // No point in notifying this
                 return;
