@@ -39,7 +39,7 @@ module Pinion
         {
             if(bytes[0] == PINION_ERR)
             {
-                System.println("ReadRequest response error " + bytes);
+                System.println("ReadRequest response error " + bytesToHex(bytes));
                 return false;
             }
 

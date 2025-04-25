@@ -41,5 +41,24 @@ module Pinion
             System.println("Request::onDescriptorWrite not implemented");
             return false;
         }
+
+        function bytesToHex(bytes as Lang.ByteArray) as Lang.String
+        {
+            var str = "[";
+
+            for(var i = 0; i < bytes.size(); i++)
+            {
+                if(i > 0)
+                {
+                    str += " ";
+                }
+
+                str += bytes[i].format("%02x");
+            }
+
+            str += "]";
+
+            return str;
+        }
     }
 }

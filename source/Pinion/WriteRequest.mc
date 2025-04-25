@@ -59,7 +59,7 @@ module Pinion
         {
             if(bytes[0] == PINION_ERR)
             {
-                System.println("WriteRequest response error " + bytes);
+                System.println("WriteRequest response error " + bytesToHex(bytes));
                 return false;
             }
 
