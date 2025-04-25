@@ -18,13 +18,35 @@ class PinionGarminTestDelegate extends Pinion.Delegate
     public function onConnected(device as Ble.Device) as Void
     {
         System.println("PinionDelegate.onConnected");
-        pinionInterface().read(Pinion.SERIAL_NUMBER);
+
         pinionInterface().read(Pinion.HARDWARE_VERSION);
+        pinionInterface().read(Pinion.FIRMWARE_VERSION);
+        pinionInterface().read(Pinion.BOOTLOADER_VERSION);
+        pinionInterface().read(Pinion.SERIAL_NUMBER);
+
+        pinionInterface().read(Pinion.MOUNTING_ANGLE);
+        pinionInterface().read(Pinion.REAR_TEETH);
+        pinionInterface().read(Pinion.FRONT_TEETH);
+        pinionInterface().read(Pinion.WHEEL_CIRCUMFERENCE);
+        pinionInterface().read(Pinion.POWER_SUPPLY);
+        pinionInterface().read(Pinion.CAN_BUS);
+        pinionInterface().read(Pinion.DISPLAY);
+        pinionInterface().read(Pinion.SPEED_SENSOR_TYPE);
+        pinionInterface().read(Pinion.NUMBER_OF_MAGNETS);
+
+        pinionInterface().read(Pinion.REVERSE_TRIGGER_MAPPING);
+
         pinionInterface().read(Pinion.CURRENT_GEAR);
         pinionInterface().read(Pinion.BATTERY_LEVEL);
+
         pinionInterface().read(Pinion.AUTO_START_GEAR);
+        pinionInterface().read(Pinion.PRE_SELECT_CADENCE);
+
+        pinionInterface().read(Pinion.START_SELECT);
         pinionInterface().read(Pinion.PRE_SELECT);
-        pinionInterface().read(Pinion.WHEEL_CIRCUMFERENCE);
+
+        pinionInterface().read(NUMBER_OF_GEARS);
+
         pinionInterface().disconnect();
     }
 
