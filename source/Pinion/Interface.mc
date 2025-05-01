@@ -47,10 +47,10 @@ module Pinion
         private var _requestCharacteristic as Ble.Characteristic?;
         private var _responseCharacteristic as Ble.Characteristic?;
 
-        private var _requestQueue as Pinion.RequestQueue = new Pinion.RequestQueue();
-        private var _currentRequest as Pinion.Request?;
+        private var _requestQueue as RequestQueue = new RequestQueue();
+        private var _currentRequest as Request?;
 
-        private var _pinionDelegate as Pinion.Delegate = new Pinion.Delegate();
+        private var _pinionDelegate as Delegate = new Delegate();
 
         public function initialize()
         {
@@ -160,13 +160,13 @@ module Pinion
                         _connectedDevice = device;
                         connected = true;
 
-                        _requestQueue.push(new Pinion.SubscribeRequest(_responseCharacteristic as Ble.Characteristic, INDICATE, self));
+                        _requestQueue.push(new SubscribeRequest(_responseCharacteristic as Ble.Characteristic, INDICATE, self));
                         processQueue();
 
                         if(_scanState == Interface.SCANNING)
                         {
                             // If we're in the scan state, the connection is only being made to retrieve the serial number of a gearbox
-                            read(Pinion.SERIAL_NUMBER);
+                            read(SERIAL_NUMBER);
                         }
                         else
                         {
@@ -174,7 +174,7 @@ module Pinion
                             _currentGearCharacteristic = service.getCharacteristic(PINION_CURRENT_GEAR_UUID);
                             if(_currentGearCharacteristic != null)
                             {
-                                _requestQueue.push(new Pinion.SubscribeRequest(_currentGearCharacteristic as Ble.Characteristic, NOTIFY, self));
+                                _requestQueue.push(new SubscribeRequest(_currentGearCharacteristic as Ble.Characteristic, NOTIFY, self));
                                 processQueue();
                             }
 
@@ -278,19 +278,19 @@ module Pinion
             Ble.registerProfile(pinionProfile);
         }
 
-        public function read(parameter as Pinion.ParameterType) as Void
+        public function read(parameter as ParameterType) as Void
         {
-            _requestQueue.push(new Pinion.ReadRequest(parameter, _requestCharacteristic as Ble.Characteristic, self));
+            _requestQueue.push(new ReadRequest(parameter, _requestCharacteristic as Ble.Characteristic, self));
             processQueue();
         }
 
-        public function write(parameter as Pinion.ParameterType, value as Lang.Number) as Void
+        public function write(parameter as ParameterType, value as Lang.Number) as Void
         {
-            var hiddenSetting = Pinion.PARAMETERS.hasKey(parameter) && (Pinion.PARAMETERS[parameter] as Lang.Dictionary).hasKey(:hidden);
+            var hiddenSetting = PARAMETERS.hasKey(parameter) && (PARAMETERS[parameter] as Lang.Dictionary).hasKey(:hidden);
 
-            if(hiddenSetting) { _requestQueue.push(new Pinion.WriteRequest(Pinion.HIDDEN_SETTINGS_ENABLE, 0x56a93c03, _requestCharacteristic as Ble.Characteristic, self)); }
-            _requestQueue.push(new Pinion.WriteRequest(parameter, value, _requestCharacteristic as Ble.Characteristic, self));
-            if(hiddenSetting) { _requestQueue.push(new Pinion.WriteRequest(Pinion.HIDDEN_SETTINGS_ENABLE, 0x0, _requestCharacteristic as Ble.Characteristic, self)); }
+            if(hiddenSetting) { _requestQueue.push(new WriteRequest(HIDDEN_SETTINGS_ENABLE, 0x56a93c03, _requestCharacteristic as Ble.Characteristic, self)); }
+            _requestQueue.push(new WriteRequest(parameter, value, _requestCharacteristic as Ble.Characteristic, self));
+            if(hiddenSetting) { _requestQueue.push(new WriteRequest(HIDDEN_SETTINGS_ENABLE, 0x0, _requestCharacteristic as Ble.Characteristic, self)); }
 
             processQueue();
         }
@@ -330,7 +330,7 @@ module Pinion
                 return;
             }
 
-            var success = (_currentRequest as Pinion.Request).onDescriptorWrite(descriptor, status);
+            var success = (_currentRequest as Request).onDescriptorWrite(descriptor, status);
             _currentRequest = null;
 
             if(!success)
@@ -356,7 +356,7 @@ module Pinion
                     return;
                 }
 
-                var success = (_currentRequest as Pinion.Request).decodeResponse(value);
+                var success = (_currentRequest as Request).decodeResponse(value);
                 _currentRequest = null;
 
                 if(!success)
@@ -413,7 +413,7 @@ module Pinion
                 return;
             }
 
-            _currentRequest = _requestQueue.pop() as Pinion.Request;
+            _currentRequest = _requestQueue.pop() as Request;
 
             var success = _currentRequest.execute();
             if(!success)
@@ -423,7 +423,7 @@ module Pinion
             }
         }
 
-        public function setDelegate(pinionDelegate as Pinion.Delegate) as Void
+        public function setDelegate(pinionDelegate as Delegate) as Void
         {
             _pinionDelegate = pinionDelegate;
             _pinionDelegate.setPinionInterface(self);
@@ -470,11 +470,11 @@ module Pinion
             _pinionDelegate.onCurrentGearChanged(currentGear);
         }
 
-        public function onParameterRead(parameter as Pinion.ParameterType, value as Lang.Number) as Void
+        public function onParameterRead(parameter as ParameterType, value as Lang.Number) as Void
         {
             if(_scanState == Interface.SCANNING)
             {
-                if(!parameter.equals(Pinion.SERIAL_NUMBER))
+                if(!parameter.equals(SERIAL_NUMBER))
                 {
                     System.println("Parameter returned while scanning is not SERIAL_NUMBER: " + parameter);
                     disconnect();
@@ -501,9 +501,9 @@ module Pinion
             _pinionDelegate.onParameterRead(parameter, value);
         }
 
-        public function onParameterWrite(parameter as Pinion.ParameterType) as Void
+        public function onParameterWrite(parameter as ParameterType) as Void
         {
-            if(parameter.equals(Pinion.HIDDEN_SETTINGS_ENABLE))
+            if(parameter.equals(HIDDEN_SETTINGS_ENABLE))
             {
                 // No point in notifying this
                 return;

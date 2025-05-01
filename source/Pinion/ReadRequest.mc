@@ -5,21 +5,21 @@ module Pinion
 {
     class ReadRequest extends Request
     {
-        private var _parameter as Pinion.ParameterType;
+        private var _parameter as ParameterType;
         private var _parameterData as Lang.Dictionary = new Lang.Dictionary();
         private var _characteristic as Ble.Characteristic?;
 
-        public function initialize(parameter as Pinion.ParameterType, characteristic as Ble.Characteristic, delegate as Interface)
+        public function initialize(parameter as ParameterType, characteristic as Ble.Characteristic, delegate as Interface)
         {
             Request.initialize(delegate);
 
-            if(!Pinion.PARAMETERS.hasKey(parameter))
+            if(!PARAMETERS.hasKey(parameter))
             {
                 throw new UnknownParameterException(parameter);
             }
 
             _parameter = parameter;
-            _parameterData = Pinion.PARAMETERS[parameter] as Lang.Dictionary;
+            _parameterData = PARAMETERS[parameter] as Lang.Dictionary;
             _characteristic = characteristic;
         }
 

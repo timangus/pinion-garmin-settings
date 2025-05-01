@@ -13,13 +13,13 @@ module Pinion
             _pinionInterface = pinionInterface;
         }
 
-        public function onScanStateChanged(scanState as Pinion.ScanState) as Void {}
+        public function onScanStateChanged(scanState as ScanState) as Void {}
         public function onConnected(device as Ble.Device) as Void {}
         public function onDisconnected() as Void {}
         public function onConnectionTimeout() as Void {}
-        public function onFoundDevicesChanged(foundDevices as Lang.Array<Pinion.DeviceHandle>) as Void {}
+        public function onFoundDevicesChanged(foundDevices as Lang.Array<DeviceHandle>) as Void {}
         public function onCurrentGearChanged(currentGear as Lang.Number) as Void {}
-        public function onParameterRead(parameter as Pinion.ParameterType, value as Lang.Number) as Void {}
-        public function onParameterWrite(parameter as Pinion.ParameterType) as Void {}
+        public function onParameterRead(parameter as ParameterType, value as Lang.Number) as Void {}
+        public function onParameterWrite(parameter as ParameterType) as Void {}
     }
 }

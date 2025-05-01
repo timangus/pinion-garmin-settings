@@ -7,21 +7,21 @@ module Pinion
     {
         private var _value as Lang.Number = 0;
 
-        private var _parameter as Pinion.ParameterType;
+        private var _parameter as ParameterType;
         private var _parameterData as Lang.Dictionary = new Lang.Dictionary();
         private var _characteristic as Ble.Characteristic?;
 
-        public function initialize(parameter as Pinion.ParameterType, value as Lang.Number, characteristic as Ble.Characteristic, delegate as Interface)
+        public function initialize(parameter as ParameterType, value as Lang.Number, characteristic as Ble.Characteristic, delegate as Interface)
         {
             Request.initialize(delegate);
 
-            if(!Pinion.PARAMETERS.hasKey(parameter))
+            if(!PARAMETERS.hasKey(parameter))
             {
                 throw new UnknownParameterException(parameter);
             }
 
             _parameter = parameter;
-            _parameterData = Pinion.PARAMETERS[parameter] as Lang.Dictionary;
+            _parameterData = PARAMETERS[parameter] as Lang.Dictionary;
 
             if(!_parameterData.hasKey(:minmax) && !_parameterData.hasKey(:values))
             {
