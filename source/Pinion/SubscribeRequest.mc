@@ -1,15 +1,15 @@
 using Toybox.Lang;
 using Toybox.BluetoothLowEnergy as Ble;
 
-enum BluetoothSubscribeType
-{
-    DISABLE     = 0x00,
-    NOTIFY      = 0x01,
-    INDICATE    = 0x02
-}
-
 module Pinion
 {
+    enum BluetoothSubscribeType
+    {
+        DISABLE     = 0x00,
+        NOTIFY      = 0x01,
+        INDICATE    = 0x02
+    }
+
     class SubscribeRequest extends Request
     {
         private var _cccd as Ble.Descriptor?;
