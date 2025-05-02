@@ -50,7 +50,7 @@ module Pinion
         private var _requestQueue as RequestQueue = new RequestQueue();
         private var _currentRequest as Request?;
 
-        private var _pinionDelegate as Delegate = new Delegate();
+        private var _pinionDelegate as Delegate?;
 
         public function initialize()
         {
@@ -75,9 +75,9 @@ module Pinion
                 System.println("Timed out connecting, restarting scanning");
                 Ble.setScanState(Ble.SCAN_STATE_SCANNING);
             }
-            else
+            else if(_pinionDelegate != null)
             {
-                _pinionDelegate.onConnectionTimeout();
+                (_pinionDelegate as Delegate).onConnectionTimeout();
             }
         }
 
@@ -426,22 +426,30 @@ module Pinion
         public function setDelegate(pinionDelegate as Delegate) as Void
         {
             _pinionDelegate = pinionDelegate;
-            _pinionDelegate.setPinionInterface(self);
         }
 
         public function onScanStateChanged() as Void
         {
-            _pinionDelegate.onScanStateChanged(_scanState);
+            if(_pinionDelegate != null)
+            {
+                (_pinionDelegate as Delegate).onScanStateChanged(_scanState);
+            }
         }
 
         public function onFoundDevicesChanged() as Void
         {
-            _pinionDelegate.onFoundDevicesChanged(_foundDevices);
+            if(_pinionDelegate != null)
+            {
+                (_pinionDelegate as Delegate).onFoundDevicesChanged(_foundDevices);
+            }
         }
 
         public function onConnected(device as Ble.Device) as Void
         {
-            _pinionDelegate.onConnected(device);
+            if(_pinionDelegate != null)
+            {
+                (_pinionDelegate as Delegate).onConnected(device);
+            }
         }
 
         public function onDisconnected() as Void
@@ -459,15 +467,18 @@ module Pinion
                 // disconnection is complete we must notify about the new device.
                 onFoundDevicesChanged();
             }
-            else
+            else if(_pinionDelegate != null)
             {
-                _pinionDelegate.onDisconnected();
+                (_pinionDelegate as Delegate).onDisconnected();
             }
         }
 
         public function onCurrentGearChanged(currentGear as Lang.Number) as Void
         {
-            _pinionDelegate.onCurrentGearChanged(currentGear);
+            if(_pinionDelegate != null)
+            {
+                (_pinionDelegate as Delegate).onCurrentGearChanged(currentGear);
+            }
         }
 
         public function onParameterRead(parameter as ParameterType, value as Lang.Number) as Void
@@ -498,7 +509,10 @@ module Pinion
                 return;
             }
 
-            _pinionDelegate.onParameterRead(parameter, value);
+            if(_pinionDelegate != null)
+            {
+                (_pinionDelegate as Delegate).onParameterRead(parameter, value);
+            }
         }
 
         public function onParameterWrite(parameter as ParameterType) as Void
@@ -509,7 +523,10 @@ module Pinion
                 return;
             }
 
-            _pinionDelegate.onParameterWrite(parameter);
+            if(_pinionDelegate != null)
+            {
+                (_pinionDelegate as Delegate).onParameterWrite(parameter);
+            }
         }
     }
 }
