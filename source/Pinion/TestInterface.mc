@@ -6,7 +6,7 @@ module Pinion
 {
     class TestInterface
     {
-        private var _delegate as Delegate = new Delegate();
+        private var _delegate as Delegate?;
         private var _scanState as ScanState = NOT_SCANNING;
 
         private var _foundDevices as Lang.Array<DeviceHandle> = new Lang.Array<DeviceHandle>[0];
@@ -102,22 +102,30 @@ module Pinion
         public function setDelegate(delegate as Delegate) as Void
         {
             _delegate = delegate;
-            _delegate.setPinionInterface(self);
         }
 
         public function onScanStateChanged() as Void
         {
-            _delegate.onScanStateChanged(_scanState);
+            if(_delegate != null)
+            {
+                (_delegate as Delegate).onScanStateChanged(_scanState);
+            }
         }
 
         public function onFoundDevicesChanged() as Void
         {
-            _delegate.onFoundDevicesChanged(_foundDevices);
+            if(_delegate != null)
+            {
+                (_delegate as Delegate).onFoundDevicesChanged(_foundDevices);
+            }
         }
 
         public function onConnected(device as Ble.Device) as Void
         {
-            _delegate.onConnected(device);
+            if(_delegate != null)
+            {
+                (_delegate as Delegate).onConnected(device);
+            }
         }
 
         public function onDisconnected() as Void
@@ -125,13 +133,19 @@ module Pinion
             if(_connectedDevice != null)
             {
                 _connectedDevice = null;
-                _delegate.onDisconnected();
+                if(_delegate != null)
+                {
+                    (_delegate as Delegate).onDisconnected();
+                }
             }
         }
 
         public function onParameterRead(parameter as ParameterType, value as Lang.Number) as Void
         {
-            _delegate.onParameterRead(parameter, value);
+            if(_delegate != null)
+            {
+                (_delegate as Delegate).onParameterRead(parameter, value);
+            }
         }
 
         public function onParameterWrite(parameter as ParameterType) as Void
@@ -142,7 +156,10 @@ module Pinion
                 return;
             }
 
-            _delegate.onParameterWrite(parameter);
+            if(_delegate != null)
+            {
+                (_delegate as Delegate).onParameterWrite(parameter);
+            }
         }
     }
 }
