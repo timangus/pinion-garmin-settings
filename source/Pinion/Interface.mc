@@ -34,7 +34,7 @@ module Pinion
         const PINION_CHAR_REQUEST_UUID  = Ble.longToUuid(0x0000000d33d24f94L, 0x9ee49312b3660005L);
         const PINION_CHAR_RESPONSE_UUID = Ble.longToUuid(0x0000000e33d24f94L, 0x9ee49312b3660005L);
 
-        private var _scanState as ScanState = Interface.NOT_SCANNING;
+        private var _scanState as ScanState = NOT_SCANNING;
         private var _connectionTimeoutTimer as Timer.Timer = new Timer.Timer();
         private var _disconnectionTimer as Timer.Timer = new Timer.Timer();
         private var _disconnectWhenIdle as Lang.Boolean = false;
@@ -70,7 +70,7 @@ module Pinion
         {
             Ble.unpairDevice(_connectedDevice as Ble.Device);
 
-            if(_scanState == Interface.SCANNING)
+            if(_scanState == SCANNING)
             {
                 System.println("Timed out connecting, restarting scanning");
                 Ble.setScanState(Ble.SCAN_STATE_SCANNING);
@@ -163,7 +163,7 @@ module Pinion
                         _requestQueue.push(new SubscribeRequest(_responseCharacteristic as Ble.Characteristic, INDICATE, self));
                         processQueue();
 
-                        if(_scanState == Interface.SCANNING)
+                        if(_scanState == SCANNING)
                         {
                             // If we're in the scan state, the connection is only being made to retrieve the serial number of a gearbox
                             read(SERIAL_NUMBER);
@@ -192,26 +192,26 @@ module Pinion
 
         public function startScan() as Void
         {
-            if(_scanState == Interface.SCANNING)
+            if(_scanState == SCANNING)
             {
                 return;
             }
 
             disconnect();
-            _scanState = Interface.SCANNING;
+            _scanState = SCANNING;
             Ble.setScanState(Ble.SCAN_STATE_SCANNING);
             onScanStateChanged();
         }
 
         public function stopScan() as Void
         {
-            if(_scanState == Interface.NOT_SCANNING)
+            if(_scanState == NOT_SCANNING)
             {
                 return;
             }
 
             disconnect();
-            _scanState = Interface.NOT_SCANNING;
+            _scanState = NOT_SCANNING;
             Ble.setScanState(Ble.SCAN_STATE_OFF);
             onScanStateChanged();
         }
@@ -452,7 +452,7 @@ module Pinion
             _connectedDevice = null;
             _lastScanResult = null;
 
-            if(_scanState == Interface.SCANNING)
+            if(_scanState == SCANNING)
             {
                 // If we've disconnected while scanning it's because we were retrieving a
                 // gearbox serial number to add to the found devices array. Now that the
@@ -472,7 +472,7 @@ module Pinion
 
         public function onParameterRead(parameter as ParameterType, value as Lang.Number) as Void
         {
-            if(_scanState == Interface.SCANNING)
+            if(_scanState == SCANNING)
             {
                 if(!parameter.equals(SERIAL_NUMBER))
                 {
