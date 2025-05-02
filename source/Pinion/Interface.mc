@@ -50,7 +50,7 @@ module Pinion
         private var _requestQueue as RequestQueue = new RequestQueue();
         private var _currentRequest as Request?;
 
-        private var _pinionDelegate as Delegate?;
+        private var _delegate as Delegate?;
 
         public function initialize()
         {
@@ -75,9 +75,9 @@ module Pinion
                 System.println("Timed out connecting, restarting scanning");
                 Ble.setScanState(Ble.SCAN_STATE_SCANNING);
             }
-            else if(_pinionDelegate != null)
+            else if(_delegate != null)
             {
-                (_pinionDelegate as Delegate).onConnectionTimeout();
+                (_delegate as Delegate).onConnectionTimeout();
             }
         }
 
@@ -425,30 +425,30 @@ module Pinion
 
         public function setDelegate(pinionDelegate as Delegate) as Void
         {
-            _pinionDelegate = pinionDelegate;
+            _delegate = pinionDelegate;
         }
 
         public function onScanStateChanged() as Void
         {
-            if(_pinionDelegate != null)
+            if(_delegate != null)
             {
-                (_pinionDelegate as Delegate).onScanStateChanged(_scanState);
+                (_delegate as Delegate).onScanStateChanged(_scanState);
             }
         }
 
         public function onFoundDevicesChanged() as Void
         {
-            if(_pinionDelegate != null)
+            if(_delegate != null)
             {
-                (_pinionDelegate as Delegate).onFoundDevicesChanged(_foundDevices);
+                (_delegate as Delegate).onFoundDevicesChanged(_foundDevices);
             }
         }
 
         public function onConnected(device as Ble.Device) as Void
         {
-            if(_pinionDelegate != null)
+            if(_delegate != null)
             {
-                (_pinionDelegate as Delegate).onConnected(device);
+                (_delegate as Delegate).onConnected(device);
             }
         }
 
@@ -467,17 +467,17 @@ module Pinion
                 // disconnection is complete we must notify about the new device.
                 onFoundDevicesChanged();
             }
-            else if(_pinionDelegate != null)
+            else if(_delegate != null)
             {
-                (_pinionDelegate as Delegate).onDisconnected();
+                (_delegate as Delegate).onDisconnected();
             }
         }
 
         public function onCurrentGearChanged(currentGear as Lang.Number) as Void
         {
-            if(_pinionDelegate != null)
+            if(_delegate != null)
             {
-                (_pinionDelegate as Delegate).onCurrentGearChanged(currentGear);
+                (_delegate as Delegate).onCurrentGearChanged(currentGear);
             }
         }
 
@@ -509,9 +509,9 @@ module Pinion
                 return;
             }
 
-            if(_pinionDelegate != null)
+            if(_delegate != null)
             {
-                (_pinionDelegate as Delegate).onParameterRead(parameter, value);
+                (_delegate as Delegate).onParameterRead(parameter, value);
             }
         }
 
@@ -523,9 +523,9 @@ module Pinion
                 return;
             }
 
-            if(_pinionDelegate != null)
+            if(_delegate != null)
             {
-                (_pinionDelegate as Delegate).onParameterWrite(parameter);
+                (_delegate as Delegate).onParameterWrite(parameter);
             }
         }
     }
