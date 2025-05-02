@@ -5,10 +5,10 @@ module Pinion
 {
     class Delegate
     {
-        private var _pinionInterface as Interface?;
+        private var _pinionInterface as AbstractInterface?;
 
-        public function pinionInterface() as Interface { return _pinionInterface as Interface; }
-        public function setPinionInterface(pinionInterface as Interface) as Void
+        public function pinionInterface() as AbstractInterface { return _pinionInterface as AbstractInterface; }
+        public function setPinionInterface(pinionInterface as AbstractInterface) as Void
         {
             _pinionInterface = pinionInterface;
         }
