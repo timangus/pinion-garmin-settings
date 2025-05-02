@@ -88,7 +88,7 @@ class PinionGarminTestDelegate extends Pinion.Delegate
 
 class PinionGarminSettingsApp extends Application.AppBase
 {
-    private var _pinionInterface as Pinion.Interface;
+    private var _pinionInterface as Pinion.AbstractInterface;
     private var _delegate as PinionGarminTestDelegate = new PinionGarminTestDelegate();
 
     public function initialize()
