@@ -7,6 +7,7 @@ module Pinion
     {
         function startScan() as Void;
         function stopScan() as Void;
+        function foundDevices() as Lang.Array<DeviceHandle>;
 
         function connect(deviceHandle as DeviceHandle) as Lang.Boolean;
         function disconnect() as Void;

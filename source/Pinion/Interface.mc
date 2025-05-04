@@ -216,6 +216,8 @@ module Pinion
             onScanStateChanged();
         }
 
+        public function foundDevices() as Lang.Array<DeviceHandle> { return _foundDevices; }
+
         private function scanResultIsPinion(scanResult as Ble.ScanResult) as Lang.Boolean
         {
             var uuids = scanResult.getServiceUuids();
