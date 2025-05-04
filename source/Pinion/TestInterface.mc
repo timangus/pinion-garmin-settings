@@ -87,6 +87,8 @@ module Pinion
             onScanStateChanged();
         }
 
+        public function foundDevices() as Lang.Array<DeviceHandle> { return _foundDevices; }
+
         public function read(parameter as ParameterType) as Void
         {
             onParameterRead(parameter, _testParameterData[parameter] as Lang.Number);
