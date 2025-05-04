@@ -69,8 +69,8 @@ module Pinion
 
             if(_foundDevices.size() == 0)
             {
-                _foundDevices.add(new DeviceHandle(2480021234l as Lang.Number, new Ble.ScanResult()));
-                _foundDevices.add(new DeviceHandle(2480025678l as Lang.Number, new Ble.ScanResult()));
+                _foundDevices.add(new DeviceHandle(2480021234l as Lang.Number, null));
+                _foundDevices.add(new DeviceHandle(2480025678l as Lang.Number, null));
                 onFoundDevicesChanged();
             }
         }
