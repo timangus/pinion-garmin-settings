@@ -51,7 +51,7 @@ module Pinion
             }
         }
 
-        public function onConnectionTimeout() as Void
+        public function _onConnectionTimeout() as Void
         {
             Ble.unpairDevice(_connectedDevice as Ble.Device);
 
@@ -82,11 +82,11 @@ module Pinion
                 return false;
             }
 
-            _connectionTimeoutTimer.start(method(:onConnectionTimeout), CONNECTION_TIMEOUT, false);
+            _connectionTimeoutTimer.start(method(:_onConnectionTimeout), CONNECTION_TIMEOUT, false);
             return true;
         }
 
-        public function testForDisconnection() as Void
+        public function _testForDisconnection() as Void
         {
             if(_connectedDevice == null)
             {
@@ -117,7 +117,7 @@ module Pinion
                 // For some reason, presumably a bug, onConnectedStateChanged is not called when you deliberately
                 // unpair a device, meaning there is no way of reacting to a disconnect, so instead we resort to
                 // polling the connection state until it drops. Ugh.
-                _disconnectionTimer.start(method(:testForDisconnection), 50, true);
+                _disconnectionTimer.start(method(:_testForDisconnection), 50, true);
             }
         }
 
@@ -263,7 +263,7 @@ module Pinion
                     if(_connectedDevice != null)
                     {
                         Ble.setScanState(Ble.SCAN_STATE_OFF);
-                        _connectionTimeoutTimer.start(method(:onConnectionTimeout), CONNECTION_TIMEOUT, false);
+                        _connectionTimeoutTimer.start(method(:_onConnectionTimeout), CONNECTION_TIMEOUT, false);
                         break;
                     }
                 }
