@@ -16,7 +16,9 @@ module Pinion
         }
 
         public function serialNumber() as Lang.Number { return _serialNumber; }
+
         public function scanResult() as Ble.ScanResult? { return _scanResult; }
+        public function hasScanResult() as Lang.Boolean { return _scanResult != null; }
     }
 
     enum ScanState
@@ -237,7 +239,7 @@ module Pinion
             for(var i = 0; i < _foundDevices.size(); i++)
             {
                 var foundDevice = _foundDevices[i];
-                if(foundDevice.scanResult() != null && scanResult.isSameDevice(foundDevice.scanResult() as Ble.ScanResult))
+                if(foundDevice.hasScanResult() && scanResult.isSameDevice(foundDevice.scanResult() as Ble.ScanResult))
                 {
                     return true;
                 }
