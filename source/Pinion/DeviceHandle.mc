@@ -6,6 +6,9 @@ module Pinion
 {
     class DeviceHandle
     {
+        const STALE_TIMEOUT = 20000;
+        const SCANRESULT_TIMEOUT = 10000;
+
         private var _serialNumber as Lang.Number;
         private var _scanResult as Ble.ScanResult?;
         private var _timeoutTimer as Timer.Timer = new Timer.Timer();
@@ -19,12 +22,12 @@ module Pinion
         public function _resetScanResult() as Void
         {
             _scanResult = null;
-            _timeoutTimer.start(method(:_markAsStale), 20000, false);
+            _timeoutTimer.start(method(:_markAsStale), STALE_TIMEOUT, false);
         }
 
         private function timeoutScanResult() as Void
         {
-            _timeoutTimer.start(method(:_resetScanResult), 10000, false);
+            _timeoutTimer.start(method(:_resetScanResult), SCANRESULT_TIMEOUT, false);
         }
 
         public function initialize(serialNumber as Lang.Number, scanResult as Ble.ScanResult?)
