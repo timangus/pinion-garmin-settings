@@ -7,16 +7,16 @@ module Pinion
     class DeviceHandle
     {
         private var _serialNumber as Lang.Number;
-        private var _scanResult as Ble.ScanResult;
+        private var _scanResult as Ble.ScanResult?;
 
-        public function initialize(serialNumber as Lang.Number, scanResult as Ble.ScanResult)
+        public function initialize(serialNumber as Lang.Number, scanResult as Ble.ScanResult?)
         {
             _serialNumber = serialNumber;
             _scanResult = scanResult;
         }
 
         public function serialNumber() as Lang.Number { return _serialNumber; }
-        public function scanResult() as Ble.ScanResult { return _scanResult; }
+        public function scanResult() as Ble.ScanResult? { return _scanResult; }
     }
 
     enum ScanState
@@ -91,7 +91,7 @@ module Pinion
                 return false;
             }
 
-            _connectedDevice = Ble.pairDevice(deviceHandle.scanResult());
+            _connectedDevice = Ble.pairDevice(deviceHandle.scanResult() as Ble.ScanResult);
             if(_connectedDevice == null)
             {
                 return false;
@@ -236,7 +236,8 @@ module Pinion
         {
             for(var i = 0; i < _foundDevices.size(); i++)
             {
-                if(scanResult.isSameDevice(_foundDevices[i].scanResult()))
+                var foundDevice = _foundDevices[i];
+                if(foundDevice.scanResult() != null && scanResult.isSameDevice(foundDevice.scanResult() as Ble.ScanResult))
                 {
                     return true;
                 }
