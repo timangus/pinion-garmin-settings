@@ -19,6 +19,16 @@ module Pinion
 
         public function scanResult() as Ble.ScanResult? { return _scanResult; }
         public function hasScanResult() as Lang.Boolean { return _scanResult != null; }
+
+        public function rssi() as Lang.Number
+        {
+            if(!hasScanResult())
+            {
+                return -100;
+            }
+
+            return (_scanResult as Ble.ScanResult).getRssi();
+        }
     }
 
     enum ScanState
