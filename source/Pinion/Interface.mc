@@ -20,8 +20,7 @@ module Pinion
         const PINION_CHAR_RESPONSE_UUID = Ble.longToUuid(0x0000000e33d24f94L, 0x9ee49312b3660005L);
 
         private var _scanState as ScanState = NOT_SCANNING;
-        private var _connectionTimeoutTimer as Timer.Timer = new Timer.Timer();
-        private var _disconnectionTimer as Timer.Timer = new Timer.Timer();
+        private var _connectionTimer as Timer.Timer = new Timer.Timer();
         private var _disconnectWhenIdle as Lang.Boolean = false;
 
         private var _lastScanResult as Ble.ScanResult?;
@@ -82,7 +81,7 @@ module Pinion
                 return false;
             }
 
-            _connectionTimeoutTimer.start(method(:_onConnectionTimeout), CONNECTION_TIMEOUT, false);
+            _connectionTimer.start(method(:_onConnectionTimeout), CONNECTION_TIMEOUT, false);
             return true;
         }
 
@@ -91,11 +90,11 @@ module Pinion
             if(_connectedDevice == null)
             {
                 // Already disconnected
-                _disconnectionTimer.stop();
+                _connectionTimer.stop();
             }
             else if(!(_connectedDevice as Ble.Device).isConnected())
             {
-                _disconnectionTimer.stop();
+                _connectionTimer.stop();
                 onDisconnected();
             }
 
@@ -117,14 +116,14 @@ module Pinion
                 // For some reason, presumably a bug, onConnectedStateChanged is not called when you deliberately
                 // unpair a device, meaning there is no way of reacting to a disconnect, so instead we resort to
                 // polling the connection state until it drops. Ugh.
-                _disconnectionTimer.start(method(:_testForDisconnection), 50, true);
+                _connectionTimer.start(method(:_testForDisconnection), 50, true);
             }
         }
 
         public function onConnectedStateChanged(device as Ble.Device, state as Ble.ConnectionState) as Void
         {
             var connected = false;
-            _connectionTimeoutTimer.stop();
+            _connectionTimer.stop();
 
             // The scan state should already be off at this point, but I've witnessed a dropped connection spontaneously
             // reconnect after the device wakes up; in this case scanning may have been restarted so make sure it's off
@@ -263,7 +262,7 @@ module Pinion
                     if(_connectedDevice != null)
                     {
                         Ble.setScanState(Ble.SCAN_STATE_OFF);
-                        _connectionTimeoutTimer.start(method(:_onConnectionTimeout), CONNECTION_TIMEOUT, false);
+                        _connectionTimer.start(method(:_onConnectionTimeout), CONNECTION_TIMEOUT, false);
                         break;
                     }
                 }
