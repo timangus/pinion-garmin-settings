@@ -517,7 +517,7 @@ module Pinion
                     return;
                 }
 
-                _foundDevices.add(new DeviceHandle(value, _lastScanResult as Ble.ScanResult));
+                _foundDevices.add(new DeviceHandle(value as Lang.Long, _lastScanResult as Ble.ScanResult));
                 _lastScanResult = null;
 
                 // Resume scanning
