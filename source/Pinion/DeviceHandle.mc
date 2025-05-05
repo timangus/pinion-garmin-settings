@@ -9,7 +9,7 @@ module Pinion
         const STALE_TIMEOUT = 20000;
         const SCANRESULT_TIMEOUT = 10000;
 
-        private var _serialNumber as Lang.Number;
+        private var _serialNumber as Lang.Long;
         private var _scanResult as Ble.ScanResult?;
         private var _timeoutTimer as Timer.Timer = new Timer.Timer();
         private var _stale as Lang.Boolean = false;
@@ -30,13 +30,13 @@ module Pinion
             _timeoutTimer.start(method(:_resetScanResult), SCANRESULT_TIMEOUT, false);
         }
 
-        public function initialize(serialNumber as Lang.Number, scanResult as Ble.ScanResult?)
+        public function initialize(serialNumber as Lang.Long, scanResult as Ble.ScanResult?)
         {
             _serialNumber = serialNumber;
             updateScanResult(scanResult);
         }
 
-        public function serialNumber() as Lang.Number { return _serialNumber; }
+        public function serialNumber() as Lang.Long { return _serialNumber; }
 
         public function scanResult() as Ble.ScanResult? { return _scanResult; }
         public function hasScanResult() as Lang.Boolean { return _scanResult != null; }
