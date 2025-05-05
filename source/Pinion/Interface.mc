@@ -217,24 +217,23 @@ module Pinion
             return false;
         }
 
-        private function scanResultIsAlreadyKnown(scanResult as Ble.ScanResult) as Lang.Boolean
+        private function deviceHandleForScanResult(scanResult as Ble.ScanResult) as DeviceHandle?
         {
             for(var i = 0; i < _foundDevices.size(); i++)
             {
                 var foundDevice = _foundDevices[i];
                 if(foundDevice.hasScanResult() && scanResult.isSameDevice(foundDevice.scanResult() as Ble.ScanResult))
                 {
-                    foundDevice.updateScanResult(scanResult);
-                    return true;
+                    return foundDevice;
                 }
             }
 
-            return false;
+            return null;
         }
 
         public function onScanResults(scanResults as Ble.Iterator) as Void
         {
-            var staleDevicesRemoved = false;
+            var devicesChanged = false;
             var i = _foundDevices.size() - 1;
             while(i >= 0)
             {
@@ -242,21 +241,22 @@ module Pinion
                 if(foundDevice.isStale())
                 {
                     _foundDevices.remove(foundDevice);
-                    staleDevicesRemoved = true;
+                    devicesChanged = true;
                 }
 
                 i--;
             }
 
-            if(staleDevicesRemoved)
-            {
-                onFoundDevicesChanged();
-            }
-
             _lastScanResult = null;
             for(var result = scanResults.next() as Ble.ScanResult; result != null; result = scanResults.next())
             {
-                if(!scanResultIsAlreadyKnown(result) && scanResultIsPinion(result))
+                if(!scanResultIsPinion(result))
+                {
+                    continue;
+                }
+
+                var existingDevice = deviceHandleForScanResult(result);
+                if(existingDevice == null)
                 {
                     _lastScanResult = result;
                     _connectedDevice = Ble.pairDevice(result);
@@ -267,6 +267,16 @@ module Pinion
                         break;
                     }
                 }
+                else
+                {
+                    existingDevice.updateScanResult(result);
+                    devicesChanged = true;
+                }
+            }
+
+            if(devicesChanged)
+            {
+                onFoundDevicesChanged();
             }
         }
 
