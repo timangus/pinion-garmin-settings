@@ -218,6 +218,17 @@ module Pinion
             return null;
         }
 
+        public function _startScanHack() as Void
+        {
+            Ble.setScanState(Ble.SCAN_STATE_SCANNING);
+        }
+
+        private function restartScanHack() as Void
+        {
+            Ble.setScanState(Ble.SCAN_STATE_OFF);
+            _connectionTimer.start(method(:_startScanHack), 200, false);
+        }
+
         public function onScanResults(scanResults as Ble.Iterator) as Void
         {
             var devicesChanged = false;
@@ -258,6 +269,16 @@ module Pinion
                 {
                     existingDevice.updateScanResult(result);
                     devicesChanged = true;
+
+                    // On the simulator onScanResults delivers scan results as you might expect, that it to say
+                    // periodically,for any device currently advertising. On a device however (an Edge 530 at
+                    // least), it seems to be the case that once a single scan result has been delivered for a
+                    // device, no more will be forthcoming, regardless of whether or not the device is still
+                    // advertising, or its RSSI has changed, or whatever other reason. I can't really think why
+                    // it would do this or what purpose it would serve, but in any case for our use case it is
+                    // very unhelpful. The only way I've found to get it to (presumably) flush its internal
+                    // cache has been to Turn It Off And On Again, hence:
+                    restartScanHack();
                 }
             }
 
