@@ -488,10 +488,11 @@ module Pinion
 
             if(_scanState == SCANNING)
             {
-                // If we've disconnected while scanning it's because we were retrieving a
-                // gearbox serial number to add to the found devices array. Now that the
-                // disconnection is complete we must notify about the new device.
+                // If we've disconnected while in the scan state it's because we were retrieving a
+                // gearbox serial number to add to the found devices array. Now that the disconnection
+                // is complete we must notify about the new device and resume the actual scanning
                 onFoundDevicesChanged();
+                Ble.setScanState(Ble.SCAN_STATE_SCANNING);
             }
             else if(_delegate != null)
             {
@@ -528,9 +529,7 @@ module Pinion
                 _foundDevices.add(new DeviceHandle(value as Lang.Long, _lastScanResult as Ble.ScanResult));
                 _lastScanResult = null;
 
-                // Resume scanning
                 disconnect();
-                Ble.setScanState(Ble.SCAN_STATE_SCANNING);
 
                 return;
             }
