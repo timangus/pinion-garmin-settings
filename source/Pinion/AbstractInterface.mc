@@ -10,6 +10,7 @@ module Pinion
         function foundDevices() as Lang.Array<DeviceHandle>;
 
         function connect(deviceHandle as DeviceHandle) as Lang.Boolean;
+        function isConnected() as Lang.Boolean;
         function disconnect() as Void;
 
         function read(parameter as ParameterType) as Void;

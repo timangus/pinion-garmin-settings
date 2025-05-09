@@ -47,6 +47,11 @@ module Pinion
             return true;
         }
 
+        public function isConnected() as Lang.Boolean
+        {
+            return _connectedDevice != null;
+        }
+
         public function disconnect() as Void
         {
             if(_connectedDevice != null)
