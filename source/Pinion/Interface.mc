@@ -85,6 +85,28 @@ module Pinion
             return true;
         }
 
+        public function isConnected() as Lang.Boolean
+        {
+            if(_connectedDevice == null)
+            {
+                return false;
+            }
+
+            // Note that Device has isConnected(), but on real hardware (at least on my edge 530), it
+            // doesn't work at all; once the connection is made, isConnected always returns true, even
+            // if the connection subsequently drops
+            var iter = Ble.getPairedDevices();
+            for(var device = iter.next() as Ble.Device; device != null; device = iter.next())
+            {
+                if(device == _connectedDevice)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public function disconnect() as Void
         {
             if(workPending())
