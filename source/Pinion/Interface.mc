@@ -107,6 +107,25 @@ module Pinion
             return false;
         }
 
+        public function _testForDisconnection() as Void
+        {
+            if(_connectedDevice == null)
+            {
+                // Definitely already disconnected; we should never get here
+                // in theory, as onDisconnected would need have been called to
+                // be in this state, and the whole point of this function is
+                // to call onDisconnected
+                _connectionTimer.stop();
+            }
+            else if(!isConnected())
+            {
+                _connectionTimer.stop();
+                onDisconnected();
+            }
+
+            // Still connected -- we'll keep polling
+        }
+
         public function disconnect() as Void
         {
             if(workPending())
@@ -120,13 +139,9 @@ module Pinion
                 Ble.unpairDevice(_connectedDevice as Ble.Device);
 
                 // For some reason, presumably a bug, onConnectedStateChanged is not called when you deliberately
-                // unpair a device, meaning there is no way of reacting to a disconnect. Now, Ble.Device has an
-                // isConnected() member, which we could potentially poll until it returns false, which is ugly but
-                // atleast it works... on the simulator. On a real device (at least my Edge 530) it never goes
-                // false. The net result of all of this is that we're cornered into just assuming that calling
-                // unpairDevice always works; I suppose probably not completely unreasonable for a disconnect
-                // function, but still, a pretty crap state of affairs, Garmin.
-                onDisconnected();
+                // unpair a device, meaning there is no way of reacting to a disconnect, so instead we resort to
+                // polling the connection state until it drops. Ugh.
+                _connectionTimer.start(method(:_testForDisconnection), 50, true);
             }
         }
 
