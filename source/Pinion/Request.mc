@@ -11,6 +11,13 @@ module Pinion
         const PINION_WRITE  = 0x03;
         const PINION_ACK    = 0x04;
 
+        enum ResponseResult
+        {
+            RESPONSE_FAILURE,
+            RESPONSE_SUCCESS,
+            RESPONSE_DEFER
+        }
+
         protected var _delegate as Interface?;
 
         public function initialize(delegate as Interface)
@@ -24,10 +31,10 @@ module Pinion
             return false;
         }
 
-        public function decodeResponse(bytes as Lang.ByteArray) as Lang.Boolean
+        public function decodeResponse(bytes as Lang.ByteArray) as ResponseResult
         {
             System.println("Request::decodeResponse not implemented");
-            return false;
+            return RESPONSE_FAILURE;
         }
 
         public function onCharacteristicWrite(characteristic as Ble.Characteristic, status as Ble.Status) as Lang.Boolean

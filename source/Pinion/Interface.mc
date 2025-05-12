@@ -419,13 +419,22 @@ module Pinion
                     return;
                 }
 
-                var success = (_currentRequest as Request).decodeResponse(value);
-                _currentRequest = null;
+                var result = (_currentRequest as Request).decodeResponse(value);
 
-                if(!success)
+                switch(result)
                 {
+                default:
+                case Request.RESPONSE_FAILURE:
                     disconnect();
                     return;
+
+                case Request.RESPONSE_SUCCESS:
+                    _currentRequest = null;
+                    break;
+
+                case Request.RESPONSE_DEFER:
+                    // Keep the current request live
+                    break;
                 }
 
                 processQueue();

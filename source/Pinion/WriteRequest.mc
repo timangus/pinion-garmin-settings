@@ -99,24 +99,24 @@ module Pinion
             return true;
         }
 
-        public function decodeResponse(bytes as Lang.ByteArray) as Lang.Boolean
+        public function decodeResponse(bytes as Lang.ByteArray) as Request.ResponseResult
         {
             if(bytes[0] == PINION_ERR)
             {
                 System.println("WriteRequest response error " + bytesToHex(bytes));
-                return false;
+                return RESPONSE_FAILURE;
             }
 
             if(bytes[0] != PINION_ACK)
             {
                 System.println("WriteRequest response is not a acknowledgement");
-                return false;
+                return RESPONSE_FAILURE;
             }
 
             if(bytes[1] != 0xFF)
             {
                 System.println("WriteRequest response is malformed");
-                return false;
+                return RESPONSE_FAILURE;
             }
 
             var address = bytes.slice(2, 5);
@@ -124,12 +124,12 @@ module Pinion
             if(!address.equals(_parameterData[:address] as Lang.ByteArray))
             {
                 System.println("WriteRequest response is for the wrong address");
-                return false;
+                return RESPONSE_FAILURE;
             }
 
             (_delegate as Interface).onParameterWrite(_parameter);
 
-            return true;
+            return RESPONSE_SUCCESS;
         }
     }
 }
