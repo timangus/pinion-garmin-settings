@@ -15,6 +15,7 @@ module Pinion
 
         function read(parameter as ParameterType) as Void;
         function write(parameter as ParameterType, value as Lang.Number) as Void;
+        function blockRead(parameter as ParameterType) as Void;
 
         function setDelegate(delegate as Delegate) as Void;
     };

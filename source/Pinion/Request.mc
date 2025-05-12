@@ -5,11 +5,13 @@ module Pinion
 {
     class Request
     {
-        const PINION_ERR    = 0x00;
-        const PINION_READ   = 0x01;
-        const PINION_REPLY  = 0x02;
-        const PINION_WRITE  = 0x03;
-        const PINION_ACK    = 0x04;
+        const PINION_ERR            = 0x00;
+        const PINION_READ           = 0x01;
+        const PINION_REPLY          = 0x02;
+        const PINION_WRITE          = 0x03;
+        const PINION_ACK            = 0x04;
+        const PINION_BLOCK_READ     = 0x05;
+        const PINION_BLOCK_REPLY    = 0x06;
 
         enum ResponseResult
         {

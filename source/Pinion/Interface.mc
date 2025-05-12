@@ -358,6 +358,25 @@ module Pinion
             processQueue();
         }
 
+        public function blockRead(parameter as ParameterType) as Void
+        {
+            _requestQueue.push(new BlockReadInitRequest(parameter, _requestCharacteristic as Ble.Characteristic, self));
+            processQueue();
+        }
+
+        public function _blockReadContinue(cumulativeRead as Lang.Number, totalPayloadSize as Lang.Number, expectedSequence as Lang.Number) as Void
+        {
+            _requestQueue.skip(new BlockReadContinueRequest(cumulativeRead, totalPayloadSize, expectedSequence,
+                _requestCharacteristic as Ble.Characteristic, self));
+            processQueue();
+        }
+
+        public function _blockReadEnd() as Void
+        {
+            _requestQueue.skip(new BlockReadEndRequest(_requestCharacteristic as Ble.Characteristic, self));
+            processQueue();
+        }
+
         public function onCharacteristicWrite(characteristic as Ble.Characteristic, status as Ble.Status) as Void
         {
             if(status != Ble.STATUS_SUCCESS)
@@ -603,6 +622,14 @@ module Pinion
             if(_delegate != null)
             {
                 (_delegate as Delegate).onParameterWrite(parameter);
+            }
+        }
+
+        public function onBlockRead(bytes as Lang.ByteArray, cumulative as Lang.Number, total as Lang.Number) as Void
+        {
+            if(_delegate != null)
+            {
+                (_delegate as Delegate).onBlockRead(bytes, cumulative, total);
             }
         }
     }

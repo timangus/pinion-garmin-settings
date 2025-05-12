@@ -101,9 +101,15 @@ module Pinion
 
         public function write(parameter as ParameterType, value as Lang.Number) as Void
         {
-
             _testParameterData[parameter] = value;
             onParameterWrite(parameter);
+        }
+
+        public function blockRead(parameter as ParameterType) as Void
+        {
+            onBlockRead([0, 1, 2]b, 3, 9);
+            onBlockRead([3, 4, 5]b, 6, 9);
+            onBlockRead([6, 7, 8]b, 9, 9);
         }
 
         public function setDelegate(delegate as Delegate) as Void
@@ -166,6 +172,14 @@ module Pinion
             if(_delegate != null)
             {
                 (_delegate as Delegate).onParameterWrite(parameter);
+            }
+        }
+
+        public function onBlockRead(bytes as Lang.ByteArray, cumulative as Lang.Number, total as Lang.Number) as Void
+        {
+            if(_delegate != null)
+            {
+                (_delegate as Delegate).onBlockRead(bytes, cumulative, total);
             }
         }
     }
