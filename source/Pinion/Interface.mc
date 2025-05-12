@@ -369,14 +369,14 @@ module Pinion
 
         public function _blockReadContinue(cumulativeRead as Lang.Number, totalPayloadSize as Lang.Number, expectedSequence as Lang.Number) as Void
         {
-            _requestQueue.skip(new BlockReadContinueRequest(cumulativeRead, totalPayloadSize, expectedSequence,
+            _requestQueue.skipToFront(new BlockReadContinueRequest(cumulativeRead, totalPayloadSize, expectedSequence,
                 _requestCharacteristic as Ble.Characteristic, self));
             processQueue();
         }
 
         public function _blockReadEnd() as Void
         {
-            _requestQueue.skip(new BlockReadEndRequest(_requestCharacteristic as Ble.Characteristic, self));
+            _requestQueue.skipToFront(new BlockReadEndRequest(_requestCharacteristic as Ble.Characteristic, self));
             processQueue();
         }
 
@@ -633,7 +633,7 @@ module Pinion
                         requests.add(new ReadRequest(ACTIVE_ERROR, _requestCharacteristic as Ble.Characteristic, self));
                     }
 
-                    _requestQueue.skipAll(requests);
+                    _requestQueue.skipToFrontAll(requests);
                     processQueue();
                 }
                 else if(parameter.equals(ACTIVE_ERROR))
