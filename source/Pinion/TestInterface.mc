@@ -112,6 +112,11 @@ module Pinion
             onBlockRead([6, 7, 8]b, 9, 9);
         }
 
+        function getActiveErrors() as Void
+        {
+            onActiveErrorsRetrieved([1234]);
+        }
+
         public function setDelegate(delegate as Delegate) as Void
         {
             _delegate = delegate;
@@ -180,6 +185,14 @@ module Pinion
             if(_delegate != null)
             {
                 (_delegate as Delegate).onBlockRead(bytes, cumulative, total);
+            }
+        }
+
+        public function onActiveErrorsRetrieved(activeErrors as Lang.Array<Lang.Number>) as Void
+        {
+            if(_delegate != null)
+            {
+                (_delegate as Delegate).onActiveErrorsRetrieved(activeErrors);
             }
         }
     }
