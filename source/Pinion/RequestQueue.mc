@@ -21,6 +21,14 @@ module Pinion
             _array = newArray;
         }
 
+        public function skipAll(items as Lang.Array<Request>) as Void
+        {
+            var newArray = [];
+            newArray.addAll(items);
+            newArray.addAll(_array);
+            _array = newArray;
+        }
+
         public function pop() as Request?
         {
             if(!empty())
