@@ -107,6 +107,11 @@ class PinionGarminSettingsApp extends Application.AppBase
     {
         System.println("onParameterWrite(" + parameter + ")");
     }
+
+    public function onBlockRead(bytes as Lang.ByteArray, cumulative as Lang.Number, total as Lang.Number) as Void
+    {
+        System.println("onBlockRead(" + bytes + ", " + cumulative + ", " + total + ")");
+    }
 }
 
 function getApp() as PinionGarminSettingsApp
