@@ -31,6 +31,11 @@ module Pinion
 
         NUMBER_OF_GEARS         = "NUMBER_OF_GEARS",
 
+        NUMBER_OF_ERRORS        = "NUMBER_OF_ERRORS",
+        CLEAR_ERRORS            = "CLEAR_ERRORS",
+        ERROR_LOG_TYPE          = "ERROR_LOG_TYPE",
+        ERROR_LOG               = "ERROR_LOG",
+
         // Don't set this manually, it's done automatically
         HIDDEN_SETTINGS_ENABLE  = "HIDDEN_SETTINGS_ENABLE",
     }
@@ -63,6 +68,11 @@ module Pinion
         PRE_SELECT =>               { :address => [0x13, 0x25, 0x00]b,  :length => 1,   :values => [0, 1] },
 
         NUMBER_OF_GEARS =>          { :address => [0x00, 0x25, 0x00]b,  :length => 1 },
+
+        NUMBER_OF_ERRORS =>         { :address => [0x02, 0x31, 0x01]b,  :length => 4 },
+        CLEAR_ERRORS =>             { :address => [0x02, 0x31, 0x02]b,  :length => 1,   :values => [0, 1] },
+        ERROR_LOG_TYPE =>           { :address => [0x05, 0x31, 0x05]b,  :length => 1,   :values => [0, 1, 2] },
+        ERROR_LOG =>                { :address => [0x05, 0x31, 0x01]b },
 
         HIDDEN_SETTINGS_ENABLE =>   { :address => [0x00, 0x30, 0x04]b,  :length => 4,   :values => [0, 0x56a93c03] },
     } as Lang.Dictionary<ParameterType, Lang.Dictionary>;
