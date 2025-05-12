@@ -13,6 +13,14 @@ module Pinion
             _array.add(item);
         }
 
+        public function skip(item as Request) as Void
+        {
+            var newArray = [];
+            newArray.add(item);
+            newArray.addAll(_array);
+            _array = newArray;
+        }
+
         public function pop() as Request?
         {
             if(!empty())
