@@ -36,6 +36,10 @@ module Pinion
         ERROR_LOG_TYPE          = "ERROR_LOG_TYPE",
         ERROR_LOG               = "ERROR_LOG",
 
+        NUMBER_OF_ACTIVE_ERRORS = "NUMBER_OF_ACTIVE_ERRORS",
+        GET_ACTIVE_ERROR        = "GET_ACTIVE_ERROR",
+        ACTIVE_ERROR            = "ACTIVE_ERROR",
+
         // Don't set this manually, it's done automatically
         HIDDEN_SETTINGS_ENABLE  = "HIDDEN_SETTINGS_ENABLE",
     }
@@ -73,6 +77,10 @@ module Pinion
         CLEAR_ERRORS =>             { :address => [0x02, 0x31, 0x02]b,  :length => 1,   :values => [0, 1] },
         ERROR_LOG_TYPE =>           { :address => [0x05, 0x31, 0x05]b,  :length => 1,   :values => [0, 1, 2] },
         ERROR_LOG =>                { :address => [0x05, 0x31, 0x01]b },
+
+        NUMBER_OF_ACTIVE_ERRORS =>  { :address => [0x04, 0x31, 0x01]b,  :length => 2 },
+        GET_ACTIVE_ERROR =>         { :address => [0x04, 0x31, 0x02]b,  :length => 2,   :minmax => [0, 0xffff] },
+        ACTIVE_ERROR =>             { :address => [0x04, 0x31, 0x03]b,  :length => 2 },
 
         HIDDEN_SETTINGS_ENABLE =>   { :address => [0x00, 0x30, 0x04]b,  :length => 4,   :values => [0, 0x56a93c03] },
     } as Lang.Dictionary<ParameterType, Lang.Dictionary>;
