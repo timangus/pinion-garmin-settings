@@ -35,18 +35,18 @@ module Pinion
             return true;
         }
 
-        public function decodeResponse(bytes as Lang.ByteArray) as Lang.Boolean
+        public function decodeResponse(bytes as Lang.ByteArray) as Request.ResponseResult
         {
             if(bytes[0] == PINION_ERR)
             {
                 System.println("ReadRequest response error " + bytesToHex(bytes));
-                return false;
+                return RESPONSE_FAILURE;
             }
 
             if(bytes[0] != PINION_REPLY)
             {
                 System.println("ReadRequest response is not a reply");
-                return false;
+                return RESPONSE_FAILURE;
             }
 
             var length = bytes[1];
@@ -55,7 +55,7 @@ module Pinion
             if(!address.equals(_parameterData[:address] as Lang.ByteArray))
             {
                 System.println("ReadRequest response is for the wrong address");
-                return false;
+                return RESPONSE_FAILURE;
             }
 
             var reply = bytes.slice(5, 5 + length);
@@ -69,13 +69,13 @@ module Pinion
 
             default:
                 System.println("Unexpected parameter length " + length);
-                return false;
+                return RESPONSE_FAILURE;
             }
 
             var value = reply.decodeNumber(numberFormat, {:endianness => Lang.ENDIAN_LITTLE}) as Lang.Number;
             (_delegate as Interface).onParameterRead(_parameter, value);
 
-            return true;
+            return RESPONSE_SUCCESS;
         }
     }
 }
