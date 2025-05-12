@@ -37,9 +37,9 @@ module Pinion
             return RESPONSE_FAILURE;
         }
 
-        public function onCharacteristicWrite(characteristic as Ble.Characteristic, status as Ble.Status) as Lang.Boolean
+        public function acknowledgeWrite() as Lang.Boolean
         {
-            System.println("Request::onCharacteristicWrite not implemented");
+            // Return true to discard request
             return false;
         }
 

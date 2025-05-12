@@ -374,6 +374,12 @@ module Pinion
                 return;
             }
 
+            var requestIsComplete = (_currentRequest as Request).acknowledgeWrite();
+            if(requestIsComplete)
+            {
+                _currentRequest = null;
+            }
+
             processQueue();
         }
 
