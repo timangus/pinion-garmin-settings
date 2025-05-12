@@ -112,6 +112,11 @@ class PinionGarminSettingsApp extends Application.AppBase
     {
         System.println("onBlockRead(" + bytes + ", " + cumulative + ", " + total + ")");
     }
+
+    public function onActiveErrorsRetrieved(activeErrors as Lang.Array<Lang.Number>) as Void
+    {
+        System.println("onActiveErrorsRetrieved(" + activeErrors + ")");
+    }
 }
 
 function getApp() as PinionGarminSettingsApp

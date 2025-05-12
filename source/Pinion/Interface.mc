@@ -34,6 +34,9 @@ module Pinion
         private var _requestQueue as RequestQueue = new RequestQueue();
         private var _currentRequest as Request?;
 
+        private var _activeErrorsToRetrieve as Lang.Number = 0;
+        private var _activeErrors as Lang.Array<Lang.Number> = new Lang.Array<Lang.Number>[0];
+
         private var _delegate as Delegate?;
 
         public function initialize()
@@ -377,6 +380,19 @@ module Pinion
             processQueue();
         }
 
+        public function getActiveErrors() as Void
+        {
+            if(_connectedDevice == null)
+            {
+                System.println("Can't getActiveErrors when not connected");
+                return;
+            }
+
+            _activeErrorsToRetrieve = 0x7fffffff;
+            _activeErrors = new Lang.Array<Lang.Number>[0];
+            read(NUMBER_OF_ACTIVE_ERRORS);
+        }
+
         public function onCharacteristicWrite(characteristic as Ble.Characteristic, status as Ble.Status) as Void
         {
             if(status != Ble.STATUS_SUCCESS)
@@ -605,6 +621,35 @@ module Pinion
                 return;
             }
 
+            if(_activeErrorsToRetrieve > 0)
+            {
+                if(parameter.equals(NUMBER_OF_ACTIVE_ERRORS))
+                {
+                    _activeErrorsToRetrieve = value;
+                    var requests = new Lang.Array<Request>[0];
+                    for(var i = 0; i < value; i++)
+                    {
+                        requests.add(new WriteRequest(GET_ACTIVE_ERROR, i, _requestCharacteristic as Ble.Characteristic, self));
+                        requests.add(new ReadRequest(ACTIVE_ERROR, _requestCharacteristic as Ble.Characteristic, self));
+                    }
+
+                    _requestQueue.skipAll(requests);
+                    processQueue();
+                }
+                else if(parameter.equals(ACTIVE_ERROR))
+                {
+                    _activeErrors.add(value);
+                    _activeErrorsToRetrieve--;
+                }
+
+                if(_activeErrorsToRetrieve == 0)
+                {
+                    onActiveErrorsRetrieved(_activeErrors);
+                }
+
+                return;
+            }
+
             if(_delegate != null)
             {
                 (_delegate as Delegate).onParameterRead(parameter, value);
@@ -619,6 +664,12 @@ module Pinion
                 return;
             }
 
+            if(_activeErrorsToRetrieve > 0 && parameter.equals(GET_ACTIVE_ERROR))
+            {
+                // If _activeErrorsToRetrieve is non-zero then the get is part of a getActiveErrors call
+                return;
+            }
+
             if(_delegate != null)
             {
                 (_delegate as Delegate).onParameterWrite(parameter);
@@ -630,6 +681,14 @@ module Pinion
             if(_delegate != null)
             {
                 (_delegate as Delegate).onBlockRead(bytes, cumulative, total);
+            }
+        }
+
+        public function onActiveErrorsRetrieved(activeErrors as Lang.Array<Lang.Number>) as Void
+        {
+            if(_delegate != null)
+            {
+                (_delegate as Delegate).onActiveErrorsRetrieved(activeErrors);
             }
         }
     }

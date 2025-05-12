@@ -14,5 +14,6 @@ module Pinion
         function onParameterRead(parameter as ParameterType, value as Lang.Number) as Void;
         function onParameterWrite(parameter as ParameterType) as Void;
         function onBlockRead(bytes as Lang.ByteArray, cumulative as Lang.Number, total as Lang.Number) as Void;
+        function onActiveErrorsRetrieved(activeErrors as Lang.Array<Lang.Number>) as Void;
     };
 }
