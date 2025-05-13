@@ -27,7 +27,8 @@ module Pinion
         {
             if(!hasScanResult())
             {
-                return -100;
+                // A null ScanResult occurs when we're using TestInterface
+                return -100 + (Math.rand() % 50);
             }
 
             return (_scanResult as Ble.ScanResult).getRssi();
