@@ -20,7 +20,6 @@ class SettingsViewInputDelegate extends WatchUi.Menu2InputDelegate
 
     function onSelect(item as WatchUi.MenuItem) as Void
     {
-        System.println(item.getId());
         if((item.getId() as Lang.String).equals("pre.select"))
         {
             var toggleMenuItem = item as WatchUi.ToggleMenuItem;
