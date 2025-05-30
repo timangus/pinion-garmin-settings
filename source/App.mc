@@ -17,7 +17,7 @@ class App extends Application.AppBase
     private var _appState as AppState = STARTING;
 
     private var _pinionInterface as Pinion.AbstractInterface = new Pinion.TestInterface();
-    private var _savedDeviceHandle as Pinion.DeviceHandle? = null;
+    private var _deviceHandle as Pinion.DeviceHandle? = null;
 
     private var _mainView as MainView = new MainView(self);
 
@@ -52,7 +52,7 @@ class App extends Application.AppBase
 
     public function updateState() as Void
     {
-        if(_savedDeviceHandle == null)
+        if(_deviceHandle == null)
         {
             setState(SCANNING);
         }
@@ -70,12 +70,12 @@ class App extends Application.AppBase
         case CONNECTING:
             _pinionInterface.stopScan();
 
-            if(_savedDeviceHandle == null)
+            if(_deviceHandle == null)
             {
                 System.error("ERROR: in CONNECTING state with no device handle");
             }
 
-            _pinionInterface.connect(_savedDeviceHandle as Pinion.DeviceHandle);
+            _pinionInterface.connect(_deviceHandle as Pinion.DeviceHandle);
             break;
 
         default:
@@ -164,7 +164,7 @@ class App extends Application.AppBase
 
     public function selectDevice(deviceHandle as Pinion.DeviceHandle) as Void
     {
-        _savedDeviceHandle = deviceHandle;
+        _deviceHandle = deviceHandle;
         updateState();
     }
 
