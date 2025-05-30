@@ -10,7 +10,7 @@ module Pinion
         private var _scanState as ScanState = NOT_SCANNING;
 
         private var _foundDevices as Lang.Array<DeviceHandle> = new Lang.Array<DeviceHandle>[0];
-        private var _foundDevicesTimer as Timer.Timer = new Timer.Timer();
+        private var _timer as Timer.Timer = new Timer.Timer();
 
         private var _connectedDevice as Ble.Device?;
         private var _testParameterData as Lang.Dictionary<ParameterType, Lang.Number> =
@@ -43,7 +43,7 @@ module Pinion
             stopScan();
 
             _connectedDevice = new Ble.Device();
-            onConnected(_connectedDevice);
+            _timer.start(method(:onConnected), 1500, false);
 
             return true;
         }
@@ -79,7 +79,7 @@ module Pinion
                 _foundDevices.add(new DeviceHandle(2480025678l, null));
             }
 
-            _foundDevicesTimer.start(method(:onFoundDevicesChanged), 1000, true);
+            _timer.start(method(:onFoundDevicesChanged), 1000, true);
         }
 
         public function stopScan() as Void
@@ -89,7 +89,7 @@ module Pinion
                 return;
             }
 
-            _foundDevicesTimer.stop();
+            _timer.stop();
             _foundDevices = new Lang.Array<Pinion.DeviceHandle>[0];
 
             disconnect();
@@ -143,11 +143,11 @@ module Pinion
             }
         }
 
-        public function onConnected(device as Ble.Device) as Void
+        public function onConnected() as Void
         {
             if(_delegate != null)
             {
-                (_delegate as Delegate).onConnected(device);
+                (_delegate as Delegate).onConnected(_connectedDevice as Ble.Device);
             }
         }
 
