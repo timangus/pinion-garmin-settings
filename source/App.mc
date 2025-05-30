@@ -23,11 +23,7 @@ class App extends Application.AppBase
 
     public function initialize()
     {
-        restore();
         AppBase.initialize();
-
-        _pinionInterface.setDelegate(self);
-        updateState();
     }
 
     public function state() as AppState
@@ -91,6 +87,9 @@ class App extends Application.AppBase
     // onStart() is called on application start up
     function onStart(state as Dictionary?) as Void
     {
+        restore();
+        _pinionInterface.setDelegate(self);
+        updateState();
     }
 
     // onStop() is called when your application is exiting
