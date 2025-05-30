@@ -23,6 +23,7 @@ class App extends Application.AppBase
 
     public function initialize()
     {
+        restore();
         AppBase.initialize();
 
         _pinionInterface.setDelegate(self);
@@ -97,6 +98,7 @@ class App extends Application.AppBase
     {
         setState(STOPPING);
         _pinionInterface.disconnect();
+        store();
     }
 
     // Return the initial view of your application here
@@ -166,11 +168,33 @@ class App extends Application.AppBase
     {
         _deviceHandle = deviceHandle;
         updateState();
+        store();
     }
 
     public function writeParameter(parameter as Pinion.ParameterType, value as Lang.Number) as Void
     {
         _pinionInterface.write(parameter, value);
+    }
+
+    public function store() as Void
+    {
+        if(_deviceHandle != null)
+        {
+            var deviceHandle = _deviceHandle as Pinion.DeviceHandle;
+            Storage.setValue("deviceSerialNumber", deviceHandle.serialNumber());
+            Storage.setValue("deviceScanResult", deviceHandle.scanResult() as Application.PropertyValueType);
+        }
+    }
+
+    public function restore() as Void
+    {
+        var deviceSerialNumber = Storage.getValue("deviceSerialNumber");
+
+        if(deviceSerialNumber != null)
+        {
+            var scanResult = Storage.getValue("deviceScanResult");
+            _deviceHandle = new Pinion.DeviceHandle(deviceSerialNumber as Lang.Long, scanResult as Ble.ScanResult);
+        }
     }
 }
 
