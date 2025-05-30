@@ -84,7 +84,6 @@ class App extends Application.AppBase
         }
     }
 
-    // onStart() is called on application start up
     function onStart(state as Dictionary?) as Void
     {
         restore();
@@ -92,7 +91,6 @@ class App extends Application.AppBase
         updateState();
     }
 
-    // onStop() is called when your application is exiting
     function onStop(state as Dictionary?) as Void
     {
         setState(STOPPING);
@@ -100,7 +98,6 @@ class App extends Application.AppBase
         store();
     }
 
-    // Return the initial view of your application here
     function getInitialView() as [Views] or [Views, InputDelegates]
     {
         return [_mainView];
