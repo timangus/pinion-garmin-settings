@@ -31,6 +31,7 @@ class MainView extends WatchUi.View
 
     private var _settingsView as SettingsView = new SettingsView();
     private var _settingsViewInputDelegate as SettingsViewInputDelegate = new SettingsViewInputDelegate();
+    private var _settingsVisible as Lang.Boolean = false;
 
     private var _lastUpdateTime as Time.Moment = Time.now();
 
@@ -177,9 +178,15 @@ class MainView extends WatchUi.View
     {
         WatchUi.requestUpdate();
 
-        if(appState == App.CONNECTED)
+        if(!_settingsVisible && appState == App.CONNECTED)
         {
             WatchUi.pushView(_settingsView, _settingsViewInputDelegate, WatchUi.SLIDE_IMMEDIATE);
+            _settingsVisible = true;
+        }
+        else if(_settingsVisible && appState != App.CONNECTED)
+        {
+            WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
+            _settingsVisible = false;
         }
     }
 }
