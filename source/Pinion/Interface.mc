@@ -56,6 +56,7 @@ module Pinion
         public function _onConnectionTimeout() as Void
         {
             Ble.unpairDevice(_connectedDevice as Ble.Device);
+            _connectedDevice = null;
 
             if(_scanState == SCANNING)
             {
