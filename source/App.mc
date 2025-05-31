@@ -86,6 +86,8 @@ class App extends Application.AppBase
 
     function onStart(state as Dictionary?) as Void
     {
+        System.println("----- Application Start -----");
+
         restore();
         _pinionInterface.setDelegate(self);
         updateState();
@@ -96,6 +98,8 @@ class App extends Application.AppBase
         setState(STOPPING);
         _pinionInterface.disconnect();
         store();
+
+        System.println("----- Application Stop -----");
     }
 
     function getInitialView() as [Views] or [Views, InputDelegates]
