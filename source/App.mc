@@ -128,6 +128,8 @@ class App extends Application.AppBase
     public function onConnectionTimeout() as Void
     {
         System.println("PinionDelegate.onConnectionTimeout");
+        updateState();
+        _mainView.onConnectionTimeout();
     }
 
     public function onFoundDevicesChanged(foundDevices as Lang.Array<Pinion.DeviceHandle>) as Void

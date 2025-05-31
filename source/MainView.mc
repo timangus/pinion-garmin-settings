@@ -96,6 +96,13 @@ class MainView extends WatchUi.View
         }
     }
 
+    public function onConnectionTimeout() as Void
+    {
+        var connectingLayout = findDrawableById("id_connecting") as WatchUi.Text;
+        connectingLayout.setText("Connecting... (Timeout)");
+        WatchUi.requestUpdate();
+    }
+
     public function onFoundDevicesChanged(foundDevices as Lang.Array<Pinion.DeviceHandle>) as Void
     {
         var j = _pinionsInScanMenu.size() - 1;
