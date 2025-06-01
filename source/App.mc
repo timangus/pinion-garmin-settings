@@ -193,6 +193,11 @@ class App extends Application.AppBase
         _pinionInterface.write(parameter, value);
     }
 
+    public function disconnect() as Void
+    {
+        _pinionInterface.disconnect();
+    }
+
     public function store() as Void
     {
         if(_deviceHandle != null)
