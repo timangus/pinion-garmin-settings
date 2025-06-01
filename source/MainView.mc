@@ -27,7 +27,7 @@ class MainView extends WatchUi.View
     private var _scanMenu as WatchUi.Menu2 = new WatchUi.Menu2({:title => "Smart.Shift Devices"});
     private var _scanMenuDelegate as MainViewInputDelegate = new MainViewInputDelegate(self);
     private var _scanMenuVisible as Lang.Boolean = false;
-    private var _pinionsInScanMenu as Lang.Array<Pinion.DeviceHandle> = new Lang.Array<Pinion.DeviceHandle>[0];
+    private var _deviceHandlesInScanMenu as Lang.Array<Pinion.DeviceHandle> = new Lang.Array<Pinion.DeviceHandle>[0];
 
     private var _settingsView as SettingsView = new SettingsView();
     private var _settingsViewInputDelegate as SettingsViewInputDelegate = new SettingsViewInputDelegate();
@@ -77,9 +77,9 @@ class MainView extends WatchUi.View
 
     public function selectDevice(serialNumber as Lang.Long) as Void
     {
-        for(var i = 0; i < _pinionsInScanMenu.size(); i++)
+        for(var i = 0; i < _deviceHandlesInScanMenu.size(); i++)
         {
-            var deviceHandle = _pinionsInScanMenu[i];
+            var deviceHandle = _deviceHandlesInScanMenu[i];
 
             if(serialNumber == deviceHandle.serialNumber())
             {
@@ -121,15 +121,15 @@ class MainView extends WatchUi.View
 
     public function onFoundDevicesChanged(foundDevices as Lang.Array<Pinion.DeviceHandle>) as Void
     {
-        var j = _pinionsInScanMenu.size() - 1;
+        var j = _deviceHandlesInScanMenu.size() - 1;
         while(j >= 0)
         {
-            var pinionInMenu = _pinionsInScanMenu[j];
+            var deviceHandle = _deviceHandlesInScanMenu[j];
             var stillExists = false;
 
             for(var k = 0; k < foundDevices.size(); k++)
             {
-                if(foundDevices[k].serialNumber() == pinionInMenu.serialNumber())
+                if(foundDevices[k].serialNumber() == deviceHandle.serialNumber())
                 {
                     stillExists = true;
                     break;
@@ -138,9 +138,9 @@ class MainView extends WatchUi.View
 
             if(!stillExists)
             {
-                var menuItemIndex = _scanMenu.findItemById(pinionInMenu.serialNumber());
+                var menuItemIndex = _scanMenu.findItemById(deviceHandle.serialNumber());
                 _scanMenu.deleteItem(menuItemIndex);
-                _pinionsInScanMenu.remove(pinionInMenu);
+                _deviceHandlesInScanMenu.remove(deviceHandle);
                 forceUpdateHack();
             }
 
@@ -162,17 +162,17 @@ class MainView extends WatchUi.View
                 var label = "Pinion " + foundDevice.serialNumber();
                 var subLabel = "RSSI: " + foundDevice.rssi();
                 _scanMenu.addItem(new WatchUi.MenuItem(label, subLabel, foundDevice.serialNumber(), null));
-                _pinionsInScanMenu.add(foundDevice);
+                _deviceHandlesInScanMenu.add(foundDevice);
                 forceUpdateHack();
             }
         }
 
-        if(!_scanMenuVisible && _pinionsInScanMenu.size() > 0)
+        if(!_scanMenuVisible && _deviceHandlesInScanMenu.size() > 0)
         {
             WatchUi.pushView(_scanMenu, _scanMenuDelegate, WatchUi.SLIDE_IMMEDIATE);
             _scanMenuVisible = true;
         }
-        else if(_scanMenuVisible && _pinionsInScanMenu.size() == 0)
+        else if(_scanMenuVisible && _deviceHandlesInScanMenu.size() == 0)
         {
             WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
             _scanMenuVisible = false;
