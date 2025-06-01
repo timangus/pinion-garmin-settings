@@ -1,3 +1,4 @@
 <layout id="ConnectingLayout">
-    <label id="id_connecting" x="center" y="center" text="Connecting..." />
+    <label id="id_connecting" x="10%" y="20%" text="Connecting..." />
+    <label id="id_connection_timeout" x="10%" y="30%" text="" />
 </layout>
