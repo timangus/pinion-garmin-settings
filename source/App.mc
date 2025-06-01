@@ -1,6 +1,7 @@
 import Toybox.Application;
 import Toybox.Lang;
 import Toybox.WatchUi;
+import Toybox.Timer;
 using Toybox.BluetoothLowEnergy as Ble;
 
 class App extends Application.AppBase
@@ -20,6 +21,8 @@ class App extends Application.AppBase
     private var _deviceHandle as Pinion.DeviceHandle? = null;
 
     private var _mainView as MainView = new MainView(self);
+
+    private var _retryTimer as Timer.Timer = new Timer.Timer();
 
     public function initialize()
     {
@@ -72,7 +75,13 @@ class App extends Application.AppBase
                 System.error("ERROR: in CONNECTING state with no device handle");
             }
 
-            _pinionInterface.connect(_deviceHandle as Pinion.DeviceHandle);
+            var connectResult = _pinionInterface.connect(_deviceHandle as Pinion.DeviceHandle);
+            if(!connectResult)
+            {
+                // If the connection failed, call updateState again in the near future
+                _retryTimer.start(method(:updateState), 1000, false);
+            }
+
             break;
 
         default:
