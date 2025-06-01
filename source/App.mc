@@ -218,6 +218,13 @@ class App extends Application.AppBase
             _deviceHandle = new Pinion.DeviceHandle(deviceSerialNumber as Lang.Long, scanResult as Ble.ScanResult);
         }
     }
+
+    public function unstore() as Void
+    {
+        Storage.deleteValue("deviceSerialNumber");
+        Storage.deleteValue("deviceScanResult");
+        _deviceHandle = null;
+    }
 }
 
 function getApp() as App
