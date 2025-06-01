@@ -79,9 +79,18 @@ module Pinion
                 return false;
             }
 
-            _connectedDevice = Ble.pairDevice(deviceHandle.scanResult() as Ble.ScanResult);
-            if(_connectedDevice == null)
+            try
             {
+                _connectedDevice = Ble.pairDevice(deviceHandle.scanResult() as Ble.ScanResult);
+                if(_connectedDevice == null)
+                {
+                    return false;
+                }
+            }
+            catch(e instanceof Ble.DevicePairException)
+            {
+                // This seems to happen sometimes when unpairDevice has definitely been called -- for whatever
+                // reason it seems to need some time to elapse before a call to pairDevice is allowed again
                 return false;
             }
 
@@ -298,7 +307,16 @@ module Pinion
                 if(existingDevice == null)
                 {
                     _lastScanResult = result;
-                    _connectedDevice = Ble.pairDevice(result);
+
+                    try
+                    {
+                        _connectedDevice = Ble.pairDevice(result);
+                    }
+                    catch(e instanceof Ble.DevicePairException)
+                    {
+                        _connectedDevice = null;
+                    }
+
                     if(_connectedDevice != null)
                     {
                         Ble.setScanState(Ble.SCAN_STATE_OFF);
@@ -568,6 +586,12 @@ module Pinion
 
         public function onDisconnected() as Void
         {
+            if(_connectedDevice != null)
+            {
+                // A spontaneous disconnection may result in being left in a paired state; we don't want this
+                Ble.unpairDevice(_connectedDevice as Ble.Device);
+            }
+
             _currentGearCharacteristic = null;
             _requestCharacteristic = null;
             _responseCharacteristic = null;
