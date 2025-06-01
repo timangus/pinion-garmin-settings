@@ -118,21 +118,27 @@ class App extends Application.AppBase
         setState(CONNECTED);
     }
 
+    private function attemptReconnection() as Void
+    {
+        setState(CONNECTING);
+        updateState();
+    }
+
     public function onDisconnected() as Void
     {
+        System.println("PinionDelegate.onDisconnected");
+
         if(_appState != STOPPING)
         {
-            // Attempt reconnection
-            setState(CONNECTING);
+            attemptReconnection();
         }
-
-        System.println("PinionDelegate.onDisconnected");
     }
 
     public function onConnectionTimeout() as Void
     {
         System.println("PinionDelegate.onConnectionTimeout");
-        updateState();
+
+        attemptReconnection();
         _mainView.onConnectionTimeout();
     }
 
