@@ -16,7 +16,7 @@ class MainViewInputDelegate extends WatchUi.Menu2InputDelegate
 
     function onSelect(item as WatchUi.MenuItem) as Void
     {
-        (_mainView as MainView).selectDevice(item.getId() as Pinion.DeviceHandle);
+        (_mainView as MainView).selectDevice(item.getId() as Lang.Long);
     }
 }
 
@@ -75,14 +75,26 @@ class MainView extends WatchUi.View
     {
     }
 
-    public function selectDevice(deviceHandle as Pinion.DeviceHandle) as Void
+    public function selectDevice(serialNumber as Lang.Long) as Void
     {
-        _app.selectDevice(deviceHandle);
-        if(_scanMenuVisible)
+        for(var i = 0; i < _pinionsInScanMenu.size(); i++)
         {
-            WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
-            _scanMenuVisible = false;
+            var deviceHandle = _pinionsInScanMenu[i];
+
+            if(serialNumber == deviceHandle.serialNumber())
+            {
+                _app.selectDevice(deviceHandle);
+                if(_scanMenuVisible)
+                {
+                    WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
+                    _scanMenuVisible = false;
+                }
+
+                return;
+            }
         }
+
+        System.println("Can't find handle for serial " + serialNumber);
     }
 
     private function forceUpdateHack() as Void
@@ -126,7 +138,7 @@ class MainView extends WatchUi.View
 
             if(!stillExists)
             {
-                var menuItemIndex = _scanMenu.findItemById(pinionInMenu);
+                var menuItemIndex = _scanMenu.findItemById(pinionInMenu.serialNumber());
                 _scanMenu.deleteItem(menuItemIndex);
                 _pinionsInScanMenu.remove(pinionInMenu);
                 forceUpdateHack();
@@ -138,7 +150,7 @@ class MainView extends WatchUi.View
         for(var i = 0; i < foundDevices.size(); i++)
         {
             var foundDevice = foundDevices[i];
-            var index = _scanMenu.findItemById(foundDevice);
+            var index = _scanMenu.findItemById(foundDevice.serialNumber());
             if(index >= 0)
             {
                 // Already in the menu
@@ -149,7 +161,7 @@ class MainView extends WatchUi.View
             {
                 var label = "Pinion " + foundDevice.serialNumber();
                 var subLabel = "RSSI: " + foundDevice.rssi();
-                _scanMenu.addItem(new WatchUi.MenuItem(label, subLabel, foundDevice, null));
+                _scanMenu.addItem(new WatchUi.MenuItem(label, subLabel, foundDevice.serialNumber(), null));
                 _pinionsInScanMenu.add(foundDevice);
                 forceUpdateHack();
             }
