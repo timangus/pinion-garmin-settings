@@ -35,6 +35,8 @@ class MainView extends WatchUi.View
 
     private var _lastUpdateTime as Time.Moment = Time.now();
 
+    private var _timingOut as Lang.Boolean = false;
+
     public function initialize(app as App)
     {
         View.initialize();
@@ -57,6 +59,8 @@ class MainView extends WatchUi.View
 
         case App.CONNECTING:
             setLayout(Rez.Layouts.ConnectingLayout(dc));
+            var connectionTimeoutLayoutText = findDrawableById("id_connection_timeout") as WatchUi.Text;
+            connectionTimeoutLayoutText.setText(_timingOut ? "Time Out" : "");
             break;
         }
 
@@ -99,8 +103,7 @@ class MainView extends WatchUi.View
 
     public function onConnectionTimeout() as Void
     {
-        var connectingLayout = findDrawableById("id_connecting") as WatchUi.Text;
-        connectingLayout.setText("Connecting... (Timeout)");
+        _timingOut = true;
         WatchUi.requestUpdate();
     }
 
@@ -176,6 +179,7 @@ class MainView extends WatchUi.View
 
     public function onAppStateChanged(appState as App.AppState) as Void
     {
+        _timingOut = false;
         WatchUi.requestUpdate();
 
         if(!_settingsVisible && appState == App.CONNECTED)
