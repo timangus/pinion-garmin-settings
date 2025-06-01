@@ -20,10 +20,17 @@ class SettingsViewInputDelegate extends WatchUi.Menu2InputDelegate
 
     function onSelect(item as WatchUi.MenuItem) as Void
     {
-        if((item.getId() as Lang.String).equals("pre.select"))
+        var id = item.getId() as Lang.String;
+
+        if(id.equals("pre.select"))
         {
             var toggleMenuItem = item as WatchUi.ToggleMenuItem;
             (_app as App).writeParameter(Pinion.PRE_SELECT, toggleMenuItem.isEnabled() ? 1 : 0);
+        }
+        else if(id.equals("disconnect"))
+        {
+            (_app as App).unstore();
+            (_app as App).disconnect();
         }
     }
 }
@@ -36,5 +43,6 @@ class SettingsView extends WatchUi.Menu2
 
         addItem(new WatchUi.ToggleMenuItem("Pre.Select", {:enabled => "Enabled", :disabled => "Disabled"},
             "pre.select", false, {:alignment => WatchUi.MenuItem.MENU_ITEM_LABEL_ALIGN_RIGHT}));
+        addItem(new WatchUi.MenuItem("Disconnect", null, "disconnect", null));
     }
 }
