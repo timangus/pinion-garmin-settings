@@ -1,4 +1,4 @@
 
 <layout id="ScanningLayout">
-    <label id="id_scanning" x="center" y="center" text="Scanning..." />
+    <label id="id_scanning" x="10%" y="20%" text="Scanning..." />
 </layout>
