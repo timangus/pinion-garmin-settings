@@ -1,0 +1,4 @@
+
+<layout id="StoppingLayout">
+    <label id="id_stopping" x="10%" y="20%" text="Press Back to Exit" />
+</layout>

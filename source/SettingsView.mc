@@ -33,6 +33,11 @@ class SettingsViewInputDelegate extends WatchUi.Menu2InputDelegate
             (_app as App).disconnect();
         }
     }
+
+    function onBack() as Void
+    {
+        (_app as App).exit();
+    }
 }
 
 class SettingsView extends WatchUi.Menu2

@@ -62,6 +62,10 @@ class MainView extends WatchUi.View
             var connectionTimeoutLayoutText = findDrawableById("id_connection_timeout") as WatchUi.Text;
             connectionTimeoutLayoutText.setText(_timingOut ? "Time Out" : "");
             break;
+
+        case App.STOPPING:
+            setLayout(Rez.Layouts.StoppingLayout(dc));
+            break;
         }
 
         View.onUpdate(dc);
