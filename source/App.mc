@@ -104,9 +104,7 @@ class App extends Application.AppBase
 
     function onStop(state as Dictionary?) as Void
     {
-        setState(STOPPING);
-        _pinionInterface.disconnect();
-        store();
+        exit();
 
         System.println("----- Application Stop -----");
     }
@@ -224,6 +222,13 @@ class App extends Application.AppBase
         Storage.deleteValue("deviceSerialNumber");
         Storage.deleteValue("deviceScanResult");
         _deviceHandle = null;
+    }
+
+    public function exit() as Void
+    {
+        setState(STOPPING);
+        _pinionInterface.disconnect();
+        store();
     }
 }
 
