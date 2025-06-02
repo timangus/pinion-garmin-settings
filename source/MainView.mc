@@ -50,10 +50,6 @@ class MainView extends WatchUi.View
         _settingsViewInputDelegate.setApp(app);
     }
 
-    function onLayout(dc as Toybox.Graphics.Dc) as Void
-    {
-    }
-
     function onUpdate(dc as Toybox.Graphics.Dc) as Void
     {
         switch(_app.state())
@@ -74,14 +70,6 @@ class MainView extends WatchUi.View
         }
 
         View.onUpdate(dc);
-    }
-
-    function onShow() as Void
-    {
-    }
-
-    function onHide() as Void
-    {
     }
 
     public function selectDevice(serialNumber as Lang.Long) as Void
