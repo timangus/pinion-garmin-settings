@@ -18,6 +18,11 @@ class MainViewInputDelegate extends WatchUi.Menu2InputDelegate
     {
         (_mainView as MainView).selectDevice(item.getId() as Lang.Long);
     }
+
+    function onBack() as Void
+    {
+        (_mainView as MainView).exit();
+    }
 }
 
 class MainView extends WatchUi.View
@@ -101,6 +106,11 @@ class MainView extends WatchUi.View
         System.println("Can't find handle for serial " + serialNumber);
     }
 
+    public function exit() as Void
+    {
+        _app.exit();
+    }
+
     private function forceUpdateHack() as Void
     {
         if(_scanMenuVisible)
@@ -125,6 +135,11 @@ class MainView extends WatchUi.View
 
     public function onFoundDevicesChanged(foundDevices as Lang.Array<Pinion.DeviceHandle>) as Void
     {
+        if(_app.state() == App.STOPPING)
+        {
+            return;
+        }
+
         var j = _deviceHandlesInScanMenu.size() - 1;
         while(j >= 0)
         {
@@ -207,6 +222,11 @@ class MainView extends WatchUi.View
         {
             WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
             _settingsVisible = false;
+        }
+        else if(_scanMenuVisible && appState == App.STOPPING)
+        {
+            WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
+            _scanMenuVisible = false;
         }
     }
 }
