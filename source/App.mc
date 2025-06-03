@@ -17,7 +17,7 @@ class App extends Application.AppBase
 
     private var _appState as AppState = STARTING;
 
-    private var _pinionInterface as Pinion.AbstractInterface = new Pinion.TestInterface();
+    private var _pinionInterface as Pinion.AbstractInterface = new Pinion.Interface();
     private var _deviceHandle as Pinion.DeviceHandle? = null;
 
     private var _mainView as MainView = new MainView(self);
