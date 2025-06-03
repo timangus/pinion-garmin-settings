@@ -162,6 +162,7 @@ class App extends Application.AppBase
     public function onParameterRead(parameter as Pinion.ParameterType, value as Lang.Number) as Void
     {
         System.println("onParameterRead(" + parameter + ", " + value + ")");
+        _mainView.setParameter(parameter, value);
     }
 
     public function onParameterWrite(parameter as Pinion.ParameterType) as Void
