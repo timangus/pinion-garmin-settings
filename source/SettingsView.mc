@@ -50,4 +50,14 @@ class SettingsView extends WatchUi.Menu2
             "pre.select", false, {:alignment => WatchUi.MenuItem.MENU_ITEM_LABEL_ALIGN_RIGHT}));
         addItem(new WatchUi.MenuItem("Disconnect", null, "disconnect", null));
     }
+
+    public function setParameter(parameter as Pinion.ParameterType, value as Lang.Number) as Void
+    {
+        if(parameter.equals("PRE_SELECT"))
+        {
+            var index = findItemById("pre.select");
+            var item = getItem(index) as WatchUi.ToggleMenuItem;
+            item.setEnabled(value == 1);
+        }
+    }
 }

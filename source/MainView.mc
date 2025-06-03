@@ -37,6 +37,7 @@ class MainView extends WatchUi.View
     private var _settingsView as SettingsView = new SettingsView();
     private var _settingsViewInputDelegate as SettingsViewInputDelegate = new SettingsViewInputDelegate();
     private var _settingsVisible as Lang.Boolean = false;
+    private var _pendingParameterReads as Lang.Array<Pinion.ParameterType> = new Lang.Array<Pinion.ParameterType>[0];
 
     private var _lastUpdateTime as Time.Moment = Time.now();
 
@@ -196,6 +197,12 @@ class MainView extends WatchUi.View
         }
     }
 
+    private function syncSettings() as Void
+    {
+        _pendingParameterReads.addAll([Pinion.PRE_SELECT]);
+        _app.readParameter(Pinion.PRE_SELECT);
+    }
+
     public function onAppStateChanged(appState as App.AppState) as Void
     {
         _timingOut = false;
@@ -203,8 +210,7 @@ class MainView extends WatchUi.View
 
         if(!_settingsVisible && appState == App.CONNECTED)
         {
-            WatchUi.pushView(_settingsView, _settingsViewInputDelegate, WatchUi.SLIDE_IMMEDIATE);
-            _settingsVisible = true;
+            syncSettings();
         }
         else if(_settingsVisible && appState != App.CONNECTED)
         {
@@ -215,6 +221,27 @@ class MainView extends WatchUi.View
         {
             WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
             _scanMenuVisible = false;
+        }
+
+        if(appState != App.CONNECTED)
+        {
+            // If we get disconnected, clear out any pending reads
+            _pendingParameterReads = [];
+        }
+    }
+
+    public function setParameter(parameter as Pinion.ParameterType, value as Lang.Number) as Void
+    {
+        _settingsView.setParameter(parameter, value);
+        _pendingParameterReads.remove(parameter);
+
+        if(_pendingParameterReads.size() == 0)
+        {
+            if(!_settingsVisible && _app.state() == App.CONNECTED)
+            {
+                WatchUi.pushView(_settingsView, _settingsViewInputDelegate, WatchUi.SLIDE_IMMEDIATE);
+                _settingsVisible = true;
+            }
         }
     }
 }
