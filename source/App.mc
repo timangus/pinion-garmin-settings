@@ -186,6 +186,11 @@ class App extends Application.AppBase
         store();
     }
 
+    public function readParameter(parameter as Pinion.ParameterType) as Void
+    {
+        _pinionInterface.read(parameter);
+    }
+
     public function writeParameter(parameter as Pinion.ParameterType, value as Lang.Number) as Void
     {
         _pinionInterface.write(parameter, value);
