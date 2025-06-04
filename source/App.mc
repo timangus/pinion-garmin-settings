@@ -202,31 +202,37 @@ class App extends Application.AppBase
         _pinionInterface.disconnect();
     }
 
+    private function activityKey(key as Application.PropertyKeyType) as Application.PropertyKeyType
+    {
+        var profileName = Activity.getProfileInfo().name;
+        return profileName + "." + key;
+    }
+
     public function store() as Void
     {
         if(_deviceHandle != null)
         {
             var deviceHandle = _deviceHandle as Pinion.DeviceHandle;
-            Storage.setValue("deviceSerialNumber", deviceHandle.serialNumber());
-            Storage.setValue("deviceScanResult", deviceHandle.scanResult() as Application.PropertyValueType);
+            Storage.setValue(activityKey("deviceSerialNumber"), deviceHandle.serialNumber());
+            Storage.setValue(activityKey("deviceScanResult"), deviceHandle.scanResult() as Application.PropertyValueType);
         }
     }
 
     public function restore() as Void
     {
-        var deviceSerialNumber = Storage.getValue("deviceSerialNumber");
+        var deviceSerialNumber = Storage.getValue(activityKey("deviceSerialNumber"));
 
         if(deviceSerialNumber != null)
         {
-            var scanResult = Storage.getValue("deviceScanResult");
+            var scanResult = Storage.getValue(activityKey("deviceScanResult"));
             _deviceHandle = new Pinion.DeviceHandle(deviceSerialNumber as Lang.Long, scanResult as Ble.ScanResult);
         }
     }
 
     public function unstore() as Void
     {
-        Storage.deleteValue("deviceSerialNumber");
-        Storage.deleteValue("deviceScanResult");
+        Storage.deleteValue(activityKey("deviceSerialNumber"));
+        Storage.deleteValue(activityKey("deviceScanResult"));
         _deviceHandle = null;
     }
 
