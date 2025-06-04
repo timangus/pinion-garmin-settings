@@ -37,19 +37,19 @@ module Pinion
         {
             if(bytes[0] == PINION_ERR)
             {
-                System.println("BlockReadInitRequest response error " + bytesToHex(bytes));
+                Debug.log("BlockReadInitRequest response error " + bytesToHex(bytes));
                 return RESPONSE_FAILURE;
             }
 
             if(bytes[0] != PINION_BLOCK_REPLY)
             {
-                System.println("BlockReadInitRequest response is not a reply");
+                Debug.log("BlockReadInitRequest response is not a reply");
                 return RESPONSE_FAILURE;
             }
 
             if(bytes[1] != 0)
             {
-                System.println("BlockReadInitRequest response is not an init");
+                Debug.log("BlockReadInitRequest response is not an init");
                 return RESPONSE_FAILURE;
             }
 
@@ -57,7 +57,7 @@ module Pinion
 
             if(!address.equals(_parameterData[:address] as Lang.ByteArray))
             {
-                System.println("BlockReadInitRequest response is for the wrong address");
+                Debug.log("BlockReadInitRequest response is for the wrong address");
                 return RESPONSE_FAILURE;
             }
 

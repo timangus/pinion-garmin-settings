@@ -29,13 +29,13 @@ module Pinion
 
         public function execute() as Lang.Boolean
         {
-            System.println("Request::execute not implemented");
+            Debug.log("Request::execute not implemented");
             return false;
         }
 
         public function decodeResponse(bytes as Lang.ByteArray) as ResponseResult
         {
-            System.println("Request::decodeResponse not implemented");
+            Debug.log("Request::decodeResponse not implemented");
             return RESPONSE_FAILURE;
         }
 
@@ -47,7 +47,7 @@ module Pinion
 
         public function onDescriptorWrite(descriptor as Ble.Descriptor, status as Ble.Status) as Lang.Boolean
         {
-            System.println("Request::onDescriptorWrite not implemented");
+            Debug.log("Request::onDescriptorWrite not implemented");
             return false;
         }
 

@@ -47,13 +47,13 @@ module Pinion
         {
             if(bytes[0] == PINION_ERR)
             {
-                System.println("BlockReadContinueRequest response error " + bytesToHex(bytes));
+                Debug.log("BlockReadContinueRequest response error " + bytesToHex(bytes));
                 return RESPONSE_FAILURE;
             }
 
             if(bytes[0] != PINION_BLOCK_REPLY)
             {
-                System.println("BlockReadContinueRequest response is not a reply");
+                Debug.log("BlockReadContinueRequest response is not a reply");
                 return RESPONSE_FAILURE;
             }
 
@@ -67,7 +67,7 @@ module Pinion
 
             if(length < 2 || length > 8)
             {
-                System.println("BlockReadContinueRequest unexpected length " + length);
+                Debug.log("BlockReadContinueRequest unexpected length " + length);
                 return RESPONSE_FAILURE;
             }
 
@@ -76,7 +76,7 @@ module Pinion
 
             if(sequence != _expectedSequence)
             {
-                System.println("BlockReadContinueRequest sequence mismatch " + sequence + " != " + _expectedSequence);
+                Debug.log("BlockReadContinueRequest sequence mismatch " + sequence + " != " + _expectedSequence);
                 return RESPONSE_FAILURE;
             }
 

@@ -92,7 +92,7 @@ class MainView extends WatchUi.View
             }
         }
 
-        System.println("Can't find handle for serial " + serialNumber);
+        Debug.log("Can't find handle for serial " + serialNumber);
     }
 
     public function exit() as Void

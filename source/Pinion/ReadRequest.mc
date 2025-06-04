@@ -39,13 +39,13 @@ module Pinion
         {
             if(bytes[0] == PINION_ERR)
             {
-                System.println("ReadRequest response error " + bytesToHex(bytes));
+                Debug.log("ReadRequest response error " + bytesToHex(bytes));
                 return RESPONSE_FAILURE;
             }
 
             if(bytes[0] != PINION_REPLY)
             {
-                System.println("ReadRequest response is not a reply");
+                Debug.log("ReadRequest response is not a reply");
                 return RESPONSE_FAILURE;
             }
 
@@ -54,7 +54,7 @@ module Pinion
 
             if(!address.equals(_parameterData[:address] as Lang.ByteArray))
             {
-                System.println("ReadRequest response is for the wrong address");
+                Debug.log("ReadRequest response is for the wrong address");
                 return RESPONSE_FAILURE;
             }
 
@@ -68,7 +68,7 @@ module Pinion
             case 4: numberFormat = Lang.NUMBER_FORMAT_UINT32; break;
 
             default:
-                System.println("Unexpected parameter length " + length);
+                Debug.log("Unexpected parameter length " + length);
                 return RESPONSE_FAILURE;
             }
 
