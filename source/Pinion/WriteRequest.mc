@@ -127,7 +127,7 @@ module Pinion
                 return RESPONSE_FAILURE;
             }
 
-            (_delegate as Interface).onParameterWrite(_parameter);
+            (_delegate as Interface).onParameterWrite(_parameter, _value);
 
             return RESPONSE_SUCCESS;
         }

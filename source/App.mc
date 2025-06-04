@@ -165,9 +165,9 @@ class App extends Application.AppBase
         _mainView.setParameter(parameter, value);
     }
 
-    public function onParameterWrite(parameter as Pinion.ParameterType) as Void
+    public function onParameterWrite(parameter as Pinion.ParameterType, value as Lang.Number) as Void
     {
-        Debug.log("onParameterWrite(" + parameter + ")");
+        Debug.log("onParameterWrite(" + parameter + ", " + value + ")");
     }
 
     public function onBlockRead(bytes as Lang.ByteArray, cumulative as Lang.Number, total as Lang.Number) as Void

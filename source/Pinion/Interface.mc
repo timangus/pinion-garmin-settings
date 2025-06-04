@@ -689,7 +689,7 @@ module Pinion
             }
         }
 
-        public function onParameterWrite(parameter as ParameterType) as Void
+        public function onParameterWrite(parameter as ParameterType, value as Lang.Number) as Void
         {
             if(parameter.equals(HIDDEN_SETTINGS_ENABLE))
             {
@@ -705,7 +705,7 @@ module Pinion
 
             if(_delegate != null)
             {
-                (_delegate as Delegate).onParameterWrite(parameter);
+                (_delegate as Delegate).onParameterWrite(parameter, value);
             }
         }
 

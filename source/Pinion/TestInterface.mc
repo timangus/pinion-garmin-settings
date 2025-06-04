@@ -107,7 +107,7 @@ module Pinion
         public function write(parameter as ParameterType, value as Lang.Number) as Void
         {
             _testParameterData[parameter] = value;
-            onParameterWrite(parameter);
+            onParameterWrite(parameter, value);
         }
 
         public function blockRead(parameter as ParameterType) as Void
@@ -171,7 +171,7 @@ module Pinion
             }
         }
 
-        public function onParameterWrite(parameter as ParameterType) as Void
+        public function onParameterWrite(parameter as ParameterType, value as Lang.Number) as Void
         {
             if(parameter.equals(HIDDEN_SETTINGS_ENABLE))
             {
@@ -181,7 +181,7 @@ module Pinion
 
             if(_delegate != null)
             {
-                (_delegate as Delegate).onParameterWrite(parameter);
+                (_delegate as Delegate).onParameterWrite(parameter, value);
             }
         }
 
