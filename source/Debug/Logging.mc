@@ -2,6 +2,7 @@ import Toybox.Lang;
 import Toybox.System;
 import Toybox.Time;
 import Toybox.Time.Gregorian;
+import Toybox.Activity;
 
 module Debug
 {
@@ -21,7 +22,8 @@ module Debug
                 (info.month as Lang.Number).format("%02u"),
                 info.day.format("%02u")
             ]);
-            string += "******** Log Start " + date + "\n";
+
+            string += "******** Log Start " + date + " " + Activity.getProfileInfo().name + "\n";
             _firstMessageLogged = true;
         }
 
