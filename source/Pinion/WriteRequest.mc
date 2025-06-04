@@ -44,7 +44,7 @@ module Pinion
 
                 if(!found)
                 {
-                    System.println("WriteRequest created with invalid value " + value + ", replaced with " + values[0] as Lang.Number);
+                    Debug.log("WriteRequest created with invalid value " + value + ", replaced with " + values[0] as Lang.Number);
                     value = values[0] as Lang.Number;
                 }
             }
@@ -56,12 +56,12 @@ module Pinion
 
                 if(value < min)
                 {
-                    System.println("WriteRequest value " + value + " clamped to minimum " + min);
+                    Debug.log("WriteRequest value " + value + " clamped to minimum " + min);
                     value = min;
                 }
                 else if(value > max)
                 {
-                    System.println("WriteRequest value " + value + " clamped to maximum " + max);
+                    Debug.log("WriteRequest value " + value + " clamped to maximum " + max);
                     value = max;
                 }
             }
@@ -86,7 +86,7 @@ module Pinion
             case 4: numberFormat = Lang.NUMBER_FORMAT_UINT32; break;
 
             default:
-                System.println("Unexpected parameter length " + length);
+                Debug.log("Unexpected parameter length " + length);
                 return false;
             }
 
@@ -103,19 +103,19 @@ module Pinion
         {
             if(bytes[0] == PINION_ERR)
             {
-                System.println("WriteRequest response error " + bytesToHex(bytes));
+                Debug.log("WriteRequest response error " + bytesToHex(bytes));
                 return RESPONSE_FAILURE;
             }
 
             if(bytes[0] != PINION_ACK)
             {
-                System.println("WriteRequest response is not a acknowledgement");
+                Debug.log("WriteRequest response is not a acknowledgement");
                 return RESPONSE_FAILURE;
             }
 
             if(bytes[1] != 0xFF)
             {
-                System.println("WriteRequest response is malformed");
+                Debug.log("WriteRequest response is malformed");
                 return RESPONSE_FAILURE;
             }
 
@@ -123,7 +123,7 @@ module Pinion
 
             if(!address.equals(_parameterData[:address] as Lang.ByteArray))
             {
-                System.println("WriteRequest response is for the wrong address");
+                Debug.log("WriteRequest response is for the wrong address");
                 return RESPONSE_FAILURE;
             }
 

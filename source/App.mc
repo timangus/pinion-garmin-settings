@@ -95,7 +95,7 @@ class App extends Application.AppBase
 
     function onStart(state as Dictionary?) as Void
     {
-        System.println("----- Application Start -----");
+        Debug.log("----- Application Start -----");
 
         restore();
         _pinionInterface.setDelegate(self);
@@ -106,7 +106,7 @@ class App extends Application.AppBase
     {
         exit();
 
-        System.println("----- Application Stop -----");
+        Debug.log("----- Application Stop -----");
     }
 
     function getInitialView() as [Views] or [Views, InputDelegates]
@@ -116,12 +116,12 @@ class App extends Application.AppBase
 
     public function onScanStateChanged(scanState as Pinion.ScanState) as Void
     {
-        System.println("onScanStateChanged(" + scanState + ")");
+        Debug.log("onScanStateChanged(" + scanState + ")");
     }
 
     public function onConnected(device as Ble.Device) as Void
     {
-        System.println("PinionDelegate.onConnected");
+        Debug.log("PinionDelegate.onConnected");
         setState(CONNECTED);
     }
 
@@ -133,7 +133,7 @@ class App extends Application.AppBase
 
     public function onDisconnected() as Void
     {
-        System.println("PinionDelegate.onDisconnected");
+        Debug.log("PinionDelegate.onDisconnected");
 
         if(_appState != STOPPING)
         {
@@ -143,7 +143,7 @@ class App extends Application.AppBase
 
     public function onConnectionTimeout() as Void
     {
-        System.println("PinionDelegate.onConnectionTimeout");
+        Debug.log("PinionDelegate.onConnectionTimeout");
 
         attemptReconnection();
         _mainView.onConnectionTimeout();
@@ -156,28 +156,28 @@ class App extends Application.AppBase
 
     public function onCurrentGearChanged(currentGear as Lang.Number) as Void
     {
-        System.println("onCurrentGearChanged(" + currentGear + ")");
+        Debug.log("onCurrentGearChanged(" + currentGear + ")");
     }
 
     public function onParameterRead(parameter as Pinion.ParameterType, value as Lang.Number) as Void
     {
-        System.println("onParameterRead(" + parameter + ", " + value + ")");
+        Debug.log("onParameterRead(" + parameter + ", " + value + ")");
         _mainView.setParameter(parameter, value);
     }
 
     public function onParameterWrite(parameter as Pinion.ParameterType) as Void
     {
-        System.println("onParameterWrite(" + parameter + ")");
+        Debug.log("onParameterWrite(" + parameter + ")");
     }
 
     public function onBlockRead(bytes as Lang.ByteArray, cumulative as Lang.Number, total as Lang.Number) as Void
     {
-        System.println("onBlockRead(" + bytes + ", " + cumulative + ", " + total + ")");
+        Debug.log("onBlockRead(" + bytes + ", " + cumulative + ", " + total + ")");
     }
 
     public function onActiveErrorsRetrieved(activeErrors as Lang.Array<Lang.Number>) as Void
     {
-        System.println("onActiveErrorsRetrieved(" + activeErrors + ")");
+        Debug.log("onActiveErrorsRetrieved(" + activeErrors + ")");
     }
 
     public function selectDevice(deviceHandle as Pinion.DeviceHandle) as Void
