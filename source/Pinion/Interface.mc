@@ -79,11 +79,18 @@ module Pinion
                 return false;
             }
 
+            if(deviceHandle.scanResult() == null)
+            {
+                 System.println("DeviceHandle ScanResult is null");
+                return false;
+            }
+
             try
             {
                 _connectedDevice = Ble.pairDevice(deviceHandle.scanResult() as Ble.ScanResult);
                 if(_connectedDevice == null)
                 {
+                    System.println("Ble.pairDevice returned null");
                     return false;
                 }
             }
@@ -91,6 +98,7 @@ module Pinion
             {
                 // This seems to happen sometimes when unpairDevice has definitely been called -- for whatever
                 // reason it seems to need some time to elapse before a call to pairDevice is allowed again
+                System.println("Ble.DevicePairException exception " + e.getErrorMessage());
                 return false;
             }
 
