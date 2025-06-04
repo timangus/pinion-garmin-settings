@@ -7,15 +7,11 @@ module Debug
 {
     var _firstMessageLogged as Lang.Boolean = false;
 
-    function log(text as Lang.String) as Void
+    function _timeString() as Lang.String
     {
+        var string = "";
+
         var info = Time.Gregorian.info(Time.now(), Time.FORMAT_SHORT);
-        var time = Lang.format("$1$:$2$:$3$",
-        [
-            info.hour.format("%02u"),
-            info.min.format("%02u"),
-            info.sec.format("%02u")
-        ]);
 
         if(!_firstMessageLogged)
         {
@@ -25,10 +21,29 @@ module Debug
                 (info.month as Lang.Number).format("%02u"),
                 info.day.format("%02u")
             ]);
-            System.println("******** Log Start " + date);
+            string += "******** Log Start " + date + "\n";
             _firstMessageLogged = true;
         }
 
-        System.println(time + " " + text);
+        var time = Lang.format("$1$:$2$:$3$",
+        [
+            info.hour.format("%02u"),
+            info.min.format("%02u"),
+            info.sec.format("%02u")
+        ]);
+
+        string += time;
+        return string;
+    }
+
+    function log(text as Lang.String) as Void
+    {
+        System.println(_timeString() + " " + text);
+    }
+
+    function error(text as Lang.String) as Void
+    {
+        System.println(_timeString() + " ERROR: " + text);
+        System.error(text);
     }
 }
