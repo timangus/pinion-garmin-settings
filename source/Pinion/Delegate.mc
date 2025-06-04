@@ -12,7 +12,7 @@ module Pinion
         function onFoundDevicesChanged(foundDevices as Lang.Array<DeviceHandle>) as Void;
         function onCurrentGearChanged(currentGear as Lang.Number) as Void;
         function onParameterRead(parameter as ParameterType, value as Lang.Number) as Void;
-        function onParameterWrite(parameter as ParameterType) as Void;
+        function onParameterWrite(parameter as ParameterType, value as Lang.Number) as Void;
         function onBlockRead(bytes as Lang.ByteArray, cumulative as Lang.Number, total as Lang.Number) as Void;
         function onActiveErrorsRetrieved(activeErrors as Lang.Array<Lang.Number>) as Void;
     };
