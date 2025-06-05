@@ -6,6 +6,8 @@ using Toybox.BluetoothLowEnergy as Ble;
 
 class App extends Application.AppBase
 {
+    const RECONNECTION_DELAY = 1000;
+
     enum AppState
     {
         STARTING,
@@ -79,7 +81,7 @@ class App extends Application.AppBase
             if(!connectResult)
             {
                 // If the connection failed, call updateState again in the near future
-                _retryTimer.start(method(:updateState), 1000, false);
+                _retryTimer.start(method(:updateState), RECONNECTION_DELAY, false);
             }
 
             break;
@@ -125,7 +127,7 @@ class App extends Application.AppBase
         setState(CONNECTED);
     }
 
-    private function attemptReconnection() as Void
+    public function _attemptReconnection() as Void
     {
         setState(CONNECTING);
         updateState();
@@ -137,7 +139,7 @@ class App extends Application.AppBase
 
         if(_appState != STOPPING)
         {
-            attemptReconnection();
+            _retryTimer.start(method(:_attemptReconnection), RECONNECTION_DELAY, false);
         }
     }
 
@@ -145,7 +147,7 @@ class App extends Application.AppBase
     {
         Debug.log("PinionDelegate.onConnectionTimeout");
 
-        attemptReconnection();
+        _attemptReconnection();
         _mainView.onConnectionTimeout();
     }
 
