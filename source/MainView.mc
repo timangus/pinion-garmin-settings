@@ -203,7 +203,7 @@ class MainView extends WatchUi.View
         _app.readParameter(Pinion.PRE_SELECT);
     }
 
-    public function onAppStateChanged(appState as App.AppState) as Void
+    public function onAppStateChanged(appState as App.State) as Void
     {
         _timingOut = false;
         WatchUi.requestUpdate();
