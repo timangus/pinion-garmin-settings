@@ -8,7 +8,7 @@ class App extends Application.AppBase
 {
     const RECONNECTION_DELAY = 1000;
 
-    enum AppState
+    enum State
     {
         STARTING,
         SCANNING,
@@ -17,7 +17,7 @@ class App extends Application.AppBase
         STOPPING,
     }
 
-    private var _appState as AppState = STARTING;
+    private var _state as State = STARTING;
 
     private var _pinionInterface as Pinion.AbstractInterface = new Pinion.Interface();
     private var _deviceHandle as Pinion.DeviceHandle? = null;
@@ -31,25 +31,25 @@ class App extends Application.AppBase
         AppBase.initialize();
     }
 
-    public function state() as AppState
+    public function state() as State
     {
-        return _appState;
+        return _state;
     }
 
-    private function setState(state as AppState) as Void
+    private function setState(state as State) as Void
     {
-        if(_appState == state)
+        if(_state == state)
         {
             return;
         }
 
-        _appState = state;
+        _state = state;
         onStateChanged();
     }
 
     private function onStateChanged() as Void
     {
-        _mainView.onAppStateChanged(_appState);
+        _mainView.onAppStateChanged(_state);
     }
 
     public function updateState() as Void
@@ -58,12 +58,12 @@ class App extends Application.AppBase
         {
             setState(SCANNING);
         }
-        else if(_appState != CONNECTED)
+        else if(_state != CONNECTED)
         {
             setState(CONNECTING);
         }
 
-        switch(_appState)
+        switch(_state)
         {
         case SCANNING:
             _pinionInterface.startScan();
@@ -137,7 +137,7 @@ class App extends Application.AppBase
     {
         Debug.log("PinionDelegate.onDisconnected");
 
-        if(_appState != STOPPING)
+        if(_state != STOPPING)
         {
             _retryTimer.start(method(:_attemptReconnection), RECONNECTION_DELAY, false);
         }
