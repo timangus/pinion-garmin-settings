@@ -7,6 +7,7 @@ using Toybox.BluetoothLowEnergy as Ble;
 class App extends Application.AppBase
 {
     const RECONNECTION_DELAY = 1000;
+    const MAX_CONSECUTIVE_TIMEOUTS = 5;
 
     enum State
     {
@@ -25,6 +26,7 @@ class App extends Application.AppBase
     private var _mainView as MainView = new MainView(self);
 
     private var _retryTimer as Timer.Timer = new Timer.Timer();
+    private var _numTimeouts as Lang.Number = 0;
 
     public function initialize()
     {
@@ -54,7 +56,7 @@ class App extends Application.AppBase
 
     public function updateState() as Void
     {
-        if(_deviceHandle == null)
+        if(_deviceHandle == null || _numTimeouts > MAX_CONSECUTIVE_TIMEOUTS)
         {
             setState(SCANNING);
         }
@@ -124,6 +126,7 @@ class App extends Application.AppBase
     public function onConnected(device as Ble.Device) as Void
     {
         Debug.log("PinionDelegate.onConnected");
+        _numTimeouts = 0;
         setState(CONNECTED);
     }
 
@@ -146,9 +149,17 @@ class App extends Application.AppBase
     public function onConnectionTimeout() as Void
     {
         Debug.log("PinionDelegate.onConnectionTimeout");
+        _numTimeouts++;
 
-        _attemptReconnection();
-        _mainView.onConnectionTimeout();
+        if(_numTimeouts <= MAX_CONSECUTIVE_TIMEOUTS)
+        {
+            _attemptReconnection();
+            _mainView.onConnectionTimeout();
+        }
+        else
+        {
+            updateState();
+        }
     }
 
     public function onFoundDevicesChanged(foundDevices as Lang.Array<Pinion.DeviceHandle>) as Void
@@ -185,6 +196,7 @@ class App extends Application.AppBase
     public function selectDevice(deviceHandle as Pinion.DeviceHandle) as Void
     {
         _deviceHandle = deviceHandle;
+        _numTimeouts = 0;
         updateState();
         store();
     }
