@@ -6,6 +6,9 @@ module Pinion
 {
     class TestInterface
     {
+        const SIMULATE_TIMEOUT = false;
+        const CONNECTION_TIMEOUT = 5000;
+
         private var _delegate as Delegate?;
         private var _scanState as ScanState = NOT_SCANNING;
 
@@ -38,12 +41,33 @@ module Pinion
             NUMBER_OF_GEARS =>          12,
         } as Lang.Dictionary<ParameterType, Lang.Number>;
 
+        public function _onConnectionTimeout() as Void
+        {
+            _connectedDevice = null;
+
+            if(_scanState == SCANNING)
+            {
+                Debug.log("Timed out connecting, restarting scanning");
+            }
+            else if(_delegate != null)
+            {
+                (_delegate as Delegate).onConnectionTimeout();
+            }
+        }
+
         public function connect(deviceHandle as DeviceHandle) as Lang.Boolean
         {
             stopScan();
 
-            _connectedDevice = new Ble.Device();
-            _timer.start(method(:onConnected), 1500, false);
+            if(!SIMULATE_TIMEOUT)
+            {
+                _connectedDevice = new Ble.Device();
+                _timer.start(method(:onConnected), 1500, false);
+            }
+            else
+            {
+                _timer.start(method(:_onConnectionTimeout), CONNECTION_TIMEOUT, false);
+            }
 
             return true;
         }
