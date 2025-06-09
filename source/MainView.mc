@@ -1,7 +1,6 @@
 using Toybox.Graphics;
 using Toybox.WatchUi;
 using Toybox.Lang;
-using Toybox.BluetoothLowEnergy as Ble;
 using Toybox.Time;
 
 class MainViewInputDelegate extends WatchUi.Menu2InputDelegate
