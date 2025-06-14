@@ -33,6 +33,9 @@ class MainView extends WatchUi.View
     private var _scanMenuVisible as Lang.Boolean = false;
     private var _deviceHandlesInScanMenu as Lang.Array<Pinion.DeviceHandle> = new Lang.Array<Pinion.DeviceHandle>[0];
 
+    private var _connectedView as ConnectedView = new ConnectedView();
+    private var _connectedViewInputDelegate as ConnectedViewInputDelegate = new ConnectedViewInputDelegate(_connectedView);
+
     private var _settingsView as SettingsView = new SettingsView();
     private var _settingsViewInputDelegate as SettingsViewInputDelegate = new SettingsViewInputDelegate();
     private var _settingsVisible as Lang.Boolean = false;
@@ -47,6 +50,8 @@ class MainView extends WatchUi.View
         View.initialize();
 
         _app = app;
+        _connectedView.setApp(app);
+        _connectedViewInputDelegate.setApp(app);
         _settingsViewInputDelegate.setApp(app);
     }
 
@@ -238,7 +243,8 @@ class MainView extends WatchUi.View
         {
             if(!_settingsVisible && _app.state() == App.CONNECTED)
             {
-                WatchUi.pushView(_settingsView, _settingsViewInputDelegate, WatchUi.SLIDE_IMMEDIATE);
+                //WatchUi.pushView(_settingsView, _settingsViewInputDelegate, WatchUi.SLIDE_IMMEDIATE);
+                WatchUi.pushView(_connectedView, _connectedViewInputDelegate, WatchUi.SLIDE_IMMEDIATE);
                 _settingsVisible = true;
             }
         }

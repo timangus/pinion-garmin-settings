@@ -1,0 +1,19 @@
+<layout id="ConnectedLayout">
+    <drawable id="pre_select_marker" />
+    <label x="10" y="60" text="Pre.Select" color="Gfx.COLOR_WHITE" />
+    <drawable id="pre_select" class="ToggleSwitch">
+        <param name="locX">120</param>
+        <param name="locY">60</param>
+        <param name="width">80</param>
+        <param name="height">30</param>
+    </drawable>
+
+    <drawable id="start_select_marker" />
+    <label x="10" y="100" text="Start.Select" color="Gfx.COLOR_WHITE" />
+    <drawable id="start_select" class="ToggleSwitch">
+        <param name="locX">120</param>
+        <param name="locY">100</param>
+        <param name="width">80</param>
+        <param name="height">30</param>
+    </drawable>
+</layout>

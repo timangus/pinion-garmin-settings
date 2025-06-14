@@ -1,3 +1,11 @@
 <drawables>
     <bitmap id="LauncherIcon" filename="launcher_icon.png" />
+
+    <drawable-list id="pre_select_marker">
+        <shape type="rectangle" x="8" y="58" width="200" height="34" color="Gfx.COLOR_BLUE" />
+    </drawable-list>
+
+    <drawable-list id="start_select_marker">
+        <shape type="rectangle" x="8" y="98" width="200" height="34" color="Gfx.COLOR_BLUE" />
+    </drawable-list>
 </drawables>
