@@ -33,10 +33,7 @@ class MainView extends WatchUi.View
     private var _scanMenuVisible as Lang.Boolean = false;
     private var _deviceHandlesInScanMenu as Lang.Array<Pinion.DeviceHandle> = new Lang.Array<Pinion.DeviceHandle>[0];
 
-    private var _settingsView as SettingsView = new SettingsView();
-    private var _settingsViewInputDelegate as SettingsViewInputDelegate = new SettingsViewInputDelegate();
-    private var _settingsVisible as Lang.Boolean = false;
-    private var _pendingParameterReads as Lang.Array<Pinion.ParameterType> = new Lang.Array<Pinion.ParameterType>[0];
+    private var _connectedView as ConnectedView = new ConnectedView();
 
     private var _lastUpdateTime as Time.Moment = Time.now();
 
@@ -47,11 +44,12 @@ class MainView extends WatchUi.View
         View.initialize();
 
         _app = app;
-        _settingsViewInputDelegate.setApp(app);
+        _connectedView.setApp(app);
     }
 
     function onUpdate(dc as Toybox.Graphics.Dc) as Void
     {
+        Debug.log("onUpdate " + _app.state());
         switch(_app.state())
         {
         case App.SCANNING:
@@ -196,25 +194,19 @@ class MainView extends WatchUi.View
         }
     }
 
-    private function syncSettings() as Void
-    {
-        _pendingParameterReads.addAll([Pinion.PRE_SELECT]);
-        _app.readParameter(Pinion.PRE_SELECT);
-    }
-
     public function onAppStateChanged(appState as App.State) as Void
     {
+        Debug.log("onAppStateChanged " + appState);
         _timingOut = false;
         WatchUi.requestUpdate();
 
-        if(!_settingsVisible && appState == App.CONNECTED)
+        if(!_connectedView.showing() && appState == App.CONNECTED)
         {
-            syncSettings();
+            _connectedView.show();
         }
-        else if(_settingsVisible && appState != App.CONNECTED)
+        else if(_connectedView.showing() && appState != App.CONNECTED)
         {
-            WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
-            _settingsVisible = false;
+            _connectedView.hide();
         }
         else if(_scanMenuVisible && appState == App.STOPPING)
         {
@@ -222,25 +214,11 @@ class MainView extends WatchUi.View
             _scanMenuVisible = false;
         }
 
-        if(appState != App.CONNECTED)
-        {
-            // If we get disconnected, clear out any pending reads
-            _pendingParameterReads = [];
-        }
+        WatchUi.requestUpdate();
     }
 
-    public function setParameter(parameter as Pinion.ParameterType, value as Lang.Number) as Void
+    public function onParameterRead(parameter as Pinion.ParameterType, value as Lang.Number) as Void
     {
-        _settingsView.setParameter(parameter, value);
-        _pendingParameterReads.remove(parameter);
-
-        if(_pendingParameterReads.size() == 0)
-        {
-            if(!_settingsVisible && _app.state() == App.CONNECTED)
-            {
-                WatchUi.pushView(_settingsView, _settingsViewInputDelegate, WatchUi.SLIDE_IMMEDIATE);
-                _settingsVisible = true;
-            }
-        }
+        _connectedView.onParameterRead(parameter, value);
     }
 }

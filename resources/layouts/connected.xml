@@ -1,0 +1,28 @@
+<layout id="ConnectedLayout">
+    <selectable id="pre_select" class="WatchUi.Selectable" x="8" y="58" width="200" height="34">
+        <state id="stateHighlighted" color="Graphics.COLOR_BLUE" />
+    </selectable>
+    <label x="10" y="60" text="Pre.Select" color="Graphics.COLOR_WHITE" />
+    <drawable id="pre_select_item" class="ToggleSwitch">
+        <param name="locX">120</param>
+        <param name="locY">60</param>
+        <param name="width">80</param>
+        <param name="height">30</param>
+    </drawable>
+
+    <selectable id="start_select" class="WatchUi.Selectable" x="8" y="98" width="200" height="34">
+        <state id="stateHighlighted" color="Graphics.COLOR_BLUE" />
+    </selectable>
+    <label x="10" y="100" text="Start.Select" color="Graphics.COLOR_WHITE" />
+    <drawable id="start_select_item" class="ToggleSwitch">
+        <param name="locX">120</param>
+        <param name="locY">100</param>
+        <param name="width">80</param>
+        <param name="height">30</param>
+    </drawable>
+
+    <button x="20" y="160" width="100" height="100" behavior="onSettings">
+        <state id="stateDefault" color="Graphics.COLOR_WHITE" />
+        <state id="stateHighlighted" color="Graphics.COLOR_BLUE" />
+    </button>
+</layout>

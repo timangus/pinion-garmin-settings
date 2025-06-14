@@ -20,7 +20,7 @@ class App extends Application.AppBase
 
     private var _state as State = STARTING;
 
-    private var _pinionInterface as Pinion.AbstractInterface = new Pinion.Interface();
+    private var _pinionInterface as Pinion.AbstractInterface = new Pinion.TestInterface();
     private var _deviceHandle as Pinion.DeviceHandle? = null;
 
     private var _mainView as MainView = new MainView(self);
@@ -175,7 +175,7 @@ class App extends Application.AppBase
     public function onParameterRead(parameter as Pinion.ParameterType, value as Lang.Number) as Void
     {
         Debug.log("onParameterRead(" + parameter + ", " + value + ")");
-        _mainView.setParameter(parameter, value);
+        _mainView.onParameterRead(parameter, value);
     }
 
     public function onParameterWrite(parameter as Pinion.ParameterType, value as Lang.Number) as Void
@@ -252,6 +252,7 @@ class App extends Application.AppBase
 
     public function exit() as Void
     {
+        Debug.log("App.exit()");
         setState(STOPPING);
         _pinionInterface.disconnect();
         store();
