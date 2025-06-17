@@ -229,9 +229,9 @@ class MainView extends WatchUi.View
         }
     }
 
-    public function setParameter(parameter as Pinion.ParameterType, value as Lang.Number) as Void
+    public function onParameterRead(parameter as Pinion.ParameterType, value as Lang.Number) as Void
     {
-        _settingsView.setParameter(parameter, value);
+        _settingsView.onParameterRead(parameter, value);
         _pendingParameterReads.remove(parameter);
 
         if(_pendingParameterReads.size() == 0)

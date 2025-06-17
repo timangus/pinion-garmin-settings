@@ -51,7 +51,7 @@ class SettingsView extends WatchUi.Menu2
         addItem(new WatchUi.MenuItem("Disconnect", null, "disconnect", null));
     }
 
-    public function setParameter(parameter as Pinion.ParameterType, value as Lang.Number) as Void
+    public function onParameterRead(parameter as Pinion.ParameterType, value as Lang.Number) as Void
     {
         if(parameter.equals("PRE_SELECT"))
         {
