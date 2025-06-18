@@ -99,6 +99,20 @@ class SettingsView extends WatchUi.Menu2
         return _showing;
     }
 
+    public function setToggleById(id as Lang.String, value as Lang.Boolean) as Void
+    {
+        var index = findItemById(id);
+        if(index < 0)
+        {
+            Debug.error("setToggleById couldn't find item");
+        }
+
+        var item = getItem(index) as WatchUi.ToggleMenuItem;
+        item.setEnabled(value);
+
+        WatchUi.requestUpdate();
+    }
+
     public function onParameterRead(parameter as Pinion.ParameterType, value as Lang.Number) as Void
     {
         if(parameter.equals("PRE_SELECT"))
