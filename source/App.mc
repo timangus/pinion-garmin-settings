@@ -51,6 +51,15 @@ class App extends Application.AppBase
 
     private function onStateChanged() as Void
     {
+        switch(_state)
+        {
+        case STARTING:      Debug.log("onStateChanged STARTING");   break;
+        case SCANNING:      Debug.log("onStateChanged SCANNING");   break;
+        case CONNECTING:    Debug.log("onStateChanged CONNECTING"); break;
+        case CONNECTED:     Debug.log("onStateChanged CONNECTED");  break;
+        case STOPPING:      Debug.log("onStateChanged STOPPING");   break;
+        }
+
         _mainView.onAppStateChanged(_state);
     }
 
