@@ -61,7 +61,7 @@ module Pinion
         SPEED_SENSOR_TYPE =>        { :address => [0x00, 0x34, 0x01]b,  :length => 1,   :values => [0, 1, 3],       :hidden => true },
         NUMBER_OF_MAGNETS =>        { :address => [0x00, 0x30, 0x01]b,  :length => 2,   :minmax => [1, 8],          :hidden => true },
 
-        REVERSE_TRIGGER_MAPPING =>  { :address => [0x50, 0x25, 0x00]b,  :length => 1,   :values => [1, 0] },
+        REVERSE_TRIGGER_MAPPING =>  { :address => [0x50, 0x25, 0x00]b,  :length => 1,   :values => [1, 2] },
 
         CURRENT_GEAR =>             { :address => [0x01, 0x61, 0x02]b,  :length => 1 },
         BATTERY_LEVEL =>            { :address => [0x64, 0x61, 0x01]b,  :length => 2 },
