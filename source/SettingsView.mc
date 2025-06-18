@@ -3,6 +3,7 @@ using Toybox.WatchUi;
 using Toybox.Lang;
 using Toybox.BluetoothLowEnergy as Ble;
 using Toybox.Time;
+using Toybox.Timer;
 
 class SettingsViewInputDelegate extends WatchUi.Menu2InputDelegate
 {
@@ -35,6 +36,25 @@ class SettingsView extends WatchUi.Menu2
 
     private var _remainingReads as Lang.Array<Pinion.ParameterType> = new Lang.Array<Pinion.ParameterType>[0];
 
+    private var _currentGear as Lang.Number = 0;
+    private var _batteryLevel as Lang.Number = 0;
+    private var _batteryLevelTimer as Timer.Timer = new Timer.Timer();
+
+    private function updateTitle() as Void
+    {
+        var currentGear = _currentGear > 0 ? _currentGear : "-";
+        var batteryLevel = _batteryLevel > 0 ? (_batteryLevel / 100.0).format("%.1f") : "-";
+        var title = Lang.format("Gear: $1$ Battery: $2$%", [currentGear, batteryLevel]);
+
+        setTitle(title);
+
+        if(_viewPushed)
+        {
+            // Force refresh hack
+            WatchUi.switchToView(self, _settingsViewInputDelegate, WatchUi.SLIDE_IMMEDIATE);
+        }
+    }
+
     public function initialize()
     {
         WatchUi.Menu2.initialize(null);
@@ -44,11 +64,18 @@ class SettingsView extends WatchUi.Menu2
         addItem(new WatchUi.ToggleMenuItem("Start.Select", {:enabled => "Enabled", :disabled => "Disabled"},
             "start.select", false, {:alignment => WatchUi.MenuItem.MENU_ITEM_LABEL_ALIGN_RIGHT}));
         addItem(new WatchUi.MenuItem("Disconnect", null, "disconnect", null));
+
+        updateTitle();
     }
 
     public function setApp(app as App) as Void
     {
         _app = app;
+    }
+
+    public function _readBatteryLevel() as Void
+    {
+        (_app as App).readParameter(Pinion.BATTERY_LEVEL);
     }
 
     public function show() as Void
@@ -62,6 +89,8 @@ class SettingsView extends WatchUi.Menu2
         [
             Pinion.PRE_SELECT,
             Pinion.START_SELECT,
+            Pinion.CURRENT_GEAR,
+            Pinion.BATTERY_LEVEL,
         ];
 
         var i = _remainingReads.size() - 1;
@@ -78,6 +107,7 @@ class SettingsView extends WatchUi.Menu2
     {
         WatchUi.pushView(self, _settingsViewInputDelegate, WatchUi.SLIDE_IMMEDIATE);
         _viewPushed = true;
+        _batteryLevelTimer.start(method(:_readBatteryLevel), 60000, true);
     }
 
     public function hide() as Void
@@ -89,6 +119,7 @@ class SettingsView extends WatchUi.Menu2
 
         _showing = false;
         _synced = false;
+        _batteryLevelTimer.stop();
 
         if(_viewPushed)
         {
@@ -126,6 +157,16 @@ class SettingsView extends WatchUi.Menu2
         {
             setToggleById("start.select", value == 1);
         }
+        else if(parameter.equals("CURRENT_GEAR"))
+        {
+            _currentGear = value;
+            updateTitle();
+        }
+        else if(parameter.equals("BATTERY_LEVEL"))
+        {
+            _batteryLevel = value;
+            updateTitle();
+        }
 
         if(!_synced)
         {
@@ -140,6 +181,8 @@ class SettingsView extends WatchUi.Menu2
 
     public function onCurrentGearChanged(currentGear as Lang.Number) as Void
     {
+        _currentGear = currentGear;
+        updateTitle();
     }
 
     public function onSelect(item as WatchUi.MenuItem) as Void
