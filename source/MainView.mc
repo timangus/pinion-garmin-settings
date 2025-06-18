@@ -243,4 +243,9 @@ class MainView extends WatchUi.View
             }
         }
     }
+
+    public function onCurrentGearChanged(currentGear as Lang.Number) as Void
+    {
+        _settingsView.onCurrentGearChanged(currentGear);
+    }
 }

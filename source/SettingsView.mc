@@ -60,4 +60,8 @@ class SettingsView extends WatchUi.Menu2
             item.setEnabled(value == 1);
         }
     }
+
+    public function onCurrentGearChanged(currentGear as Lang.Number) as Void
+    {
+    }
 }
