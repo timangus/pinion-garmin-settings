@@ -6,11 +6,42 @@ using Toybox.Time;
 
 class SettingsViewInputDelegate extends WatchUi.Menu2InputDelegate
 {
+    private var _view as SettingsView;
+
+    public function initialize(view as SettingsView)
+    {
+        WatchUi.Menu2InputDelegate.initialize();
+        _view = view;
+    }
+
+    function onSelect(item as WatchUi.MenuItem) as Void
+    {
+        _view.onSelect(item);
+    }
+
+    function onBack() as Void
+    {
+        _view.exit();
+    }
+}
+
+class SettingsView extends WatchUi.Menu2
+{
+    private var _settingsViewInputDelegate as SettingsViewInputDelegate = new SettingsViewInputDelegate(self);
     private var _app as App?;
+    private var _showing as Lang.Boolean = false;
+    private var _viewPushed as Lang.Boolean = false;
+    private var _synced as Lang.Boolean = false;
+
+    private var _remainingReads as Lang.Array<Pinion.ParameterType> = new Lang.Array<Pinion.ParameterType>[0];
 
     public function initialize()
     {
-        WatchUi.Menu2InputDelegate.initialize();
+        WatchUi.Menu2.initialize(null);
+
+        addItem(new WatchUi.ToggleMenuItem("Pre.Select", {:enabled => "Enabled", :disabled => "Disabled"},
+            "pre.select", false, {:alignment => WatchUi.MenuItem.MENU_ITEM_LABEL_ALIGN_RIGHT}));
+        addItem(new WatchUi.MenuItem("Disconnect", null, "disconnect", null));
     }
 
     public function setApp(app as App) as Void
@@ -18,7 +49,81 @@ class SettingsViewInputDelegate extends WatchUi.Menu2InputDelegate
         _app = app;
     }
 
-    function onSelect(item as WatchUi.MenuItem) as Void
+    public function show() as Void
+    {
+        if(showing())
+        {
+            Debug.error("SettingsView.show called when already showing");
+        }
+
+        _remainingReads =
+        [
+            Pinion.PRE_SELECT,
+        ];
+
+        var i = _remainingReads.size() - 1;
+        while(i >= 0)
+        {
+            (_app as App).readParameter(_remainingReads[i]);
+            i--;
+        }
+
+        _showing = true;
+    }
+
+    private function onFinishedSync() as Void
+    {
+        WatchUi.pushView(self, _settingsViewInputDelegate, WatchUi.SLIDE_IMMEDIATE);
+        _viewPushed = true;
+    }
+
+    public function hide() as Void
+    {
+        if(!showing())
+        {
+            Debug.error("SettingsView.hide called when not showing");
+        }
+
+        _showing = false;
+        _synced = false;
+
+        if(_viewPushed)
+        {
+            WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
+            _viewPushed = false;
+        }
+    }
+
+    public function showing() as Lang.Boolean
+    {
+        return _showing;
+    }
+
+    public function onParameterRead(parameter as Pinion.ParameterType, value as Lang.Number) as Void
+    {
+        if(parameter.equals("PRE_SELECT"))
+        {
+            var index = findItemById("pre.select");
+            var item = getItem(index) as WatchUi.ToggleMenuItem;
+            item.setEnabled(value == 1);
+        }
+
+        if(!_synced)
+        {
+            _remainingReads.remove(parameter);
+            if(_remainingReads.size() == 0)
+            {
+                _synced = true;
+                onFinishedSync();
+            }
+        }
+    }
+
+    public function onCurrentGearChanged(currentGear as Lang.Number) as Void
+    {
+    }
+
+    public function onSelect(item as WatchUi.MenuItem) as Void
     {
         var id = item.getId() as Lang.String;
 
@@ -34,34 +139,8 @@ class SettingsViewInputDelegate extends WatchUi.Menu2InputDelegate
         }
     }
 
-    function onBack() as Void
+    public function exit() as Void
     {
         (_app as App).exit();
-    }
-}
-
-class SettingsView extends WatchUi.Menu2
-{
-    public function initialize()
-    {
-        WatchUi.Menu2.initialize({:title => "Smart.Shift Settings"});
-
-        addItem(new WatchUi.ToggleMenuItem("Pre.Select", {:enabled => "Enabled", :disabled => "Disabled"},
-            "pre.select", false, {:alignment => WatchUi.MenuItem.MENU_ITEM_LABEL_ALIGN_RIGHT}));
-        addItem(new WatchUi.MenuItem("Disconnect", null, "disconnect", null));
-    }
-
-    public function onParameterRead(parameter as Pinion.ParameterType, value as Lang.Number) as Void
-    {
-        if(parameter.equals("PRE_SELECT"))
-        {
-            var index = findItemById("pre.select");
-            var item = getItem(index) as WatchUi.ToggleMenuItem;
-            item.setEnabled(value == 1);
-        }
-    }
-
-    public function onCurrentGearChanged(currentGear as Lang.Number) as Void
-    {
     }
 }
