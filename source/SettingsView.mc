@@ -41,6 +41,8 @@ class SettingsView extends WatchUi.Menu2
 
         addItem(new WatchUi.ToggleMenuItem("Pre.Select", {:enabled => "Enabled", :disabled => "Disabled"},
             "pre.select", false, {:alignment => WatchUi.MenuItem.MENU_ITEM_LABEL_ALIGN_RIGHT}));
+        addItem(new WatchUi.ToggleMenuItem("Start.Select", {:enabled => "Enabled", :disabled => "Disabled"},
+            "start.select", false, {:alignment => WatchUi.MenuItem.MENU_ITEM_LABEL_ALIGN_RIGHT}));
         addItem(new WatchUi.MenuItem("Disconnect", null, "disconnect", null));
     }
 
@@ -59,6 +61,7 @@ class SettingsView extends WatchUi.Menu2
         _remainingReads =
         [
             Pinion.PRE_SELECT,
+            Pinion.START_SELECT,
         ];
 
         var i = _remainingReads.size() - 1;
@@ -117,9 +120,11 @@ class SettingsView extends WatchUi.Menu2
     {
         if(parameter.equals("PRE_SELECT"))
         {
-            var index = findItemById("pre.select");
-            var item = getItem(index) as WatchUi.ToggleMenuItem;
-            item.setEnabled(value == 1);
+            setToggleById("pre.select", value == 1);
+        }
+        else if(parameter.equals("START_SELECT"))
+        {
+            setToggleById("start.select", value == 1);
         }
 
         if(!_synced)
@@ -145,6 +150,21 @@ class SettingsView extends WatchUi.Menu2
         {
             var toggleMenuItem = item as WatchUi.ToggleMenuItem;
             (_app as App).writeParameter(Pinion.PRE_SELECT, toggleMenuItem.isEnabled() ? 1 : 0);
+            if(toggleMenuItem.isEnabled())
+            {
+                (_app as App).writeParameter(Pinion.START_SELECT, 0);
+                setToggleById("start.select", false);
+            }
+        }
+        else if(id.equals("start.select"))
+        {
+            var toggleMenuItem = item as WatchUi.ToggleMenuItem;
+            (_app as App).writeParameter(Pinion.START_SELECT, toggleMenuItem.isEnabled() ? 1 : 0);
+            if(toggleMenuItem.isEnabled())
+            {
+                (_app as App).writeParameter(Pinion.PRE_SELECT, 0);
+                setToggleById("pre.select", false);
+            }
         }
         else if(id.equals("disconnect"))
         {
