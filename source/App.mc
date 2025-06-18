@@ -179,6 +179,7 @@ class App extends Application.AppBase
     public function onCurrentGearChanged(currentGear as Lang.Number) as Void
     {
         Debug.log("onCurrentGearChanged(" + currentGear + ")");
+        _mainView.onCurrentGearChanged(currentGear);
     }
 
     public function onParameterRead(parameter as Pinion.ParameterType, value as Lang.Number) as Void
