@@ -22,7 +22,7 @@ class SettingsViewInputDelegate extends WatchUi.Menu2InputDelegate
 
     function onBack() as Void
     {
-        _view.exit();
+        _view.onBack();
     }
 }
 
@@ -40,6 +40,8 @@ class SettingsView extends WatchUi.Menu2
     private var _batteryLevel as Lang.Number = 0;
     private var _batteryLevelTimer as Timer.Timer = new Timer.Timer();
 
+    private var _subMenuDepth as Lang.Number = 0;
+
     private var _infoMenu as WatchUi.Menu2 = new Rez.Menus.InfoMenu();
 
     private function updateTitle() as Void
@@ -50,7 +52,7 @@ class SettingsView extends WatchUi.Menu2
 
         setTitle(title);
 
-        if(_viewPushed)
+        if(_viewPushed && _subMenuDepth == 0)
         {
             // Force refresh hack
             WatchUi.switchToView(self, _settingsViewInputDelegate, WatchUi.SLIDE_IMMEDIATE);
@@ -125,6 +127,12 @@ class SettingsView extends WatchUi.Menu2
 
         if(_viewPushed)
         {
+            while(_subMenuDepth > 0)
+            {
+                WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
+                _subMenuDepth--;
+            }
+
             WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
             _viewPushed = false;
         }
@@ -218,8 +226,15 @@ class SettingsView extends WatchUi.Menu2
         }
     }
 
-    public function exit() as Void
+    public function onBack() as Void
     {
+        if(_subMenuDepth > 0)
+        {
+            WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
+            _subMenuDepth--;
+            return;
+        }
+
         (_app as App).exit();
     }
 }
