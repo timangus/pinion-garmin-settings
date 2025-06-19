@@ -67,6 +67,7 @@ class SettingsView extends WatchUi.Menu2
             "pre.select", false, {:alignment => WatchUi.MenuItem.MENU_ITEM_LABEL_ALIGN_RIGHT}));
         addItem(new WatchUi.ToggleMenuItem("Start.Select", {:enabled => "Enabled", :disabled => "Disabled"},
             "start.select", false, {:alignment => WatchUi.MenuItem.MENU_ITEM_LABEL_ALIGN_RIGHT}));
+        addItem(new WatchUi.MenuItem("Information", null, "information", null));
         addItem(new WatchUi.MenuItem("Disconnect", null, "disconnect", null));
 
         updateTitle();
@@ -95,6 +96,10 @@ class SettingsView extends WatchUi.Menu2
             Pinion.START_SELECT,
             Pinion.CURRENT_GEAR,
             Pinion.BATTERY_LEVEL,
+            Pinion.HARDWARE_VERSION,
+            Pinion.SERIAL_NUMBER,
+            Pinion.BOOTLOADER_VERSION,
+            Pinion.FIRMWARE_VERSION,
         ];
 
         var i = _remainingReads.size() - 1;
@@ -157,6 +162,33 @@ class SettingsView extends WatchUi.Menu2
         WatchUi.requestUpdate();
     }
 
+    private function dottedQuadFor(value as Lang.Number) as Lang.String
+    {
+        var a = [];
+
+        for(var i = 0; i < 4; i++)
+        {
+            a.add(value & 0xff);
+            value = value >> 8;
+        }
+
+        a = a.reverse();
+
+        var s = "";
+
+        for(var i = 0; i < a.size(); i++)
+        {
+            if(s.length() != 0)
+            {
+                s += ".";
+            }
+
+            s += a[i];
+        }
+
+        return s as Lang.String;
+    }
+
     private function setMenuSublabelById(menu as WatchUi.Menu2, id as Lang.String or Lang.Symbol, value as Lang.String) as Void
     {
         var index = menu.findItemById(id);
@@ -180,6 +212,22 @@ class SettingsView extends WatchUi.Menu2
         else if(parameter.equals("START_SELECT"))
         {
             setToggleById(self, "start.select", value == 1);
+        }
+        else if(parameter.equals("HARDWARE_VERSION"))
+        {
+            setMenuSublabelById(_infoMenu, :id_hardware_version, dottedQuadFor(value));
+        }
+        else if(parameter.equals("SERIAL_NUMBER"))
+        {
+            setMenuSublabelById(_infoMenu, :id_serial_number, value.toString());
+        }
+        else if(parameter.equals("BOOTLOADER_VERSION"))
+        {
+            setMenuSublabelById(_infoMenu, :id_bootloader_version, dottedQuadFor(value));
+        }
+        else if(parameter.equals("FIRMWARE_VERSION"))
+        {
+            setMenuSublabelById(_infoMenu, :id_firmware_version, dottedQuadFor(value));
         }
         else if(parameter.equals("CURRENT_GEAR"))
         {
@@ -232,6 +280,11 @@ class SettingsView extends WatchUi.Menu2
                 (_app as App).writeParameter(Pinion.PRE_SELECT, 0);
                 setToggleById(self, "pre.select", false);
             }
+        }
+        else if(id.equals("information"))
+        {
+            WatchUi.pushView(_infoMenu, _settingsViewInputDelegate, WatchUi.SLIDE_IMMEDIATE);
+            _subMenuDepth++;
         }
         else if(id.equals("disconnect"))
         {
