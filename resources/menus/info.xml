@@ -1,0 +1,6 @@
+<menu2 id="InfoMenu" title="Information">
+  <menu-item id="id_hardware_version" label="Hardware Version"></menu-item>
+  <menu-item id="id_serial_number" label="Serial Number"></menu-item>
+  <menu-item id="id_bootloader_version" label="Bootloader Version"></menu-item>
+  <menu-item id="id_firmware_version" label="Firmware Version"></menu-item>
+</menu2>

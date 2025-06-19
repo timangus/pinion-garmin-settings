@@ -40,6 +40,8 @@ class SettingsView extends WatchUi.Menu2
     private var _batteryLevel as Lang.Number = 0;
     private var _batteryLevelTimer as Timer.Timer = new Timer.Timer();
 
+    private var _infoMenu as WatchUi.Menu2 = new Rez.Menus.InfoMenu();
+
     private function updateTitle() as Void
     {
         var currentGear = _currentGear > 0 ? _currentGear : "-";
