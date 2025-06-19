@@ -133,15 +133,15 @@ class SettingsView extends WatchUi.Menu2
         return _showing;
     }
 
-    public function setToggleById(id as Lang.String, value as Lang.Boolean) as Void
+    private function setToggleById(menu as WatchUi.Menu2, id as Lang.String or Lang.Symbol, value as Lang.Boolean) as Void
     {
-        var index = findItemById(id);
+        var index = menu.findItemById(id);
         if(index < 0)
         {
             Debug.error("setToggleById couldn't find item");
         }
 
-        var item = getItem(index) as WatchUi.ToggleMenuItem;
+        var item = menu.getItem(index) as WatchUi.ToggleMenuItem;
         item.setEnabled(value);
 
         WatchUi.requestUpdate();
@@ -151,11 +151,11 @@ class SettingsView extends WatchUi.Menu2
     {
         if(parameter.equals("PRE_SELECT"))
         {
-            setToggleById("pre.select", value == 1);
+            setToggleById(self, "pre.select", value == 1);
         }
         else if(parameter.equals("START_SELECT"))
         {
-            setToggleById("start.select", value == 1);
+            setToggleById(self, "start.select", value == 1);
         }
         else if(parameter.equals("CURRENT_GEAR"))
         {
@@ -196,7 +196,7 @@ class SettingsView extends WatchUi.Menu2
             if(toggleMenuItem.isEnabled())
             {
                 (_app as App).writeParameter(Pinion.START_SELECT, 0);
-                setToggleById("start.select", false);
+                setToggleById(self, "start.select", false);
             }
         }
         else if(id.equals("start.select"))
@@ -206,7 +206,7 @@ class SettingsView extends WatchUi.Menu2
             if(toggleMenuItem.isEnabled())
             {
                 (_app as App).writeParameter(Pinion.PRE_SELECT, 0);
-                setToggleById("pre.select", false);
+                setToggleById(self, "pre.select", false);
             }
         }
         else if(id.equals("disconnect"))
