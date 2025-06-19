@@ -125,6 +125,12 @@ module Pinion
 
         public function read(parameter as ParameterType) as Void
         {
+            if(parameter.equals("BATTERY_LEVEL") && (_testParameterData[parameter] as Lang.Number) > 0)
+            {
+                // Simulate battery draining
+                _testParameterData[parameter] = (_testParameterData[parameter] as Lang.Number) - 10;
+            }
+
             onParameterRead(parameter, _testParameterData[parameter] as Lang.Number);
         }
 
