@@ -157,6 +157,20 @@ class SettingsView extends WatchUi.Menu2
         WatchUi.requestUpdate();
     }
 
+    private function setMenuSublabelById(menu as WatchUi.Menu2, id as Lang.String or Lang.Symbol, value as Lang.String) as Void
+    {
+        var index = menu.findItemById(id);
+        if(index < 0)
+        {
+            Debug.error("setMenuSublabelById couldn't find item");
+        }
+
+        var item = menu.getItem(index) as WatchUi.MenuItem;
+        item.setSubLabel(value);
+
+        WatchUi.requestUpdate();
+    }
+
     public function onParameterRead(parameter as Pinion.ParameterType, value as Lang.Number) as Void
     {
         if(parameter.equals("PRE_SELECT"))
