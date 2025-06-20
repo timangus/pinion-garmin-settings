@@ -15,12 +15,12 @@ class SettingsViewInputDelegate extends WatchUi.Menu2InputDelegate
         _view = view;
     }
 
-    function onSelect(item as WatchUi.MenuItem) as Void
+    public function onSelect(item as WatchUi.MenuItem) as Void
     {
         _view.onSelect(item);
     }
 
-    function onBack() as Void
+    public function onBack() as Void
     {
         _view.onBack();
     }
