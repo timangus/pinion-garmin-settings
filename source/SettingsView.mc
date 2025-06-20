@@ -54,7 +54,7 @@ class SettingsView extends WatchUi.Menu2
 
         if(_viewPushed && _subMenuDepth == 0)
         {
-            // Force refresh hack
+            // See comment in MainView.forceUpdateHack
             WatchUi.switchToView(self, _settingsViewInputDelegate, WatchUi.SLIDE_IMMEDIATE);
         }
     }
