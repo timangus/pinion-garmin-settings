@@ -218,6 +218,13 @@ class SettingsView extends WatchUi.Menu2
     {
         var pinionParameterDatum = Pinion.PARAMETERS[parameter] as Lang.Dictionary;
         var parameterDatum = _parameterData[parameter] as Lang.Dictionary;
+
+        if(!parameterDatum.hasKey(:menu) || !parameterDatum.hasKey(:id))
+        {
+            Debug.log("syncUiToParameterData returned on parameter with no UI");
+            return;
+        }
+
         var menu = parameterDatum[:menu] as WatchUi.Menu2;
         var id = parameterDatum[:id] as Lang.String or Lang.Symbol;
         var index = menu.findItemById(id);
@@ -267,7 +274,7 @@ class SettingsView extends WatchUi.Menu2
         {
             updateTitle();
         }
-        else
+        else if(parameterDatum.hasKey(:menu) && parameterDatum.hasKey(:id))
         {
             syncUiToParameterData(parameter);
         }
