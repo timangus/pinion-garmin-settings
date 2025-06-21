@@ -36,18 +36,57 @@ class SettingsView extends WatchUi.Menu2
 
     private var _remainingReads as Lang.Array<Pinion.ParameterType> = new Lang.Array<Pinion.ParameterType>[0];
 
-    private var _currentGear as Lang.Number = 0;
-    private var _batteryLevel as Lang.Number = 0;
     private var _batteryLevelTimer as Timer.Timer = new Timer.Timer();
 
     private var _subMenuDepth as Lang.Number = 0;
 
     private var _infoMenu as WatchUi.Menu2 = new Rez.Menus.InfoMenu();
 
+    private var _parameterData as Lang.Dictionary<Pinion.ParameterType, Lang.Dictionary> =
+    {
+        Pinion.CURRENT_GEAR =>          { :value => -1 },
+        Pinion.BATTERY_LEVEL =>         { :value => -1 },
+
+        Pinion.PRE_SELECT =>            { :menu => self,        :id => "pre.select",              :value => -1, :post => method(:_disableStartSelect) },
+        Pinion.START_SELECT =>          { :menu => self,        :id => "start.select",            :value => -1, :post => method(:_disablePreSelect) },
+        Pinion.HARDWARE_VERSION =>      { :menu => _infoMenu,   :id => :id_hardware_version,      :value => -1, :format => method(:_dottedQuad) },
+        Pinion.SERIAL_NUMBER =>         { :menu => _infoMenu,   :id => :id_serial_number,         :value => -1 },
+        Pinion.BOOTLOADER_VERSION =>    { :menu => _infoMenu,   :id => :id_bootloader_version,    :value => -1, :format => method(:_dottedQuad) },
+        Pinion.FIRMWARE_VERSION =>      { :menu => _infoMenu,   :id => :id_firmware_version,      :value => -1, :format => method(:_dottedQuad) },
+    } as Lang.Dictionary<Pinion.ParameterType, Lang.Dictionary>;
+
+    private function findParameterTypeFor(id as Lang.String or Lang.Symbol) as Pinion.ParameterType?
+    {
+        var keys = _parameterData.keys();
+
+        for(var i = 0; i < keys.size(); i++)
+        {
+            var key = keys[i];
+            var parameterDatum = _parameterData[key] as Lang.Dictionary;
+
+            if(!parameterDatum.hasKey(:id))
+            {
+                continue;
+            }
+
+            var parameterItemId = parameterDatum[:id] as Lang.String or Lang.Symbol;
+            if(parameterItemId.equals(id))
+            {
+                return key;
+            }
+        }
+
+        return null;
+    }
+
     private function updateTitle() as Void
     {
-        var currentGear = _currentGear > 0 ? _currentGear : "-";
-        var batteryLevel = _batteryLevel > 0 ? (_batteryLevel / 100.0).format("%.1f") : "-";
+        var currentGear = (_parameterData[Pinion.CURRENT_GEAR] as Lang.Dictionary)[:value] as Lang.Number;
+        currentGear = currentGear > 0 ? currentGear : "-";
+
+        var batteryLevel = (_parameterData[Pinion.BATTERY_LEVEL] as Lang.Dictionary)[:value] as Lang.Number;
+        batteryLevel = batteryLevel > 0 ? (batteryLevel / 100.0).format("%.1f") : "-";
+
         var title = Lang.format("Gear: $1$ Battery: $2$%", [currentGear, batteryLevel]);
 
         setTitle(title);
@@ -90,18 +129,7 @@ class SettingsView extends WatchUi.Menu2
             Debug.error("SettingsView.show called when already showing");
         }
 
-        _remainingReads =
-        [
-            Pinion.PRE_SELECT,
-            Pinion.START_SELECT,
-            Pinion.CURRENT_GEAR,
-            Pinion.BATTERY_LEVEL,
-            Pinion.HARDWARE_VERSION,
-            Pinion.SERIAL_NUMBER,
-            Pinion.BOOTLOADER_VERSION,
-            Pinion.FIRMWARE_VERSION,
-        ];
-
+        _remainingReads = _parameterData.keys();
         var i = _remainingReads.size() - 1;
         while(i >= 0)
         {
@@ -148,21 +176,7 @@ class SettingsView extends WatchUi.Menu2
         return _showing;
     }
 
-    private function setToggleById(menu as WatchUi.Menu2, id as Lang.String or Lang.Symbol, value as Lang.Boolean) as Void
-    {
-        var index = menu.findItemById(id);
-        if(index < 0)
-        {
-            Debug.error("setToggleById couldn't find item");
-        }
-
-        var item = menu.getItem(index) as WatchUi.ToggleMenuItem;
-        item.setEnabled(value);
-
-        WatchUi.requestUpdate();
-    }
-
-    private function dottedQuadFor(value as Lang.Number) as Lang.String
+    public function _dottedQuad(value as Lang.Number) as Lang.String
     {
         var a = [];
 
@@ -189,55 +203,62 @@ class SettingsView extends WatchUi.Menu2
         return s as Lang.String;
     }
 
-    private function setMenuSublabelById(menu as WatchUi.Menu2, id as Lang.String or Lang.Symbol, value as Lang.String) as Void
+    private function syncUiToParameterData(parameter as Pinion.ParameterType) as Void
     {
+        var pinionParameterDatum = Pinion.PARAMETERS[parameter] as Lang.Dictionary;
+        var parameterDatum = _parameterData[parameter] as Lang.Dictionary;
+        var menu = parameterDatum[:menu] as WatchUi.Menu2;
+        var id = parameterDatum[:id] as Lang.String or Lang.Symbol;
         var index = menu.findItemById(id);
+
         if(index < 0)
         {
-            Debug.error("setMenuSublabelById couldn't find item");
+            Debug.error("syncUiToParameterData couldn't find menu item");
         }
 
-        var item = menu.getItem(index) as WatchUi.MenuItem;
-        item.setSubLabel(value);
+        var item = menu.getItem(index);
+        var value = parameterDatum[:value] as Lang.Number;
+        switch(item)
+        {
+        case instanceof WatchUi.ToggleMenuItem:
+            var toggleMenuItem = menu.getItem(index) as WatchUi.ToggleMenuItem;
+            var validValues = (pinionParameterDatum.hasKey(:values) ?
+                pinionParameterDatum[:values] : [0, 1]) as Lang.Array<Lang.Number>;
+            var trueValue = validValues[1] as Lang.Number;
+            toggleMenuItem.setEnabled(value == trueValue);
+            break;
+
+        case instanceof WatchUi.MenuItem:
+            var baseItem = menu.getItem(index) as WatchUi.MenuItem;
+
+            if(parameterDatum.hasKey(:format))
+            {
+                var m = parameterDatum[:format] as Lang.Method;
+                var result = m.invoke(value) as Lang.String;
+                baseItem.setSubLabel(result);
+            }
+            else
+            {
+                baseItem.setSubLabel(value.toString());
+            }
+            break;
+        }
 
         WatchUi.requestUpdate();
     }
 
     public function onParameterRead(parameter as Pinion.ParameterType, value as Lang.Number) as Void
     {
-        if(parameter.equals("PRE_SELECT"))
+        var parameterDatum = _parameterData[parameter] as Lang.Dictionary;
+        parameterDatum[:value] = value;
+
+        if(parameter.equals("CURRENT_GEAR") || parameter.equals("BATTERY_LEVEL"))
         {
-            setToggleById(self, "pre.select", value == 1);
-        }
-        else if(parameter.equals("START_SELECT"))
-        {
-            setToggleById(self, "start.select", value == 1);
-        }
-        else if(parameter.equals("HARDWARE_VERSION"))
-        {
-            setMenuSublabelById(_infoMenu, :id_hardware_version, dottedQuadFor(value));
-        }
-        else if(parameter.equals("SERIAL_NUMBER"))
-        {
-            setMenuSublabelById(_infoMenu, :id_serial_number, value.toString());
-        }
-        else if(parameter.equals("BOOTLOADER_VERSION"))
-        {
-            setMenuSublabelById(_infoMenu, :id_bootloader_version, dottedQuadFor(value));
-        }
-        else if(parameter.equals("FIRMWARE_VERSION"))
-        {
-            setMenuSublabelById(_infoMenu, :id_firmware_version, dottedQuadFor(value));
-        }
-        else if(parameter.equals("CURRENT_GEAR"))
-        {
-            _currentGear = value;
             updateTitle();
         }
-        else if(parameter.equals("BATTERY_LEVEL"))
+        else
         {
-            _batteryLevel = value;
-            updateTitle();
+            syncUiToParameterData(parameter);
         }
 
         if(!_synced)
@@ -253,32 +274,56 @@ class SettingsView extends WatchUi.Menu2
 
     public function onCurrentGearChanged(currentGear as Lang.Number) as Void
     {
-        _currentGear = currentGear;
+        var parameterDatum = _parameterData[Pinion.CURRENT_GEAR] as Lang.Dictionary;
+        parameterDatum[:value] = currentGear;
         updateTitle();
+    }
+
+    private function writeParameter(parameter as Pinion.ParameterType, value as Lang.Number) as Void
+    {
+        (_app as App).writeParameter(parameter, value);
+        var parameterDatum = _parameterData[parameter] as Lang.Dictionary;
+        parameterDatum[:value] = value;
+        syncUiToParameterData(parameter);
+    }
+
+    public function _disableStartSelect(item as WatchUi.MenuItem) as Void
+    {
+        var toggleMenuItem = item as WatchUi.ToggleMenuItem;
+        if(toggleMenuItem.isEnabled()) { writeParameter(Pinion.START_SELECT, 0); }
+    }
+
+    public function _disablePreSelect(item as WatchUi.MenuItem) as Void
+    {
+        var toggleMenuItem = item as WatchUi.ToggleMenuItem;
+        if(toggleMenuItem.isEnabled()) { writeParameter(Pinion.PRE_SELECT, 0); }
     }
 
     public function onSelect(item as WatchUi.MenuItem) as Void
     {
-        var id = item.getId() as Lang.String;
+        var id = item.getId() as Lang.String or Lang.Symbol;
+        var parameter = findParameterTypeFor(id);
 
-        if(id.equals("pre.select"))
+        if(parameter != null)
         {
-            var toggleMenuItem = item as WatchUi.ToggleMenuItem;
-            (_app as App).writeParameter(Pinion.PRE_SELECT, toggleMenuItem.isEnabled() ? 1 : 0);
-            if(toggleMenuItem.isEnabled())
+            var pinionParameterDatum = Pinion.PARAMETERS[parameter] as Lang.Dictionary;
+            var parameterDatum = _parameterData[parameter] as Lang.Dictionary;
+
+            switch(item)
             {
-                (_app as App).writeParameter(Pinion.START_SELECT, 0);
-                setToggleById(self, "start.select", false);
+            case instanceof WatchUi.ToggleMenuItem:
+                var toggleMenuItem = item as WatchUi.ToggleMenuItem;
+                var validValues = (pinionParameterDatum.hasKey(:values) ?
+                    pinionParameterDatum[:values] : [0, 1]) as Lang.Array<Lang.Number>;
+                var value = validValues[toggleMenuItem.isEnabled() ? 1 : 0] as Lang.Number;
+                writeParameter(parameter, value);
+                break;
             }
-        }
-        else if(id.equals("start.select"))
-        {
-            var toggleMenuItem = item as WatchUi.ToggleMenuItem;
-            (_app as App).writeParameter(Pinion.START_SELECT, toggleMenuItem.isEnabled() ? 1 : 0);
-            if(toggleMenuItem.isEnabled())
+
+            if(parameterDatum.hasKey(:post))
             {
-                (_app as App).writeParameter(Pinion.PRE_SELECT, 0);
-                setToggleById(self, "pre.select", false);
+                var m = parameterDatum[:post] as Lang.Method;
+                m.invoke(item);
             }
         }
         else if(id.equals("information"))
