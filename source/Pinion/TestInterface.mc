@@ -37,7 +37,7 @@ module Pinion
             AUTO_START_GEAR =>          5,
             PRE_SELECT_CADENCE =>       70,
             START_SELECT =>             0,
-            PRE_SELECT =>               0,
+            PRE_SELECT =>               1,
             NUMBER_OF_GEARS =>          12,
         } as Lang.Dictionary<ParameterType, Lang.Number>;
 
