@@ -56,9 +56,26 @@ class MainView extends WatchUi.View
             break;
 
         case App.CONNECTING:
-            setLayout(Rez.Layouts.ConnectingLayout(dc));
+        case App.CONNECTED:
+            if(!_settingsView.showing() || _settingsView.syncing())
+            {
+                setLayout(Rez.Layouts.ConnectingLayout(dc));
+            }
+
             var connectionTimeoutLayoutText = findDrawableById("id_connection_timeout") as WatchUi.Text;
-            connectionTimeoutLayoutText.setText(_timingOut ? "Time Out" : "");
+            if(_timingOut)
+            {
+                connectionTimeoutLayoutText.setText("Time Out");
+            }
+            else if(_settingsView.showing())
+            {
+                connectionTimeoutLayoutText.setText("Syncing");
+            }
+            else
+            {
+                connectionTimeoutLayoutText.setText("");
+            }
+
             break;
 
         case App.STOPPING:
