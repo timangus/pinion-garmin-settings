@@ -34,7 +34,7 @@ module Pinion
             REVERSE_TRIGGER_MAPPING =>  1,
             CURRENT_GEAR =>             1,
             BATTERY_LEVEL =>            7654,
-            AUTO_START_GEAR =>          5,
+            START_SELECT_GEAR =>        5,
             PRE_SELECT_CADENCE =>       70,
             START_SELECT =>             0,
             PRE_SELECT =>               1,

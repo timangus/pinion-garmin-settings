@@ -24,7 +24,7 @@ module Pinion
         CURRENT_GEAR            = "CURRENT_GEAR",
         BATTERY_LEVEL           = "BATTERY_LEVEL",
 
-        AUTO_START_GEAR         = "AUTO_START_GEAR",
+        START_SELECT_GEAR       = "START_SELECT_GEAR",
         PRE_SELECT_CADENCE      = "PRE_SELECT_CADENCE",
         START_SELECT            = "START_SELECT",
         PRE_SELECT              = "PRE_SELECT",
@@ -66,7 +66,7 @@ module Pinion
         CURRENT_GEAR =>             { :address => [0x01, 0x61, 0x02]b,  :length => 1 },
         BATTERY_LEVEL =>            { :address => [0x64, 0x61, 0x01]b,  :length => 2 },
 
-        AUTO_START_GEAR =>          { :address => [0x12, 0x25, 0x02]b,  :length => 1,   :minmax => [1, 12] },
+        START_SELECT_GEAR =>        { :address => [0x12, 0x25, 0x02]b,  :length => 1,   :minmax => [1, 12] },
         PRE_SELECT_CADENCE =>       { :address => [0x11, 0x25, 0x00]b,  :length => 1,   :minmax => [40, 100] },
         START_SELECT =>             { :address => [0x12, 0x25, 0x01]b,  :length => 1,   :values => [0, 1] },
         PRE_SELECT =>               { :address => [0x13, 0x25, 0x00]b,  :length => 1,   :values => [0, 1] },
