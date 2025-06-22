@@ -26,9 +26,36 @@ class SettingsViewInputDelegate extends WatchUi.Menu2InputDelegate
     }
 }
 
+class SettingsViewPickerDelegate extends WatchUi.PickerDelegate
+{
+    private var _view as SettingsView;
+    private var _item as WatchUi.MenuItem? = null;
+
+    public function initialize(view as SettingsView)
+    {
+        WatchUi.PickerDelegate.initialize();
+        _view = view;
+    }
+
+    public function setItem(item as WatchUi.MenuItem) as Void { _item = item; }
+
+    public function onAccept(values as Lang.Array) as Lang.Boolean
+    {
+        if(_item != null) { return _view.onPickerAccept(_item, values[0] as Lang.Number); }
+        return false;
+    }
+
+    public function onCancel() as Lang.Boolean
+    {
+        if(_item != null) { return _view.onPickerCancel(_item); }
+        return false;
+    }
+}
+
 class SettingsView extends WatchUi.Menu2
 {
     private var _settingsViewInputDelegate as SettingsViewInputDelegate = new SettingsViewInputDelegate(self);
+    private var _settingsViewPickerDelegate as SettingsViewPickerDelegate = new SettingsViewPickerDelegate(self);
     private var _app as App?;
     private var _showing as Lang.Boolean = false;
     private var _viewPushed as Lang.Boolean = false;
@@ -325,6 +352,22 @@ class SettingsView extends WatchUi.Menu2
                 var value = validValues[toggleMenuItem.isEnabled() ? 1 : 0] as Lang.Number;
                 writeParameter(parameter, value);
                 break;
+
+            case instanceof WatchUi.MenuItem:
+                var menuItem = item as WatchUi.MenuItem;
+                if(pinionParameterDatum.hasKey(:minmax))
+                {
+                    var minmax = (parameterDatum.hasKey(:minmax) ?
+                        parameterDatum[:minmax] : pinionParameterDatum[:minmax]) as Lang.Array<Lang.Number>;
+                    var increment = (parameterDatum.hasKey(:increment) ?
+                        parameterDatum[:increment] : 1) as Lang.Number;
+                    var numberPickerView = new NumberPickerView(menuItem.getLabel(),
+                        minmax[0], minmax[1], increment, parameterDatum[:value] as Lang.Number);
+                    _settingsViewPickerDelegate.setItem(item);
+                    WatchUi.pushView(numberPickerView, _settingsViewPickerDelegate, WatchUi.SLIDE_IMMEDIATE);
+                    _subMenuDepth++;
+                }
+                break;
             }
 
             if(parameterDatum.hasKey(:post))
@@ -355,5 +398,34 @@ class SettingsView extends WatchUi.Menu2
         }
 
         (_app as App).exit();
+    }
+
+    public function onPickerAccept(item as WatchUi.MenuItem, value as Lang.Number) as Lang.Boolean
+    {
+        WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
+        _subMenuDepth--;
+
+        var id = item.getId() as Lang.String or Lang.Symbol;
+        var parameter = findParameterTypeFor(id);
+
+        if(parameter != null)
+        {
+            switch(item)
+            {
+            case instanceof WatchUi.MenuItem:
+                writeParameter(parameter, value);
+                break;
+            }
+        }
+
+        return true;
+    }
+
+    public function onPickerCancel(item as WatchUi.MenuItem) as Lang.Boolean
+    {
+        WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
+        _subMenuDepth--;
+
+        return true;
     }
 }
