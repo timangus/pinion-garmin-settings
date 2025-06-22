@@ -71,15 +71,20 @@ class SettingsView extends WatchUi.Menu2
 
     private var _parameterData as Lang.Dictionary<Pinion.ParameterType, Lang.Dictionary> =
     {
-        Pinion.CURRENT_GEAR =>          { :value => -1 },
-        Pinion.BATTERY_LEVEL =>         { :value => -1 },
+        Pinion.CURRENT_GEAR =>              { :value => -1 },
+        Pinion.BATTERY_LEVEL =>             { :value => -1 },
+        Pinion.NUMBER_OF_GEARS =>           { :value => -1 },
 
-        Pinion.PRE_SELECT =>            { :menu => self,        :id => "pre.select",              :value => -1, :post => method(:_disableStartSelect) },
-        Pinion.START_SELECT =>          { :menu => self,        :id => "start.select",            :value => -1, :post => method(:_disablePreSelect) },
-        Pinion.HARDWARE_VERSION =>      { :menu => _infoMenu,   :id => :id_hardware_version,      :value => -1, :format => method(:_dottedQuad) },
-        Pinion.SERIAL_NUMBER =>         { :menu => _infoMenu,   :id => :id_serial_number,         :value => -1 },
-        Pinion.BOOTLOADER_VERSION =>    { :menu => _infoMenu,   :id => :id_bootloader_version,    :value => -1, :format => method(:_dottedQuad) },
-        Pinion.FIRMWARE_VERSION =>      { :menu => _infoMenu,   :id => :id_firmware_version,      :value => -1, :format => method(:_dottedQuad) },
+        Pinion.PRE_SELECT =>                { :menu => self,        :id => "pre.select",              :value => -1, :post => method(:_disableStartSelect) },
+        Pinion.PRE_SELECT_CADENCE =>        { :menu => self,        :id => "pre.select.cadence",      :value => -1, :increment => 5 },
+        Pinion.START_SELECT =>              { :menu => self,        :id => "start.select",            :value => -1, :post => method(:_disablePreSelect) },
+        Pinion.START_SELECT_GEAR =>         { :menu => self,        :id => "start.select.gear",       :value => -1, :minmax => [1, 12] },
+        Pinion.REVERSE_TRIGGER_MAPPING =>   { :menu => self,        :id => "reverse.trigger",         :value => -1 },
+
+        Pinion.HARDWARE_VERSION =>          { :menu => _infoMenu,   :id => :id_hardware_version,      :value => -1, :format => method(:_dottedQuad) },
+        Pinion.SERIAL_NUMBER =>             { :menu => _infoMenu,   :id => :id_serial_number,         :value => -1 },
+        Pinion.BOOTLOADER_VERSION =>        { :menu => _infoMenu,   :id => :id_bootloader_version,    :value => -1, :format => method(:_dottedQuad) },
+        Pinion.FIRMWARE_VERSION =>          { :menu => _infoMenu,   :id => :id_firmware_version,      :value => -1, :format => method(:_dottedQuad) },
     } as Lang.Dictionary<Pinion.ParameterType, Lang.Dictionary>;
 
     private function findParameterTypeFor(id as Lang.String or Lang.Symbol) as Pinion.ParameterType?
@@ -133,6 +138,10 @@ class SettingsView extends WatchUi.Menu2
             "pre.select", false, {:alignment => WatchUi.MenuItem.MENU_ITEM_LABEL_ALIGN_RIGHT}));
         addItem(new WatchUi.ToggleMenuItem("Start.Select", {:enabled => "Enabled", :disabled => "Disabled"},
             "start.select", false, {:alignment => WatchUi.MenuItem.MENU_ITEM_LABEL_ALIGN_RIGHT}));
+        addItem(new WatchUi.MenuItem("Target Cadence", "-", "pre.select.cadence", null));
+        addItem(new WatchUi.MenuItem("Start Gear", "-", "start.select.gear", null));
+        addItem(new WatchUi.ToggleMenuItem("Trigger Buttons", {:enabled => "Reversed", :disabled => "Normal"},
+            "reverse.trigger", false, {:alignment => WatchUi.MenuItem.MENU_ITEM_LABEL_ALIGN_RIGHT}));
         addItem(new WatchUi.MenuItem("Information", null, "information", null));
         addItem(new WatchUi.MenuItem("Disconnect", null, "disconnect", null));
 
@@ -289,6 +298,14 @@ class SettingsView extends WatchUi.Menu2
         if(parameter.equals("CURRENT_GEAR") || parameter.equals("BATTERY_LEVEL"))
         {
             updateTitle();
+        }
+        else if(parameter.equals("NUMBER_OF_GEARS") && _parameterData.hasKey(Pinion.START_SELECT_GEAR))
+        {
+            // We need to manually set the minmax of the start gear parameter as it
+            // depends on the actual number of gears the gearbox has
+            var startSelectGearParameterDatum = _parameterData[Pinion.START_SELECT_GEAR] as Lang.Dictionary;
+            var minmax = startSelectGearParameterDatum[:minmax] as Lang.Array<Lang.Number>;
+            minmax[1] = value;
         }
         else if(parameterDatum.hasKey(:menu) && parameterDatum.hasKey(:id))
         {
