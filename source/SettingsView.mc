@@ -173,6 +173,7 @@ class SettingsView extends WatchUi.Menu2
             Debug.error("SettingsView.show called when already showing");
         }
 
+        _synced = false;
         _remainingReads = _parameterData.keys();
         var i = _remainingReads.size() - 1;
         while(i >= 0)
@@ -218,6 +219,11 @@ class SettingsView extends WatchUi.Menu2
     public function showing() as Lang.Boolean
     {
         return _showing;
+    }
+
+    public function syncing() as Lang.Boolean
+    {
+        return showing() && !_synced;
     }
 
     public function _dottedQuad(value as Lang.Number) as Lang.String
