@@ -86,7 +86,6 @@ module Pinion
             }
         }
 
-
         public function startScan() as Void
         {
             if(_scanState == SCANNING)
