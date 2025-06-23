@@ -3,7 +3,7 @@ using Toybox.WatchUi;
 using Toybox.Lang;
 using Toybox.Time;
 
-class MainViewInputDelegate extends WatchUi.Menu2InputDelegate
+class ScanMenuDelegate extends WatchUi.Menu2InputDelegate
 {
     private var _mainView as MainView?;
 
@@ -29,7 +29,7 @@ class MainView extends WatchUi.View
     private var _app as App;
 
     private var _scanMenu as WatchUi.Menu2 = new WatchUi.Menu2({:title => "Smart.Shift Devices"});
-    private var _scanMenuDelegate as MainViewInputDelegate = new MainViewInputDelegate(self);
+    private var _scanMenuDelegate as ScanMenuDelegate = new ScanMenuDelegate(self);
     private var _scanMenuVisible as Lang.Boolean = false;
     private var _deviceHandlesInScanMenu as Lang.Array<Pinion.DeviceHandle> = new Lang.Array<Pinion.DeviceHandle>[0];
 
