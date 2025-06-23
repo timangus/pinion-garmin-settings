@@ -4,10 +4,26 @@ using Toybox.WatchUi;
 using Toybox.Timer;
 using Toybox.BluetoothLowEnergy as Ble;
 
+class MainViewInputDelegate extends WatchUi.BehaviorDelegate
+{
+    private var _app as App;
+
+    public function initialize(app as App)
+    {
+        WatchUi.BehaviorDelegate.initialize();
+        _app = app;
+    }
+
+    public function onSelect() as Lang.Boolean
+    {
+        _app.onSelect();
+        return true;
+    }
+}
+
 class App extends Application.AppBase
 {
     const RECONNECTION_DELAY = 1000;
-    const MAX_CONSECUTIVE_TIMEOUTS = 5;
 
     enum State
     {
@@ -24,6 +40,7 @@ class App extends Application.AppBase
     private var _deviceHandle as Pinion.DeviceHandle? = null;
 
     private var _mainView as MainView = new MainView(self);
+    private var _mainViewInputDelegate as MainViewInputDelegate = new MainViewInputDelegate(self);
 
     private var _retryTimer as Timer.Timer = new Timer.Timer();
     private var _numTimeouts as Lang.Number = 0;
@@ -65,7 +82,7 @@ class App extends Application.AppBase
 
     public function updateState() as Void
     {
-        if(_deviceHandle == null || _numTimeouts > MAX_CONSECUTIVE_TIMEOUTS)
+        if(_deviceHandle == null)
         {
             setState(SCANNING);
         }
@@ -124,7 +141,7 @@ class App extends Application.AppBase
 
     function getInitialView() as [WatchUi.Views] or [WatchUi.Views, WatchUi.InputDelegates]
     {
-        return [_mainView];
+        return [_mainView, _mainViewInputDelegate];
     }
 
     public function onScanStateChanged(scanState as Pinion.ScanState) as Void
@@ -160,15 +177,8 @@ class App extends Application.AppBase
         Debug.log("PinionDelegate.onConnectionTimeout");
         _numTimeouts++;
 
-        if(_numTimeouts <= MAX_CONSECUTIVE_TIMEOUTS)
-        {
-            _attemptReconnection();
-            _mainView.onConnectionTimeout();
-        }
-        else
-        {
-            updateState();
-        }
+        _attemptReconnection();
+        _mainView.onConnectionTimeout();
     }
 
     public function onFoundDevicesChanged(foundDevices as Lang.Array<Pinion.DeviceHandle>) as Void
@@ -219,6 +229,16 @@ class App extends Application.AppBase
     public function writeParameter(parameter as Pinion.ParameterType, value as Lang.Number) as Void
     {
         _pinionInterface.write(parameter, value);
+    }
+
+    public function onSelect() as Void
+    {
+        if(_numTimeouts > 0)
+        {
+            unstore();
+            disconnect();
+            updateState();
+        }
     }
 
     public function disconnect() as Void

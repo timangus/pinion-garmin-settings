@@ -26,6 +26,8 @@ class ScanMenuDelegate extends WatchUi.Menu2InputDelegate
 
 class MainView extends WatchUi.View
 {
+    const MAX_CONSECUTIVE_TIMEOUTS = 3;
+
     private var _app as App;
 
     private var _scanMenu as WatchUi.Menu2 = new WatchUi.Menu2({:title => "Smart.Shift Devices"});
@@ -37,7 +39,7 @@ class MainView extends WatchUi.View
 
     private var _lastUpdateTime as Time.Moment = Time.now();
 
-    private var _timingOut as Lang.Boolean = false;
+    private var _numTimeouts as Lang.Number = 0;
 
     public function initialize(app as App)
     {
@@ -63,9 +65,16 @@ class MainView extends WatchUi.View
             }
 
             var connectionTimeoutLayoutText = findDrawableById("id_connection_timeout") as WatchUi.Text;
-            if(_timingOut)
+            if(_numTimeouts > 0)
             {
-                connectionTimeoutLayoutText.setText("Time Out");
+                if(_numTimeouts > MAX_CONSECUTIVE_TIMEOUTS)
+                {
+                    connectionTimeoutLayoutText.setText("Press to Scan");
+                }
+                else
+                {
+                    connectionTimeoutLayoutText.setText("Time Out");
+                }
             }
             else if(_settingsView.showing())
             {
@@ -131,7 +140,7 @@ class MainView extends WatchUi.View
 
     public function onConnectionTimeout() as Void
     {
-        _timingOut = true;
+        _numTimeouts++;
         WatchUi.requestUpdate();
     }
 
@@ -212,7 +221,7 @@ class MainView extends WatchUi.View
 
     public function onAppStateChanged(appState as App.State) as Void
     {
-        _timingOut = false;
+        _numTimeouts = 0;
 
         if(!_settingsView.showing() && appState == App.CONNECTED)
         {
