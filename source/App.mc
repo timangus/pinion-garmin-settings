@@ -1,7 +1,7 @@
-import Toybox.Application;
-import Toybox.Lang;
-import Toybox.WatchUi;
-import Toybox.Timer;
+using Toybox.Application;
+using Toybox.Lang;
+using Toybox.WatchUi;
+using Toybox.Timer;
 using Toybox.BluetoothLowEnergy as Ble;
 
 class App extends Application.AppBase
@@ -106,7 +106,7 @@ class App extends Application.AppBase
         }
     }
 
-    function onStart(state as Dictionary?) as Void
+    function onStart(state as Lang.Dictionary?) as Void
     {
         Debug.log("----- Application Start -----");
 
@@ -115,14 +115,14 @@ class App extends Application.AppBase
         updateState();
     }
 
-    function onStop(state as Dictionary?) as Void
+    function onStop(state as Lang.Dictionary?) as Void
     {
         exit();
 
         Debug.log("----- Application Stop -----");
     }
 
-    function getInitialView() as [Views] or [Views, InputDelegates]
+    function getInitialView() as [WatchUi.Views] or [WatchUi.Views, WatchUi.InputDelegates]
     {
         return [_mainView];
     }

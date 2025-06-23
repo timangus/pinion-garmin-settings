@@ -1,8 +1,8 @@
-import Toybox.Lang;
-import Toybox.System;
-import Toybox.Time;
-import Toybox.Time.Gregorian;
-import Toybox.Activity;
+using Toybox.Lang;
+using Toybox.System;
+using Toybox.Time;
+using Toybox.Time.Gregorian;
+using Toybox.Activity;
 
 module Debug
 {
