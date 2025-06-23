@@ -7,6 +7,7 @@ module Pinion
     class TestInterface
     {
         const SIMULATE_TIMEOUT = false;
+        const SIMULATE_DISCONNECTION = false;
         const CONNECTION_TIMEOUT = 5000;
 
         private var _delegate as Delegate?;
@@ -178,6 +179,11 @@ module Pinion
             if(_delegate != null)
             {
                 (_delegate as Delegate).onConnected(_connectedDevice as Ble.Device);
+            }
+
+            if(SIMULATE_DISCONNECTION)
+            {
+                _timer.start(method(:disconnect), 10000, false);
             }
         }
 
