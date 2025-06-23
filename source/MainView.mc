@@ -5,7 +5,7 @@ using Toybox.Time;
 
 class ScanMenuDelegate extends WatchUi.Menu2InputDelegate
 {
-    private var _mainView as MainView?;
+    private var _mainView as MainView;
 
     public function initialize(mainView as MainView)
     {
@@ -15,12 +15,12 @@ class ScanMenuDelegate extends WatchUi.Menu2InputDelegate
 
     function onSelect(item as WatchUi.MenuItem) as Void
     {
-        (_mainView as MainView).selectDevice(item.getId() as Lang.Long);
+        _mainView.selectDevice(item.getId() as Lang.Long);
     }
 
     function onBack() as Void
     {
-        (_mainView as MainView).exit();
+        _mainView.exit();
     }
 }
 
