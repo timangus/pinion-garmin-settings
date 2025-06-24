@@ -38,7 +38,8 @@ class App extends Application.AppBase
 
     private var _state as State = STARTING;
 
-    private var _pinionInterface as Pinion.AbstractInterface = new Pinion.Interface();
+    private var _pinionInterface as Pinion.AbstractInterface?;
+
     private var _deviceHandle as Pinion.DeviceHandle? = null;
 
     private var _mainView as MainView = new MainView(self);
@@ -49,6 +50,7 @@ class App extends Application.AppBase
 
     private function pinionInterface() as Pinion.AbstractInterface
     {
+        Debug.assert(_pinionInterface != null, "_pinionInterface not set");
         return _pinionInterface as Pinion.AbstractInterface;
     }
 
@@ -135,6 +137,8 @@ class App extends Application.AppBase
         Debug.log("----- Application Start -----");
 
         restore();
+        _pinionInterface = IS_SIMULATOR ? new Pinion.TestInterface() : new Pinion.Interface();
+
         pinionInterface().setDelegate(self);
         updateState();
     }
