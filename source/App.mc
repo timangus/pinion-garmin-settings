@@ -139,6 +139,12 @@ class App extends Application.AppBase
         restore();
         _pinionInterface = IS_SIMULATOR ? new Pinion.TestInterface() : new Pinion.Interface();
 
+        if(_pinionInterface instanceof Pinion.Interface && _deviceHandle != null && _deviceHandle.scanResult() == null)
+        {
+            // On a real device, the scanResult should never be null, forget it
+            unstore();
+        }
+
         pinionInterface().setDelegate(self);
         updateState();
     }
