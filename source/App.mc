@@ -21,6 +21,8 @@ class MainViewInputDelegate extends WatchUi.BehaviorDelegate
     }
 }
 
+var IS_SIMULATOR as Lang.Boolean = false;
+
 class App extends Application.AppBase
 {
     const RECONNECTION_DELAY = 1000;
@@ -269,6 +271,10 @@ class App extends Application.AppBase
 
     public function restore() as Void
     {
+        var isSimulatorNullable = Storage.getValue(activityKey("isSimulator"));
+        IS_SIMULATOR = isSimulatorNullable != null ? isSimulatorNullable as Lang.Boolean : false;
+        Storage.setValue(activityKey("isSimulator"), IS_SIMULATOR);
+
         var deviceSerialNumber = Storage.getValue(activityKey("deviceSerialNumber"));
         if(deviceSerialNumber != null)
         {
