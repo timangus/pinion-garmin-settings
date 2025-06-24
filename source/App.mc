@@ -45,6 +45,11 @@ class App extends Application.AppBase
     private var _retryTimer as Timer.Timer = new Timer.Timer();
     private var _numTimeouts as Lang.Number = 0;
 
+    private function pinionInterface() as Pinion.AbstractInterface
+    {
+        return _pinionInterface as Pinion.AbstractInterface;
+    }
+
     public function initialize()
     {
         AppBase.initialize();
@@ -94,18 +99,18 @@ class App extends Application.AppBase
         switch(_state)
         {
         case SCANNING:
-            _pinionInterface.startScan();
+            pinionInterface().startScan();
             break;
 
         case CONNECTING:
-            _pinionInterface.stopScan();
+            pinionInterface().stopScan();
 
             if(_deviceHandle == null)
             {
                 Debug.error("In CONNECTING state with no device handle");
             }
 
-            var connectResult = _pinionInterface.connect(_deviceHandle as Pinion.DeviceHandle);
+            var connectResult = pinionInterface().connect(_deviceHandle as Pinion.DeviceHandle);
             if(!connectResult)
             {
                 // If the connection failed, call updateState again in the near future
@@ -128,7 +133,7 @@ class App extends Application.AppBase
         Debug.log("----- Application Start -----");
 
         restore();
-        _pinionInterface.setDelegate(self);
+        pinionInterface().setDelegate(self);
         updateState();
     }
 
@@ -223,12 +228,12 @@ class App extends Application.AppBase
 
     public function readParameter(parameter as Pinion.ParameterType) as Void
     {
-        _pinionInterface.read(parameter);
+        pinionInterface().read(parameter);
     }
 
     public function writeParameter(parameter as Pinion.ParameterType, value as Lang.Number) as Void
     {
-        _pinionInterface.write(parameter, value);
+        pinionInterface().write(parameter, value);
     }
 
     public function onSelect() as Void
@@ -243,7 +248,7 @@ class App extends Application.AppBase
 
     public function disconnect() as Void
     {
-        _pinionInterface.disconnect();
+        pinionInterface().disconnect();
     }
 
     private function activityKey(key as Application.PropertyKeyType) as Application.PropertyKeyType
@@ -283,7 +288,7 @@ class App extends Application.AppBase
     public function exit() as Void
     {
         setState(STOPPING);
-        _pinionInterface.disconnect();
+        pinionInterface().disconnect();
         store();
     }
 }
