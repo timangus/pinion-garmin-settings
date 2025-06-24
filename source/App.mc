@@ -270,7 +270,6 @@ class App extends Application.AppBase
     public function restore() as Void
     {
         var deviceSerialNumber = Storage.getValue(activityKey("deviceSerialNumber"));
-
         if(deviceSerialNumber != null)
         {
             var scanResult = Storage.getValue(activityKey("deviceScanResult"));
