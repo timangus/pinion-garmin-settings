@@ -48,4 +48,9 @@ module Debug
         System.println(_timeString() + " ERROR: " + text);
         System.error(text);
     }
+
+    function assert(condition as Lang.Boolean, message as Lang.String) as Void
+    {
+        if(!condition) { error("Assertion failed: " + message); }
+    }
 }
