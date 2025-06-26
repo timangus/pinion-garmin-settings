@@ -69,6 +69,10 @@ class SettingsView extends WatchUi.Menu2
 
     private var _infoMenu as WatchUi.Menu2 = new Rez.Menus.InfoMenu();
     private var _setupMenu as WatchUi.Menu2 = new Rez.Menus.SetupMenu();
+    private var _hiddenMenu as WatchUi.Menu2 = new Rez.Menus.HiddenMenu();
+
+    const HIDDEN_MENU_PRESSES = 5;
+    private var _hiddenMenuEnableCount as Lang.Number = 0;
 
     private var _parameterData as Lang.Dictionary<Pinion.ParameterType, Lang.Dictionary> =
     {
@@ -89,9 +93,13 @@ class SettingsView extends WatchUi.Menu2
         Pinion.SPEED_SENSOR_TYPE =>         { :menu => _setupMenu,  :id => :id_speed_sensor,          :value => -1 },
 
         Pinion.HARDWARE_VERSION =>          { :menu => _infoMenu,   :id => :id_hardware_version,      :value => -1, :format => method(:_dottedQuad) },
-        Pinion.SERIAL_NUMBER =>             { :menu => _infoMenu,   :id => :id_serial_number,         :value => -1 },
+        Pinion.SERIAL_NUMBER =>             { :menu => _infoMenu,   :id => :id_serial_number,         :value => -1, :post => method(:_hiddenMenuEnable) },
         Pinion.BOOTLOADER_VERSION =>        { :menu => _infoMenu,   :id => :id_bootloader_version,    :value => -1, :format => method(:_dottedQuad) },
         Pinion.FIRMWARE_VERSION =>          { :menu => _infoMenu,   :id => :id_firmware_version,      :value => -1, :format => method(:_dottedQuad) },
+
+        Pinion.CAN_BUS =>                   { :menu => _hiddenMenu, :id => :id_can_bus,               :value => -1 },
+        Pinion.DISPLAY =>                   { :menu => _hiddenMenu, :id => :id_display,               :value => -1 },
+        Pinion.NUMBER_OF_MAGNETS =>         { :menu => _hiddenMenu, :id => :id_num_magnets,           :value => -1 },
     } as Lang.Dictionary<Pinion.ParameterType, Lang.Dictionary>;
 
     private function findParameterTypeFor(id as Lang.String or Lang.Symbol) as Pinion.ParameterType?
@@ -362,6 +370,17 @@ class SettingsView extends WatchUi.Menu2
     {
         var toggleMenuItem = item as WatchUi.ToggleMenuItem;
         if(toggleMenuItem.isEnabled()) { writeParameter(Pinion.PRE_SELECT, 0); }
+    }
+
+    public function _hiddenMenuEnable(item as WatchUi.MenuItem) as Void
+    {
+        _hiddenMenuEnableCount++;
+        if(_hiddenMenuEnableCount == HIDDEN_MENU_PRESSES)
+        {
+            WatchUi.pushView(_hiddenMenu, _settingsViewInputDelegate, WatchUi.SLIDE_IMMEDIATE);
+            _subMenuDepth++;
+            _hiddenMenuEnableCount = 0;
+        }
     }
 
     public function onSelect(item as WatchUi.MenuItem) as Void
