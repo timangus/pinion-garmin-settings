@@ -144,6 +144,17 @@ class MainView extends WatchUi.View
         WatchUi.requestUpdate();
     }
 
+    const MIN_RSSI = -100.0;
+    const MAX_RSSI = -50.0;
+
+    private function rssiToQualityPercent(rssi as Lang.Number) as Lang.String
+    {
+        var p = ((rssi - MIN_RSSI) / (MAX_RSSI - MIN_RSSI)) * 100.0;
+        p = p > 100.0 ? 100.0 : p < 0.0 ? 0.0 : p;
+        p = Math.round(p);
+        return Lang.format("Connection $1$%", [p.format("%d")]);
+    }
+
     public function onFoundDevicesChanged(foundDevices as Lang.Array<Pinion.DeviceHandle>) as Void
     {
         if(_app.state() == App.STOPPING)
@@ -181,16 +192,16 @@ class MainView extends WatchUi.View
         {
             var foundDevice = foundDevices[i];
             var index = _scanMenu.findItemById(foundDevice.serialNumber());
+            var subLabel = rssiToQualityPercent(foundDevice.rssi());
             if(index >= 0)
             {
                 // Already in the menu
                 var menuItem = _scanMenu.getItem(index) as WatchUi.MenuItem;
-                menuItem.setSubLabel("RSSI: " + foundDevice.rssi());
+                menuItem.setSubLabel(subLabel);
             }
             else
             {
                 var label = "Pinion " + foundDevice.serialNumber();
-                var subLabel = "RSSI: " + foundDevice.rssi();
                 _scanMenu.addItem(new WatchUi.MenuItem(label, subLabel, foundDevice.serialNumber(), null));
                 _deviceHandlesInScanMenu.add(foundDevice);
                 forceUpdateHack();
