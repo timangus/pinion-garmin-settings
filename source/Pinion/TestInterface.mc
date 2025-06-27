@@ -128,7 +128,8 @@ module Pinion
             if(parameter.equals("BATTERY_LEVEL") && (_testParameterData[parameter] as Lang.Number) > 0)
             {
                 // Simulate battery draining
-                _testParameterData[parameter] = (_testParameterData[parameter] as Lang.Number) - 10;
+                var newValue = (_testParameterData[parameter] as Lang.Number) - 200;
+                _testParameterData[parameter] = newValue < 0 ? 0 : newValue;
             }
 
             onParameterRead(parameter, _testParameterData[parameter] as Lang.Number);
