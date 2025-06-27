@@ -34,6 +34,7 @@ class MainView extends WatchUi.View
     private var _scanMenuDelegate as ScanMenuDelegate = new ScanMenuDelegate(self);
     private var _scanMenuVisible as Lang.Boolean = false;
     private var _deviceHandlesInScanMenu as Lang.Array<Pinion.DeviceHandle> = new Lang.Array<Pinion.DeviceHandle>[0];
+    private var _deviceSerialNumber as Lang.Long = 0l;
 
     private var _settingsView as SettingsView = new SettingsView();
 
@@ -260,5 +261,10 @@ class MainView extends WatchUi.View
     public function onCurrentGearChanged(currentGear as Lang.Number) as Void
     {
         _settingsView.onCurrentGearChanged(currentGear);
+    }
+
+    public function onConnecting(deviceHandle as Pinion.DeviceHandle) as Void
+    {
+        _deviceSerialNumber = deviceHandle.serialNumber();
     }
 }

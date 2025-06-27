@@ -114,6 +114,7 @@ class App extends Application.AppBase
                 Debug.error("In CONNECTING state with no device handle");
             }
 
+            _mainView.onConnecting(_deviceHandle as Pinion.DeviceHandle);
             var connectResult = pinionInterface().connect(_deviceHandle as Pinion.DeviceHandle);
             if(!connectResult)
             {
