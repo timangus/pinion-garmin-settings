@@ -338,7 +338,7 @@ module Pinion
                     devicesChanged = true;
 
                     // On the simulator onScanResults delivers scan results as you might expect, that it to say
-                    // periodically,for any device currently advertising. On a device however (an Edge 530 at
+                    // periodically, for any device currently advertising. On a device however (an Edge 530 at
                     // least), it seems to be the case that once a single scan result has been delivered for a
                     // device, no more will be forthcoming, regardless of whether or not the device is still
                     // advertising, or its RSSI has changed, or whatever other reason. I can't really think why
