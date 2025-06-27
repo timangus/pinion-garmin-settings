@@ -9,12 +9,16 @@ module Pinion
         const SIMULATE_TIMEOUT = false;
         const SIMULATE_DISCONNECTION = false;
         const CONNECTION_TIMEOUT = 5000;
+        const READWRITE_DELAY = 50;
 
         private var _delegate as Delegate?;
         private var _scanState as ScanState = NOT_SCANNING;
 
         private var _foundDevices as Lang.Array<DeviceHandle> = new Lang.Array<DeviceHandle>[0];
         private var _timer as Timer.Timer = new Timer.Timer();
+
+        private var _simulatedReads as Lang.Array<ParameterType> = new Lang.Array<ParameterType>[0];
+        private var _simulatedWrites as Lang.Array<ParameterType> = new Lang.Array<ParameterType>[0];
 
         private var _connectedDevice as Ble.Device?;
         private var _testParameterData as Lang.Dictionary<ParameterType, Lang.Number> =
@@ -123,6 +127,27 @@ module Pinion
 
         public function foundDevices() as Lang.Array<DeviceHandle> { return _foundDevices; }
 
+        public function _simulateReads() as Void
+        {
+            if(_simulatedReads.size() == 0)
+            {
+                return;
+            }
+
+            var parameter = _simulatedReads[0];
+            _simulatedReads.remove(parameter);
+            onParameterRead(parameter, _testParameterData[parameter] as Lang.Number);
+
+            if(_simulatedReads.size() > 0)
+            {
+                _timer.start(method(:_simulateReads), READWRITE_DELAY, false);
+            }
+            else
+            {
+                simulateDisconnection();
+            }
+        }
+
         public function read(parameter as ParameterType) as Void
         {
             if(parameter.equals("BATTERY_LEVEL") && (_testParameterData[parameter] as Lang.Number) > 0)
@@ -132,13 +157,36 @@ module Pinion
                 _testParameterData[parameter] = newValue < 0 ? 0 : newValue;
             }
 
-            onParameterRead(parameter, _testParameterData[parameter] as Lang.Number);
+            _simulatedReads.add(parameter);
+            _timer.start(method(:_simulateReads), READWRITE_DELAY, false);
+        }
+
+        public function _simulateWrites() as Void
+        {
+            if(_simulatedWrites.size() == 0)
+            {
+                return;
+            }
+
+            var parameter = _simulatedWrites[0];
+            _simulatedWrites.remove(parameter);
+            onParameterWrite(parameter, _testParameterData[parameter] as Lang.Number);
+
+            if(_simulatedWrites.size() > 0)
+            {
+                _timer.start(method(:_simulateWrites), READWRITE_DELAY, false);
+            }
+            else
+            {
+                simulateDisconnection();
+            }
         }
 
         public function write(parameter as ParameterType, value as Lang.Number) as Void
         {
             _testParameterData[parameter] = value;
-            onParameterWrite(parameter, value);
+            _simulatedWrites.add(parameter);
+            _timer.start(method(:_simulateWrites), READWRITE_DELAY, false);
         }
 
         public function blockRead(parameter as ParameterType) as Void
@@ -174,16 +222,19 @@ module Pinion
             }
         }
 
+        private function simulateDisconnection() as Void
+        {
+            if(SIMULATE_DISCONNECTION)
+            {
+                _timer.start(method(:disconnect), 10000, false);
+            }
+        }
+
         public function onConnected() as Void
         {
             if(_delegate != null)
             {
                 (_delegate as Delegate).onConnected(_connectedDevice as Ble.Device);
-            }
-
-            if(SIMULATE_DISCONNECTION)
-            {
-                _timer.start(method(:disconnect), 10000, false);
             }
         }
 
