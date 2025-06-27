@@ -201,8 +201,9 @@ class MainView extends WatchUi.View
             }
             else
             {
-                var label = "Pinion " + foundDevice.serialNumber();
-                _scanMenu.addItem(new WatchUi.MenuItem(label, subLabel, foundDevice.serialNumber(), null));
+                var label = "S/N " + foundDevice.serialNumber();
+                var icon = new WatchUi.Bitmap({:rezId => Rez.Drawables.ScanIcon});
+                _scanMenu.addItem(new WatchUi.IconMenuItem(label, subLabel, foundDevice.serialNumber(), icon, null));
                 _deviceHandlesInScanMenu.add(foundDevice);
                 forceUpdateHack();
             }
