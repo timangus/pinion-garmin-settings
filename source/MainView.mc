@@ -65,25 +65,33 @@ class MainView extends WatchUi.View
                 setLayout(Rez.Layouts.ConnectingLayout(dc));
             }
 
-            var connectionTimeoutLayoutText = findDrawableById("id_connection_timeout") as WatchUi.Text;
+            var connectingSerialNumber = findDrawableById("id_connecting_serial_number") as WatchUi.Text;
+            connectingSerialNumber.setText("Serial No. " + _deviceSerialNumber.toString());
+
+            var connectionStatusText = findDrawableById("id_connection_status") as WatchUi.Text;
+            var connectionImage = findDrawableById("id_connecting_image") as WatchUi.Bitmap;
             if(_numTimeouts > 0)
             {
                 if(_numTimeouts > MAX_CONSECUTIVE_TIMEOUTS)
                 {
-                    connectionTimeoutLayoutText.setText("Press to Scan");
+                    connectionStatusText.setText("Press to Scan");
                 }
                 else
                 {
-                    connectionTimeoutLayoutText.setText("Time Out");
+                    connectionStatusText.setText("Time Out");
                 }
+
+                connectionImage.setBitmap(Rez.Drawables.TriggerImage);
             }
             else if(_settingsView.showing())
             {
-                connectionTimeoutLayoutText.setText("Syncing");
+                connectionStatusText.setText("Syncing...");
+                connectionImage.setBitmap(Rez.Drawables.ConnectingImage);
             }
             else
             {
-                connectionTimeoutLayoutText.setText("");
+                connectionStatusText.setText("Connecting...");
+                connectionImage.setBitmap(Rez.Drawables.ConnectingImage);
             }
 
             break;

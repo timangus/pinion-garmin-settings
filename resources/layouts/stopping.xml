@@ -1,4 +1,4 @@
 
 <layout id="StoppingLayout">
-    <label id="id_stopping" x="10%" y="20%" text="Press Back to Exit" />
+    <label id="id_stopping" x="center" y="center" text="Press Back to Exit" justification="Graphics.TEXT_JUSTIFY_CENTER" />
 </layout>

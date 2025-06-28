@@ -1,4 +1,5 @@
 <layout id="ConnectingLayout">
-    <label id="id_connecting" x="10%" y="20%" text="Connecting..." />
-    <label id="id_connection_timeout" x="10%" y="30%" text="" />
+    <label id="id_connecting_serial_number" x="center" y="10%" text="" justification="Graphics.TEXT_JUSTIFY_CENTER" />
+    <bitmap id="id_connecting_image" filename="../drawables/connecting_image.png" x="center" y="center" />
+    <label id="id_connection_status" x="center" y="85%" justification="Graphics.TEXT_JUSTIFY_CENTER" />
 </layout>
