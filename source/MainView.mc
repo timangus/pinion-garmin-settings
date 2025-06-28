@@ -69,7 +69,8 @@ class MainView extends WatchUi.View
             connectingSerialNumber.setText("Serial No. " + _deviceSerialNumber.toString());
 
             var connectionStatusText = findDrawableById("id_connection_status") as WatchUi.Text;
-            var connectionImage = findDrawableById("id_connecting_image") as WatchUi.Bitmap;
+            var connectingDrawable = findDrawableById("id_connecting_drawable") as WatchUi.Drawable;
+            var triggerDrawable = findDrawableById("id_trigger_drawable") as WatchUi.Drawable;
             if(_numTimeouts > 0)
             {
                 if(_numTimeouts > MAX_CONSECUTIVE_TIMEOUTS)
@@ -81,17 +82,20 @@ class MainView extends WatchUi.View
                     connectionStatusText.setText("Time Out");
                 }
 
-                connectionImage.setBitmap(Rez.Drawables.TriggerImage);
+                connectingDrawable.setVisible(false);
+                triggerDrawable.setVisible(true);
             }
             else if(_settingsView.showing())
             {
                 connectionStatusText.setText("Syncing...");
-                connectionImage.setBitmap(Rez.Drawables.ConnectingImage);
+                connectingDrawable.setVisible(true);
+                triggerDrawable.setVisible(false);
             }
             else
             {
                 connectionStatusText.setText("Connecting...");
-                connectionImage.setBitmap(Rez.Drawables.ConnectingImage);
+                connectingDrawable.setVisible(true);
+                triggerDrawable.setVisible(false);
             }
 
             break;

@@ -1,5 +1,6 @@
 <layout id="ConnectingLayout">
     <label id="id_connecting_serial_number" x="center" y="10%" text="" justification="Graphics.TEXT_JUSTIFY_CENTER" />
-    <bitmap id="id_connecting_image" filename="../drawables/connecting_image.png" x="center" y="center" />
+    <drawable id="id_connecting_drawable" visible="true" />
+    <drawable id="id_trigger_drawable" visible="false" />
     <label id="id_connection_status" x="center" y="85%" justification="Graphics.TEXT_JUSTIFY_CENTER" />
 </layout>

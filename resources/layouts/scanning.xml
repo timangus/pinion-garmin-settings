@@ -1,6 +1,6 @@
 
 <layout id="ScanningLayout">
     <label id="id_scanning" x="center" y="10%" text="Scanning..." justification="Graphics.TEXT_JUSTIFY_CENTER" />
-    <bitmap id="id_scanning_image" filename="../drawables/trigger_image.png" x="center" y="center" />
+    <drawable id="id_trigger_drawable" visible="true" />
     <label id="id_trigger_advice" x="center" y="85%" text="Hold Trigger for 3 Beeps" justification="Graphics.TEXT_JUSTIFY_CENTER" />
 </layout>
