@@ -8,8 +8,10 @@ module Pinion
     {
         const SIMULATE_TIMEOUT = false;
         const SIMULATE_DISCONNECTION = false;
+        const SIMULATE_SLOW_CONNECTION = false;
+
         const CONNECTION_TIMEOUT = 5000;
-        const READWRITE_DELAY = 50;
+        const READWRITE_DELAY = SIMULATE_SLOW_CONNECTION ? 200 : 50;
 
         private var _delegate as Delegate?;
         private var _scanState as ScanState = NOT_SCANNING;
@@ -67,7 +69,7 @@ module Pinion
             if(!SIMULATE_TIMEOUT)
             {
                 _connectedDevice = new Ble.Device();
-                _timer.start(method(:onConnected), 1500, false);
+                _timer.start(method(:onConnected), SIMULATE_SLOW_CONNECTION ? 5000 : 1500, false);
             }
             else
             {
