@@ -14,6 +14,14 @@ class MainViewInputDelegate extends WatchUi.BehaviorDelegate
         _app = app;
     }
 
+    // Buttons
+    public function onSelect() as Lang.Boolean
+    {
+        _app.forceScan();
+        return true;
+    }
+
+    // Touch screen
     public function onScan() as Void
     {
         _app.forceScan();

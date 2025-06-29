@@ -56,7 +56,6 @@ class MainView extends WatchUi.View
         {
         case App.SCANNING:
             setLayout(Rez.Layouts.ScanningLayout(dc));
-            setKeyToSelectableInteraction(false);
             break;
 
         case App.CONNECTING:
@@ -74,7 +73,6 @@ class MainView extends WatchUi.View
             var triggerDrawable = findDrawableById("id_trigger_drawable") as WatchUi.Drawable;
 
             scanButton.setVisible(_numTimeouts > MAX_CONSECUTIVE_TIMEOUTS);
-            setKeyToSelectableInteraction(_numTimeouts > MAX_CONSECUTIVE_TIMEOUTS);
             connectingDrawable.setVisible(_numTimeouts == 0);
             triggerDrawable.setVisible(_numTimeouts > 0);
 
@@ -100,7 +98,6 @@ class MainView extends WatchUi.View
 
         case App.STOPPING:
             setLayout(Rez.Layouts.StoppingLayout(dc));
-            setKeyToSelectableInteraction(false);
             break;
         }
 
