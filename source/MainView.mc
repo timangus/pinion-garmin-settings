@@ -56,6 +56,7 @@ class MainView extends WatchUi.View
         {
         case App.SCANNING:
             setLayout(Rez.Layouts.ScanningLayout(dc));
+            setKeyToSelectableInteraction(false);
             break;
 
         case App.CONNECTING:
@@ -99,6 +100,7 @@ class MainView extends WatchUi.View
 
         case App.STOPPING:
             setLayout(Rez.Layouts.StoppingLayout(dc));
+            setKeyToSelectableInteraction(false);
             break;
         }
 
