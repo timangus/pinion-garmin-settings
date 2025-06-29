@@ -68,34 +68,28 @@ class MainView extends WatchUi.View
             var connectingSerialNumber = findDrawableById("id_connecting_serial_number") as WatchUi.Text;
             connectingSerialNumber.setText("Serial No. " + _deviceSerialNumber.toString());
 
-            var connectionStatusText = findDrawableById("id_connection_status") as WatchUi.Text;
             var connectingDrawable = findDrawableById("id_connecting_drawable") as WatchUi.Drawable;
             var triggerDrawable = findDrawableById("id_trigger_drawable") as WatchUi.Drawable;
-            if(_numTimeouts > 0)
-            {
-                if(_numTimeouts > MAX_CONSECUTIVE_TIMEOUTS)
-                {
-                    connectionStatusText.setText("Press to Scan");
-                }
-                else
-                {
-                    connectionStatusText.setText("Time Out");
-                }
 
-                connectingDrawable.setVisible(false);
-                triggerDrawable.setVisible(true);
+            connectingDrawable.setVisible(_numTimeouts == 0);
+            triggerDrawable.setVisible(_numTimeouts > 0);
+
+            var connectionStatusText = findDrawableById("id_connection_status") as WatchUi.Text;
+            if(_numTimeouts > MAX_CONSECUTIVE_TIMEOUTS)
+            {
+                connectionStatusText.setText("Scan");
+            }
+            else if(_numTimeouts > 0)
+            {
+                connectionStatusText.setText("Time Out");
             }
             else if(_settingsView.showing())
             {
                 connectionStatusText.setText("Syncing...");
-                connectingDrawable.setVisible(true);
-                triggerDrawable.setVisible(false);
             }
             else
             {
                 connectionStatusText.setText("Connecting...");
-                connectingDrawable.setVisible(true);
-                triggerDrawable.setVisible(false);
             }
 
             break;
