@@ -2,5 +2,10 @@
     <label id="id_connecting_serial_number" x="center" y="10%" text="" justification="Graphics.TEXT_JUSTIFY_CENTER" />
     <drawable id="id_connecting_drawable" visible="true" />
     <drawable id="id_trigger_drawable" visible="false" />
+    <button id="id_scan_button" class="WatchUi.Button" x="center" y="80%"
+        width="100%" height="60" visible="true" behavior="onScan">
+        <state id="stateDefault" color="Graphics.COLOR_BLUE" />
+        <state id="stateHighlighted" color="Graphics.COLOR_YELLOW" />
+    </button>
     <label id="id_connection_status" x="center" y="85%" justification="Graphics.TEXT_JUSTIFY_CENTER" />
 </layout>

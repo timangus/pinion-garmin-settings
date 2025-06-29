@@ -68,9 +68,12 @@ class MainView extends WatchUi.View
             var connectingSerialNumber = findDrawableById("id_connecting_serial_number") as WatchUi.Text;
             connectingSerialNumber.setText("Serial No. " + _deviceSerialNumber.toString());
 
+            var scanButton = findDrawableById("id_scan_button") as WatchUi.Button;
             var connectingDrawable = findDrawableById("id_connecting_drawable") as WatchUi.Drawable;
             var triggerDrawable = findDrawableById("id_trigger_drawable") as WatchUi.Drawable;
 
+            scanButton.setVisible(_numTimeouts > MAX_CONSECUTIVE_TIMEOUTS);
+            setKeyToSelectableInteraction(_numTimeouts > MAX_CONSECUTIVE_TIMEOUTS);
             connectingDrawable.setVisible(_numTimeouts == 0);
             triggerDrawable.setVisible(_numTimeouts > 0);
 

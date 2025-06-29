@@ -14,10 +14,9 @@ class MainViewInputDelegate extends WatchUi.BehaviorDelegate
         _app = app;
     }
 
-    public function onSelect() as Lang.Boolean
+    public function onScan() as Void
     {
-        _app.onSelect();
-        return true;
+        _app.forceScan();
     }
 }
 
@@ -249,7 +248,7 @@ class App extends Application.AppBase
         pinionInterface().write(parameter, value);
     }
 
-    public function onSelect() as Void
+    public function forceScan() as Void
     {
         if(_numTimeouts > 0)
         {
