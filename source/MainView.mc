@@ -81,7 +81,7 @@ class MainView extends WatchUi.View
             }
             else if(_numTimeouts > 0)
             {
-                connectionStatusText.setText("Time Out");
+                connectionStatusText.setText("Timed Out");
             }
             else if(_settingsView.showing())
             {
