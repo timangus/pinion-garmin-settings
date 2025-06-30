@@ -219,13 +219,13 @@ class App extends Application.AppBase
 
     public function onParameterRead(parameter as Pinion.ParameterType, value as Lang.Number) as Void
     {
-        Debug.log("onParameterRead(" + parameter + ", " + value + ")");
+        Debug.log("onParameterRead(" + Pinion.stringForParameter(parameter) + ", " + value + ")");
         _mainView.onParameterRead(parameter, value);
     }
 
     public function onParameterWrite(parameter as Pinion.ParameterType, value as Lang.Number) as Void
     {
-        Debug.log("onParameterWrite(" + parameter + ", " + value + ")");
+        Debug.log("onParameterWrite(" + Pinion.stringForParameter(parameter) + ", " + value + ")");
     }
 
     public function onBlockRead(bytes as Lang.ByteArray, cumulative as Lang.Number, total as Lang.Number) as Void

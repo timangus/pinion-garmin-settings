@@ -632,7 +632,7 @@ module Pinion
         {
             if(_scanState == SCANNING)
             {
-                if(!parameter.equals(SERIAL_NUMBER))
+                if(parameter != SERIAL_NUMBER)
                 {
                     Debug.log("Parameter returned while scanning is not SERIAL_NUMBER: " + parameter);
                     disconnect();
@@ -656,7 +656,7 @@ module Pinion
 
             if(_activeErrorsToRetrieve > 0)
             {
-                if(parameter.equals(NUMBER_OF_ACTIVE_ERRORS))
+                if(parameter == NUMBER_OF_ACTIVE_ERRORS)
                 {
                     _activeErrorsToRetrieve = value;
                     var requests = new Lang.Array<Request>[0];
@@ -669,7 +669,7 @@ module Pinion
                     _requestQueue.skipToFrontAll(requests);
                     processQueue();
                 }
-                else if(parameter.equals(ACTIVE_ERROR))
+                else if(parameter == ACTIVE_ERROR)
                 {
                     _activeErrors.add(value);
                     _activeErrorsToRetrieve--;
@@ -691,13 +691,13 @@ module Pinion
 
         public function onParameterWrite(parameter as ParameterType, value as Lang.Number) as Void
         {
-            if(parameter.equals(HIDDEN_SETTINGS_ENABLE))
+            if(parameter == HIDDEN_SETTINGS_ENABLE)
             {
                 // No point in notifying this
                 return;
             }
 
-            if(_activeErrorsToRetrieve > 0 && parameter.equals(GET_ACTIVE_ERROR))
+            if(_activeErrorsToRetrieve > 0 && parameter == GET_ACTIVE_ERROR)
             {
                 // If _activeErrorsToRetrieve is non-zero then the get is part of a getActiveErrors call
                 return;

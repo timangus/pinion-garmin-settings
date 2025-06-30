@@ -152,7 +152,7 @@ module Pinion
 
         public function read(parameter as ParameterType) as Void
         {
-            if(parameter.equals("BATTERY_LEVEL") && (_testParameterData[parameter] as Lang.Number) > 0)
+            if(parameter == Pinion.BATTERY_LEVEL && (_testParameterData[parameter] as Lang.Number) > 0)
             {
                 // Simulate battery draining
                 var newValue = (_testParameterData[parameter] as Lang.Number) - 200;
@@ -262,7 +262,7 @@ module Pinion
 
         public function onParameterWrite(parameter as ParameterType, value as Lang.Number) as Void
         {
-            if(parameter.equals(HIDDEN_SETTINGS_ENABLE))
+            if(parameter == HIDDEN_SETTINGS_ENABLE)
             {
                 // No point in notifying this
                 return;

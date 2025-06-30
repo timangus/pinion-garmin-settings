@@ -317,11 +317,11 @@ class SettingsView extends WatchUi.Menu2
         var parameterDatum = _parameterData[parameter] as Lang.Dictionary;
         parameterDatum[:value] = value;
 
-        if(parameter.equals("CURRENT_GEAR") || parameter.equals("BATTERY_LEVEL"))
+        if(parameter == Pinion.CURRENT_GEAR || parameter == Pinion.BATTERY_LEVEL)
         {
             updateTitle();
         }
-        else if(parameter.equals("NUMBER_OF_GEARS") && _parameterData.hasKey(Pinion.START_SELECT_GEAR))
+        else if(parameter == Pinion.NUMBER_OF_GEARS && _parameterData.hasKey(Pinion.START_SELECT_GEAR))
         {
             // We need to manually set the minmax of the start gear parameter as it
             // depends on the actual number of gears the gearbox has
