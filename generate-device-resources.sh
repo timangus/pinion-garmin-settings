@@ -19,6 +19,7 @@ declare -A LINK_TO_ASSET_BASE=(
 read -r -d '' INPUT_DATA << EOM
 edge530 200x200 35x35 24x24
 edge540 150x150 35x35 41x58
+edge830 150x150 35x35 24x24
 EOM
 
 while read -r line; do
