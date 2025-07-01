@@ -26,6 +26,7 @@ edge1030plus 250x250 36x36 24x24
 edge1040 250x250 40x40 24x24
 edge1050 400x400 68x68 80x118
 edgeexplore2 200x200 36x36 24x24
+edgemtb 150x150 36x36 40x66
 EOM
 
 while read -r line; do

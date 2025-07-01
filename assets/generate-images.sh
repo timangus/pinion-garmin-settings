@@ -41,5 +41,5 @@ generate_images()
 }
 
 generate_images connecting_image.png true 400x400 250x250 200x200 150x150
-generate_images connecting_image.png false 24x24 35x35 40x40 41x58 68x68 80x118
+generate_images connecting_image.png false 24x24 35x35 40x40 40x66 41x58 68x68 80x118
 generate_images trigger_image.png true 400x400 250x250 200x200 150x150
