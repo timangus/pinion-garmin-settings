@@ -1,3 +1,53 @@
 <strings>
     <string id="AppName">Smart.Shift Settings</string>
+
+    <string id="Scanning">Scanning...</string>
+    <string id="PairAdvice">Hold for 3 Beeps</string>
+    <string id="ScanningTitle">Smart.Shift Devices</string>
+    <string id="ConnectionStrength">Connection $1$%</string>
+
+    <string id="ConnectingTitle">Serial No. $1$</string>
+    <string id="Connecting">Connecting...</string>
+    <string id="Syncing">Syncing...</string>
+    <string id="TimeOut">Timed Out</string>
+    <string id="ScanButton">Scan</string>
+
+    <string id="ConnectedTitle">Gear: $1$ Battery: $2$%</string>
+
+    <string id="PreSelect">Pre.Select</string>
+    <string id="StartSelect">Start.Select</string>
+    <string id="TargetCadence">Target Cadence</string>
+    <string id="StartGear">Start Gear</string>
+    <string id="TriggerButtons">Trigger Buttons</string>
+
+    <string id="SetupMenuItem">Setup</string>
+    <string id="InfoMenuItem">Information</string>
+    <string id="DisconnectMenuItem">Disconnect</string>
+
+    <string id="SetupMenuTitle">Setup</string>
+    <string id="MountingAngle">Mounting Angle</string>
+    <string id="RearTeeth">Rear Teeth</string>
+    <string id="FrontTeeth">Front Teeth</string>
+    <string id="WheelCirc">Wheel Circumference</string>
+    <string id="SpeedSensor">Speed Sensor</string>
+
+    <string id="InfoMenuTitle">Information</string>
+    <string id="HardwareVersion">Hardware Version</string>
+    <string id="SerialNumber">Serial Number</string>
+    <string id="BootloaderVersion">Bootloader Version</string>
+    <string id="FirmwareVersion">Firmware Version</string>
+
+    <string id="HiddenMenuTitle">Special</string>
+    <string id="CANBus">CAN Bus</string>
+    <string id="Display">Display</string>
+    <string id="SensorMagnets">Sensor Magnets</string>
+
+    <string id="ExitAdvice">Press Back to Exit</string>
+
+    <string id="Enabled">Enabled</string>
+    <string id="Disabled">Disabled</string>
+    <string id="Reversed">Reversed</string>
+    <string id="Normal">Normal</string>
+    <string id="Yes">Yes</string>
+    <string id="No">No</string>
 </strings>

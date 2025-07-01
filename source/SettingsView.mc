@@ -134,7 +134,8 @@ class SettingsView extends WatchUi.Menu2
         var batteryLevel = (_parameterData[Pinion.BATTERY_LEVEL] as Lang.Dictionary)[:value] as Lang.Number;
         batteryLevel = batteryLevel > 0 ? (batteryLevel / 100.0).format("%.1f") : "-";
 
-        var title = Lang.format("Gear: $1$ Battery: $2$%", [currentGear, batteryLevel]);
+        var s = WatchUi.loadResource(Rez.Strings.ConnectedTitle) as Lang.String;
+        var title = Lang.format(s, [currentGear, batteryLevel]);
 
         setTitle(title);
 
@@ -149,17 +150,17 @@ class SettingsView extends WatchUi.Menu2
     {
         WatchUi.Menu2.initialize(null);
 
-        addItem(new WatchUi.ToggleMenuItem("Pre.Select", {:enabled => "Enabled", :disabled => "Disabled"},
+        addItem(new WatchUi.ToggleMenuItem(Rez.Strings.PreSelect, {:enabled => Rez.Strings.Enabled, :disabled => Rez.Strings.Disabled},
             "pre.select", false, {:alignment => WatchUi.MenuItem.MENU_ITEM_LABEL_ALIGN_RIGHT}));
-        addItem(new WatchUi.ToggleMenuItem("Start.Select", {:enabled => "Enabled", :disabled => "Disabled"},
+        addItem(new WatchUi.ToggleMenuItem(Rez.Strings.StartSelect, {:enabled => Rez.Strings.Enabled, :disabled => Rez.Strings.Disabled},
             "start.select", false, {:alignment => WatchUi.MenuItem.MENU_ITEM_LABEL_ALIGN_RIGHT}));
-        addItem(new WatchUi.MenuItem("Target Cadence", "-", "pre.select.cadence", null));
-        addItem(new WatchUi.MenuItem("Start Gear", "-", "start.select.gear", null));
-        addItem(new WatchUi.ToggleMenuItem("Trigger Buttons", {:enabled => "Reversed", :disabled => "Normal"},
+        addItem(new WatchUi.MenuItem(Rez.Strings.TargetCadence, "-", "pre.select.cadence", null));
+        addItem(new WatchUi.MenuItem(Rez.Strings.StartGear, "-", "start.select.gear", null));
+        addItem(new WatchUi.ToggleMenuItem(Rez.Strings.TriggerButtons, {:enabled => Rez.Strings.Reversed, :disabled => Rez.Strings.Normal},
             "reverse.trigger", false, {:alignment => WatchUi.MenuItem.MENU_ITEM_LABEL_ALIGN_RIGHT}));
-        addItem(new WatchUi.MenuItem("Setup", null, "setup", null));
-        addItem(new WatchUi.MenuItem("Information", null, "information", null));
-        addItem(new WatchUi.MenuItem("Disconnect", null, "disconnect", null));
+        addItem(new WatchUi.MenuItem(Rez.Strings.SetupMenuItem, null, "setup", null));
+        addItem(new WatchUi.MenuItem(Rez.Strings.InfoMenuItem, null, "information", null));
+        addItem(new WatchUi.MenuItem(Rez.Strings.DisconnectMenuItem, null, "disconnect", null));
 
         updateTitle();
     }

@@ -30,7 +30,7 @@ class MainView extends WatchUi.View
 
     private var _app as App;
 
-    private var _scanMenu as WatchUi.Menu2 = new WatchUi.Menu2({:title => "Smart.Shift Devices"});
+    private var _scanMenu as WatchUi.Menu2 = new WatchUi.Menu2({:title => Rez.Strings.ScanningTitle});
     private var _scanMenuDelegate as ScanMenuDelegate = new ScanMenuDelegate(self);
     private var _scanMenuVisible as Lang.Boolean = false;
     private var _deviceHandlesInScanMenu as Lang.Array<Pinion.DeviceHandle> = new Lang.Array<Pinion.DeviceHandle>[0];
@@ -66,7 +66,8 @@ class MainView extends WatchUi.View
             }
 
             var connectingSerialNumber = findDrawableById("id_connecting_serial_number") as WatchUi.Text;
-            connectingSerialNumber.setText("Serial No. " + _deviceSerialNumber.toString());
+            var title = WatchUi.loadResource(Rez.Strings.ConnectingTitle) as Lang.String;
+            connectingSerialNumber.setText(Lang.format(title, [_deviceSerialNumber.toString()]));
 
             var scanButton = findDrawableById("id_scan_button") as WatchUi.Button;
             var connectingDrawable = findDrawableById("id_connecting_drawable") as WatchUi.Drawable;
@@ -79,19 +80,19 @@ class MainView extends WatchUi.View
             var connectionStatusText = findDrawableById("id_connection_status") as WatchUi.Text;
             if(_numTimeouts > MAX_CONSECUTIVE_TIMEOUTS)
             {
-                connectionStatusText.setText("Scan");
+                connectionStatusText.setText(Rez.Strings.ScanButton);
             }
             else if(_numTimeouts > 0)
             {
-                connectionStatusText.setText("Timed Out");
+                connectionStatusText.setText(Rez.Strings.TimeOut);
             }
             else if(_settingsView.showing())
             {
-                connectionStatusText.setText("Syncing...");
+                connectionStatusText.setText(Rez.Strings.Syncing);
             }
             else
             {
-                connectionStatusText.setText("Connecting...");
+                connectionStatusText.setText(Rez.Strings.Connecting);
             }
 
             break;
@@ -161,7 +162,8 @@ class MainView extends WatchUi.View
         var p = ((rssi - MIN_RSSI) / (MAX_RSSI - MIN_RSSI)) * 100.0;
         p = p > 100.0 ? 100.0 : p < 0.0 ? 0.0 : p;
         p = Math.round(p);
-        return Lang.format("Connection $1$%", [p.format("%d")]);
+        var s = WatchUi.loadResource(Rez.Strings.ConnectionStrength) as Lang.String;
+        return Lang.format(s, [p.format("%d")]);
     }
 
     public function onFoundDevicesChanged(foundDevices as Lang.Array<Pinion.DeviceHandle>) as Void
