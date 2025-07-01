@@ -18,6 +18,7 @@
             <iq:product id="edge530"/>
             <iq:product id="edge540"/>
             <iq:product id="edge830"/>
+            <iq:product id="edge840"/>
         </iq:products>
         <!--
             Use "Monkey C: Edit Permissions" from the Visual Studio Code command
