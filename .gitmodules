@@ -1,0 +1,3 @@
+[submodule "Pinion"]
+	path = Pinion
+	url = https://github.com/timangus/garmin-connectiq-pinion-barrel.git

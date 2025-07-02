@@ -13,6 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        submodules: true
 
     - name: Setup developer key
       run: |
@@ -22,6 +24,7 @@ jobs:
       uses: timangus/garmin-connectiq-build-action@8.2.1
       with:
         device: ${{ matrix.device }}
+        projectJungle: monkey.jungle;barrels.jungle
         developerKey: developer_key
         typeCheck: 3
         outputPath: bin/pinion-garmin-settings-${{ matrix.device }}.prg
