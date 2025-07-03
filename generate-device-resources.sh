@@ -66,6 +66,7 @@ generate_image()
       -strip "$output"
   else
     convert "$ASSETS_DIR/$input" -background none \
+      -brightness-contrast 15x25 \
       -resize "$size" -gravity center -extent "$size" \
       -strip "$output"
   fi
