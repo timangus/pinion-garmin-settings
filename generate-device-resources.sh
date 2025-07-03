@@ -53,10 +53,6 @@ generate_image()
     fi
   done
 
-  if [[ -f "$output" ]]; then
-    return
-  fi
-
   if [[ ! -f "$ASSETS_DIR/$input" ]]; then
     echo "  Error: Source file '$ASSETS_DIR/$input' not found" >&2
     return 1
