@@ -1,7 +1,9 @@
 #!/bin/bash
 
-ASSETS_DIR="assets"
-BASE_RES="resources/drawables/drawables.xml"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+ASSETS_DIR="$SCRIPT_DIR/assets"
+BASE_RES="$SCRIPT_DIR/resources/drawables/drawables.xml"
 
 declare -a LINK_NAMES=(
   "connecting_image.png trigger_image.png"
@@ -80,7 +82,7 @@ while read -r line; do
   device="${parts[0]}"
   sizes=("${parts[@]:1}")
 
-  device_dir="resources-$device/drawables"
+  device_dir="$SCRIPT_DIR/resources-$device/drawables"
   mkdir -p "$device_dir"
   cp "$BASE_RES" "$device_dir/drawables.xml"
 
@@ -100,8 +102,9 @@ while read -r line; do
         generate_image "$asset_input" "$size"
 
         if [[ -f "$asset_file" ]]; then
-          ln -sf "../../$asset_file" "$target_link"
-          echo "    Linked $target_link -> $asset_file"
+          relative_path=$(realpath --relative-to="$device_dir" "$asset_file")
+          ln -sf "$relative_path" "$target_link"
+          echo "    Linked $target_link -> $relative_path"
         else
           echo "    Warning: Missing asset: $asset_file"
         fi
