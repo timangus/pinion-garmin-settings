@@ -1,9 +1,0 @@
-<menu2 id="HiddenMenu" title="@Strings.HiddenMenuTitle">
-  <toggle-menu-item id="id_can_bus" label="@Strings.CANBus" subLabel="@Strings.Enabled" disabledSubLabel="@Strings.Disabled">
-    <param name="alignment">WatchUi.MenuItem.MENU_ITEM_LABEL_ALIGN_RIGHT</param>
-  </toggle-menu-item>
-  <toggle-menu-item id="id_display" label="@Strings.Display" subLabel="@Strings.Enabled" disabledSubLabel="@Strings.Disabled">
-    <param name="alignment">WatchUi.MenuItem.MENU_ITEM_LABEL_ALIGN_RIGHT</param>
-  </toggle-menu-item>
-  <menu-item id="id_num_magnets" label="@Strings.SensorMagnets"></menu-item>
-</menu2>

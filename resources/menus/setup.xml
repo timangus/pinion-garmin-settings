@@ -1,9 +1,0 @@
-<menu2 id="SetupMenu" title="@Strings.SetupMenuTitle">
-  <menu-item id="id_mounting_angle" label="@Strings.MountingAngle"></menu-item>
-  <menu-item id="id_rear_teeth" label="@Strings.RearTeeth"></menu-item>
-  <menu-item id="id_front_teeth" label="@Strings.FrontTeeth"></menu-item>
-  <menu-item id="id_wheel_circ" label="@Strings.WheelCirc"></menu-item>
-  <toggle-menu-item id="id_speed_sensor" label="@Strings.SpeedSensor" subLabel="@Strings.Yes" disabledSubLabel="@Strings.No">
-    <param name="alignment">WatchUi.MenuItem.MENU_ITEM_LABEL_ALIGN_RIGHT</param>
-  </toggle-menu-item>
-</menu2>

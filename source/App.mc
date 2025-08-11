@@ -228,16 +228,6 @@ class App extends Application.AppBase
         Debug.log("onParameterWrite(" + Pinion.stringForParameter(parameter) + ", " + value + ")");
     }
 
-    public function onBlockRead(bytes as Lang.ByteArray, cumulative as Lang.Number, total as Lang.Number) as Void
-    {
-        Debug.log("onBlockRead(" + bytes + ", " + cumulative + ", " + total + ")");
-    }
-
-    public function onActiveErrorsRetrieved(activeErrors as Lang.Array<Lang.Number>) as Void
-    {
-        Debug.log("onActiveErrorsRetrieved(" + activeErrors + ")");
-    }
-
     public function selectDevice(deviceHandle as Pinion.DeviceHandle) as Void
     {
         _deviceHandle = deviceHandle;
