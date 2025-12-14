@@ -34,3 +34,46 @@ jobs:
       with:
         name: ${{ matrix.device }}
         path: bin/pinion-garmin-settings-${{ matrix.device }}.prg
+
+  check-is-release:
+    if: github.event_name != 'pull_request'
+    name: Check For Release Tag
+    runs-on: ubuntu-latest
+    outputs:
+      is-release: ${{ steps.is-release-test.outputs.result }}
+      version: ${{ steps.is-release-test.outputs.version }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Check Release Tag
+      id: is-release-test
+      run: |
+        GIT_TAG=$(git describe --exact-match --tags || true)
+        if [[ -z "${GIT_TAG}" || "${{ github.ref_type }}" != 'tag' ]]
+        then
+          echo "Not tagged"
+          echo "result=false" >> $GITHUB_OUTPUT
+          echo "version=" >> $GITHUB_OUTPUT
+        else
+          echo "GIT_TAG: ${GIT_TAG}"
+          echo "'${GIT_TAG}' is a release"
+          echo "result=true" >> $GITHUB_OUTPUT
+          echo "version=${GIT_TAG}" >> $GITHUB_OUTPUT
+        fi
+
+  release:
+    name: Release
+    if: github.event_name != 'pull_request' && needs.check-is-release.outputs.is-release == 'true'
+    runs-on: ubuntu-latest
+    needs:
+      - check-is-release
+      - build
+    steps:
+    - uses: actions/download-artifact@v4
+    - name: Publish Release Artifacts
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ github.ref }}
+        name: Release ${{ needs.check-is-release.outputs.version }}
+        files: '**/*.prg'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
