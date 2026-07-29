@@ -273,7 +273,7 @@ class App extends Application.AppBase
         {
             var deviceHandle = _deviceHandle as Pinion.DeviceHandle;
             Storage.setValue(activityKey("deviceSerialNumber"), deviceHandle.serialNumber());
-            Storage.setValue(activityKey("deviceScanResult"), deviceHandle.scanResult() as Application.PropertyValueType);
+            Storage.setValue(activityKey("deviceScanResult"), deviceHandle.scanResult() as Ble.ScanResult);
         }
     }
 
