@@ -28,7 +28,7 @@ class MainViewInputDelegate extends WatchUi.BehaviorDelegate
     }
 }
 
-var IS_SIMULATOR as Lang.Boolean = false;
+var IS_SIMULATOR as Lang.Boolean = true;
 
 class App extends Application.AppBase
 {

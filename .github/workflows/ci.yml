@@ -8,7 +8,7 @@ jobs:
   build:
     strategy:
       matrix:
-        device: [edge530, edge540, edge830, edge840, edge1030, edge1030plus, edge1040, edge1050, edgeexplore2, edgemtb]
+        device: [edge530, edge540, edge550, edge830, edge840, edge850, edge1030, edge1030plus, edge1040, edge1050, edgeexplore2, edgemtb]
     runs-on: ubuntu-latest
 
     steps:

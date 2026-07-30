@@ -1,0 +1,11 @@
+<drawables>
+    <bitmap id="LauncherIcon" filename="launcher_icon.png" />
+    <bitmap id="ScanIcon" filename="scan_icon.png" />
+
+    <drawable-list id="id_connecting_drawable">
+        <bitmap id="ConnectingImage" filename="connecting_image.png" x="center" y="center" />
+    </drawable-list>
+    <drawable-list id="id_trigger_drawable">
+        <bitmap id="TriggerImage" filename="trigger_image.png" x="center" y="center" />
+    </drawable-list>
+</drawables>
