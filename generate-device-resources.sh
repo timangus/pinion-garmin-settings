@@ -25,6 +25,8 @@ BLACK_BG_SIZES=(
   "150x150"
 )
 
+# scan_icon (last dimension) derived from:
+# Garmin/ConnectIQ/Devices/<device>/simulator.json menu2->items->icons
 read -r -d '' INPUT_DATA << EOM
 edge530 200x200 35x35 24x24
 edge540 150x150 35x35 41x58
