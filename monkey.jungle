@@ -1,3 +1,4 @@
 project.manifest = manifest.xml
 project.typecheck = 3
 base.sourcePath = source
+base.Pinion.annotations = app #;useTestInterface

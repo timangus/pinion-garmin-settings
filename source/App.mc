@@ -145,7 +145,7 @@ class App extends Application.AppBase
         Debug.log("----- Application Start -----");
 
         restore();
-        _pinionInterface = IS_SIMULATOR ? new Pinion.TestInterface() : new Pinion.Interface();
+        _pinionInterface = Pinion.createInterface();
 
         if(_pinionInterface instanceof Pinion.Interface && _deviceHandle != null && _deviceHandle.scanResult() == null)
         {
@@ -283,10 +283,6 @@ class App extends Application.AppBase
 
     public function restore() as Void
     {
-        var isSimulatorNullable = Storage.getValue(activityKey("isSimulator"));
-        IS_SIMULATOR = isSimulatorNullable != null ? isSimulatorNullable as Lang.Boolean : false;
-        Storage.setValue(activityKey("isSimulator"), IS_SIMULATOR);
-
         var deviceSerialNumber = Storage.getValue(activityKey("deviceSerialNumber"));
         if(deviceSerialNumber != null)
         {
