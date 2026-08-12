@@ -140,7 +140,7 @@ class App extends Application.AppBase
         }
     }
 
-    function onStart(state as Lang.Dictionary?) as Void
+    public function onStart(state as Lang.Dictionary?) as Void
     {
         Debug.log("----- Application Start -----");
 
@@ -157,14 +157,14 @@ class App extends Application.AppBase
         updateState();
     }
 
-    function onStop(state as Lang.Dictionary?) as Void
+    public function onStop(state as Lang.Dictionary?) as Void
     {
         exit();
 
         Debug.log("----- Application Stop -----");
     }
 
-    function getInitialView() as [WatchUi.Views] or [WatchUi.Views, WatchUi.InputDelegates]
+    public function getInitialView() as [WatchUi.Views] or [WatchUi.Views, WatchUi.InputDelegates]
     {
         return [_mainView, _mainViewInputDelegate];
     }
@@ -177,6 +177,7 @@ class App extends Application.AppBase
     public function onConnected(device as Ble.Device) as Void
     {
         Debug.log("PinionDelegate.onConnected");
+
         _numTimeouts = 0;
         setState(CONNECTED);
     }
@@ -200,6 +201,7 @@ class App extends Application.AppBase
     public function onConnectionTimeout() as Void
     {
         Debug.log("PinionDelegate.onConnectionTimeout");
+
         _numTimeouts++;
 
         _attemptReconnection();
@@ -214,12 +216,14 @@ class App extends Application.AppBase
     public function onCurrentGearChanged(currentGear as Lang.Number) as Void
     {
         Debug.log("onCurrentGearChanged(" + currentGear + ")");
+
         _mainView.onCurrentGearChanged(currentGear);
     }
 
     public function onParameterRead(parameter as Pinion.ParameterType, value as Lang.Number) as Void
     {
         Debug.log("onParameterRead(" + Pinion.stringForParameter(parameter) + ", " + value + ")");
+
         _mainView.onParameterRead(parameter, value);
     }
 
