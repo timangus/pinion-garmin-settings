@@ -159,6 +159,12 @@ class App extends Application.AppBase
 
     public function onStop(state as Lang.Dictionary?) as Void
     {
+        if(_state == STOPPING)
+        {
+            // There is a Connect IQ bug where onStop seems to get called twice, hence this guard
+            return;
+        }
+
         exit();
 
         Debug.log("----- Application Stop -----");
