@@ -25,6 +25,8 @@ BLACK_BG_SIZES=(
   "150x150"
 )
 
+# launcher_icon (middle dimension) derived from:
+# Garmin/ConnectIQ/Devices/<device>/compiler.json launcherIcon
 # scan_icon (last dimension) derived from:
 # Garmin/ConnectIQ/Devices/<device>/simulator.json menu2->items->icons
 read -r -d '' INPUT_DATA << EOM
