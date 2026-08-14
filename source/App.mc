@@ -28,8 +28,6 @@ class MainViewInputDelegate extends WatchUi.BehaviorDelegate
     }
 }
 
-var IS_SIMULATOR as Lang.Boolean = false;
-
 class App extends Application.AppBase
 {
     const RECONNECTION_DELAY = 1000;
