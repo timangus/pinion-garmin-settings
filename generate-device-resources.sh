@@ -86,6 +86,7 @@ while read -r line; do
   sizes=("${parts[@]:1}")
 
   device_dir="$SCRIPT_DIR/resources-$device/drawables"
+  rm -r "$device_dir"
   mkdir -p "$device_dir"
   cp "$BASE_RES" "$device_dir/drawables.xml"
 
